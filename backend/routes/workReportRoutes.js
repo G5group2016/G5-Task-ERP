@@ -1,19 +1,20 @@
 const express =
-require("express");
+  require("express");
 
 const router =
-express.Router();
+  express.Router();
 
 const auth =
-require("../middleware/authMiddleware");
+  require("../middleware/authMiddleware");
 
 const role =
-require("../middleware/roleMiddleware");
+  require("../middleware/roleMiddleware");
 
 const {
   submitReport,
   getMyReports,
-  getAllReports
+  getAllReports,
+  exportReportsExcel
 } = require(
   "../controllers/workReportController"
 );
@@ -36,6 +37,15 @@ router.get(
 );
 
 router.get(
+  "/export-excel",
+  auth,
+  role(
+    "SUPER_ADMIN"
+  ),
+  exportReportsExcel
+);
+
+router.get(
   "/",
   auth,
   role(
@@ -45,5 +55,6 @@ router.get(
   getAllReports
 );
 
+
 module.exports =
-router;
+  router;

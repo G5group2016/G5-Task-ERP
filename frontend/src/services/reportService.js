@@ -28,3 +28,17 @@ export const submitReport =
 
     return response.data;
   };
+
+export const downloadReportsExcel =
+  async () => {
+
+    const response =
+      await api.get(
+        "/work-reports/export-excel",
+        {
+          responseType: "blob",
+        }
+      );
+
+    return response;
+  };

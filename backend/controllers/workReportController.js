@@ -1,5 +1,6 @@
 const User =
 require("../models/User");
+const XLSX = require("xlsx");
 const WorkReport =
   require("../models/WorkReport");
 
@@ -193,3 +194,131 @@ async (req, res) => {
 
   }
 };
+
+
+
+exports.exportReportsExcel =
+  async (req, res) => {
+
+    try {
+
+      let filter = {};
+
+      if (
+        req.user.role ===
+        "COMPANY_ADMIN"
+      ) {
+
+        const currentUser =
+          await User.findById(
+            req.user.id
+          );
+
+        filter.company =
+          currentUser.company;
+
+      }
+
+      const reports =
+        await WorkReport.find(
+          filter
+        )
+          .populate(
+            "employee",
+            "fullName email"
+          )
+          .populate(
+            "company",
+            "name"
+          )
+          .populate(
+            "task",
+            "title status"
+          )
+          .sort({
+            createdAt: -1
+          });
+
+      const excelData =
+        reports.map(
+          (report) => ({
+            Employee:
+              report.employee
+                ?.fullName,
+
+            Email:
+              report.employee
+                ?.email,
+
+            Company:
+              report.company
+                ?.name,
+
+            Task:
+              report.task
+                ?.title,
+
+            TaskStatus:
+              report.task
+                ?.status,
+
+            HoursWorked:
+              report.hoursWorked,
+
+            Progress:
+              `${report.progressPercentage}%`,
+
+            WorkDescription:
+              report.workDescription,
+
+            ReportDate:
+              new Date(
+                report.reportDate
+              ).toLocaleDateString(),
+          })
+        );
+
+      const workbook =
+        XLSX.utils.book_new();
+
+      const worksheet =
+        XLSX.utils.json_to_sheet(
+          excelData
+        );
+
+      XLSX.utils.book_append_sheet(
+        workbook,
+        worksheet,
+        "Reports"
+      );
+
+      const buffer =
+        XLSX.write(
+          workbook,
+          {
+            type: "buffer",
+            bookType: "xlsx",
+          }
+        );
+
+      res.setHeader(
+        "Content-Disposition",
+        "attachment; filename=Reports.xlsx"
+      );
+
+      res.setHeader(
+        "Content-Type",
+        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+      );
+
+      res.send(buffer);
+
+    } catch (error) {
+
+      res.status(500).json({
+        message:
+          error.message,
+      });
+
+    }
+  };

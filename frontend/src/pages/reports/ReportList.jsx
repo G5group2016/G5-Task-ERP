@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { getReports } from "../../services/reportService";
+import { getReports, downloadReportsExcel } from "../../services/reportService";
 import ReportForm from "./ReportForm";
 
 const Pagination = ({ currentPage, totalPages, onPageChange }) => {
@@ -108,6 +108,48 @@ const ReportList = () => {
     setCurrentPage(1);
   };
 
+  const handleDownloadExcel =
+    async () => {
+
+      try {
+
+        const response =
+          await downloadReportsExcel();
+
+        const url =
+          window.URL.createObjectURL(
+            new Blob([
+              response.data
+            ])
+          );
+
+        const link =
+          document.createElement(
+            "a"
+          );
+
+        link.href = url;
+
+        link.setAttribute(
+          "download",
+          "Reports.xlsx"
+        );
+
+        document.body.appendChild(
+          link
+        );
+
+        link.click();
+
+        link.remove();
+
+      } catch (error) {
+
+        console.log(error);
+
+      }
+    };
+
   // Get current reports for pagination
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
@@ -135,13 +177,45 @@ const ReportList = () => {
             Work Reports
           </h1>
         </div>
-        <div style={{
-          display: "inline-flex", alignItems: "center",
-          padding: "5px 14px", borderRadius: "20px",
-          background: "rgba(99,102,241,0.1)", border: "1px solid rgba(99,102,241,0.2)",
-          fontSize: "13px", fontWeight: "600", color: "#818CF8",
-        }}>
-          {reports.length} submitted
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: "10px",
+          }}
+        >
+          <div
+            style={{
+              display: "inline-flex",
+              alignItems: "center",
+              padding: "5px 14px",
+              borderRadius: "20px",
+              background: "rgba(99,102,241,0.1)",
+              border: "1px solid rgba(99,102,241,0.2)",
+              fontSize: "13px",
+              fontWeight: "600",
+              color: "#818CF8",
+            }}
+          >
+            {reports.length} submitted
+          </div>
+
+          {user?.role === "SUPER_ADMIN" && (
+            <button
+              onClick={handleDownloadExcel}
+              style={{
+                padding: "8px 16px",
+                borderRadius: "8px",
+                background: "#10B981",
+                border: "none",
+                color: "#fff",
+                fontWeight: "600",
+                cursor: "pointer",
+              }}
+            >
+              Download Excel
+            </button>
+          )}
         </div>
       </div>
 
@@ -251,6 +325,7 @@ const ReportList = () => {
               )}
             </tbody>
           </table>
+
         </div>
 
         <Pagination
