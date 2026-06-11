@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
-import { getCompanies } from "../../services/companyService";
+import { getCompanies, deleteCompany } from "../../services/companyService";
 import CompanyForm from "./CompanyForm";
+import toast from "react-hot-toast";
 
 const CompanyList = () => {
   const [companies, setCompanies] = useState([]);
@@ -13,6 +14,35 @@ const CompanyList = () => {
       setCompanies(data.companies);
     } catch (error) {
       console.log(error);
+    }
+  };
+
+  const handleDeleteCompany = async (id) => {
+
+    const confirmDelete =
+      window.confirm(
+        "Are you sure you want to disable this company?"
+      );
+
+    if (!confirmDelete) return;
+
+    try {
+
+      await deleteCompany(id);
+
+      toast.success(
+        "Company Disabled"
+      );
+
+      fetchCompanies();
+
+    } catch (error) {
+
+      toast.error(
+        error.response?.data?.message ||
+        "Failed to disable company"
+      );
+
     }
   };
 
@@ -61,7 +91,7 @@ const CompanyList = () => {
           <table style={{ width: "100%", borderCollapse: "collapse", minWidth: "520px" }}>
             <thead>
               <tr style={{ background: "#0D1421", borderBottom: "1px solid #1E293B" }}>
-                {["Company", "Code", "Email", "Phone"].map((h) => (
+                {["Company", "Code", "Email", "Phone", "Action"].map((h) => (
                   <th
                     key={h}
                     style={{
@@ -144,6 +174,27 @@ const CompanyList = () => {
                     </td>
                     <td style={{ padding: "14px 20px", fontSize: "14px", color: "#94A3B8", fontVariantNumeric: "tabular-nums" }}>
                       {company.phone}
+                    </td>
+
+                    <td style={{ padding: "14px 20px" }}>
+                      <button
+                        onClick={() =>
+                          handleDeleteCompany(
+                            company._id
+                          )
+                        }
+                        style={{
+                          background: "#DC2626",
+                          color: "#fff",
+                          border: "none",
+                          padding: "6px 12px",
+                          borderRadius: "6px",
+                          cursor: "pointer",
+                          fontWeight: "600",
+                        }}
+                      >
+                        Disable
+                      </button>
                     </td>
                   </tr>
                 ))

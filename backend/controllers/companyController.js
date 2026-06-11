@@ -30,7 +30,11 @@ exports.getCompanies = async (
 ) => {
   try {
     const companies =
-      await Company.find()
+      await Company.find({
+        isActive: {
+          $ne: false
+        }
+      })
         .populate(
           "createdBy",
           "fullName email"

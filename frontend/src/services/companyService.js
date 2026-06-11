@@ -13,3 +13,11 @@ export const createCompany = async (data) => {
 
   return response.data;
 };
+
+export const deleteCompany = async (id) => {
+  const response = await api.delete(
+    `/companies/${id}`
+  );
+
+  return response.data;
+};

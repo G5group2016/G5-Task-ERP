@@ -1,12 +1,13 @@
 import { useEffect, useState } from "react";
-import { getEmployees } from "../../services/employeeService";
+import { getEmployees, disableEmployee, } from "../../services/employeeService";
 import EmployeeForm from "./EmployeeForm";
+import toast from "react-hot-toast";
 
 const roleConfig = {
-  SUPER_ADMIN:   { color: "#6366F1", bg: "rgba(99,102,241,0.1)",  border: "rgba(99,102,241,0.25)",  label: "Super Admin"   },
-  COMPANY_ADMIN: { color: "#10B981", bg: "rgba(16,185,129,0.1)",  border: "rgba(16,185,129,0.25)",  label: "Company Admin" },
-  TEAM_LEAD:     { color: "#F59E0B", bg: "rgba(245,158,11,0.1)",  border: "rgba(245,158,11,0.25)",  label: "Team Lead"     },
-  EMPLOYEE:      { color: "#94A3B8", bg: "rgba(148,163,184,0.1)", border: "rgba(148,163,184,0.2)",  label: "Employee"      },
+  SUPER_ADMIN: { color: "#6366F1", bg: "rgba(99,102,241,0.1)", border: "rgba(99,102,241,0.25)", label: "Super Admin" },
+  COMPANY_ADMIN: { color: "#10B981", bg: "rgba(16,185,129,0.1)", border: "rgba(16,185,129,0.25)", label: "Company Admin" },
+  TEAM_LEAD: { color: "#F59E0B", bg: "rgba(245,158,11,0.1)", border: "rgba(245,158,11,0.25)", label: "Team Lead" },
+  EMPLOYEE: { color: "#94A3B8", bg: "rgba(148,163,184,0.1)", border: "rgba(148,163,184,0.2)", label: "Employee" },
 };
 
 const RoleBadge = ({ role }) => {
@@ -38,11 +39,11 @@ const Pagination = ({ currentPage, totalPages, onPageChange }) => {
     const maxVisible = 5;
     let start = Math.max(1, currentPage - Math.floor(maxVisible / 2));
     let end = Math.min(totalPages, start + maxVisible - 1);
-    
+
     if (end - start + 1 < maxVisible) {
       start = Math.max(1, end - maxVisible + 1);
     }
-    
+
     for (let i = start; i <= end; i++) {
       pages.push(i);
     }
@@ -78,7 +79,7 @@ const Pagination = ({ currentPage, totalPages, onPageChange }) => {
       >
         ← Prev
       </button>
-      
+
       {getPageNumbers().map(page => (
         <button
           key={page}
@@ -98,7 +99,7 @@ const Pagination = ({ currentPage, totalPages, onPageChange }) => {
           {page}
         </button>
       ))}
-      
+
       <button
         onClick={() => onPageChange(currentPage + 1)}
         disabled={currentPage === totalPages}
@@ -132,6 +133,36 @@ const EmployeeList = () => {
     setEmployees(data.employees);
     setCurrentPage(1);
   };
+
+  const handleDisableEmployee =
+    async (id) => {
+
+      const confirmDisable =
+        window.confirm(
+          "Are you sure you want to disable this employee?"
+        );
+
+      if (!confirmDisable) return;
+
+      try {
+
+        await disableEmployee(id);
+
+        toast.success(
+          "Employee Disabled"
+        );
+
+        loadEmployees();
+
+      } catch (error) {
+
+        toast.error(
+          error.response?.data?.message ||
+          "Failed to disable employee"
+        );
+
+      }
+    };
 
   // Get current employees for pagination
   const indexOfLastItem = currentPage * itemsPerPage;
@@ -191,7 +222,7 @@ const EmployeeList = () => {
           <table style={{ width: "100%", borderCollapse: "collapse", minWidth: "560px" }}>
             <thead>
               <tr style={{ background: "#0D1421", borderBottom: "1px solid #1E293B" }}>
-                {["Employee", "Email", "Role", "Company"].map((h) => (
+                {["Employee", "Email", "Role", "Company", "Action"].map((h) => (
                   <th
                     key={h}
                     style={{
@@ -264,13 +295,33 @@ const EmployeeList = () => {
                     <td style={{ padding: "14px 20px", fontSize: "13px", color: "#94A3B8" }}>
                       {employee.company?.name || <span style={{ color: "#374151" }}>—</span>}
                     </td>
+                    <td style={{ padding: "14px 20px" }}>
+                      <button
+                        onClick={() =>
+                          handleDisableEmployee(
+                            employee._id
+                          )
+                        }
+                        style={{
+                          background: "#DC2626",
+                          color: "#fff",
+                          border: "none",
+                          padding: "6px 12px",
+                          borderRadius: "6px",
+                          cursor: "pointer",
+                          fontWeight: "600",
+                        }}
+                      >
+                        Disable
+                      </button>
+                    </td>
                   </tr>
                 ))
               )}
             </tbody>
           </table>
         </div>
-        
+
         <Pagination
           currentPage={currentPage}
           totalPages={totalPages}

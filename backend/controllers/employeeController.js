@@ -6,16 +6,16 @@ exports.createEmployee = async (
   res
 ) => {
   try {
-const {
-  fullName,
-  email,
-  password,
-  phone,
-  designation,
-  department,
-  role,
-  company,
-} = req.body;
+    const {
+      fullName,
+      email,
+      password,
+      phone,
+      designation,
+      department,
+      role,
+      company,
+    } = req.body;
 
     if (
       req.user.role ===
@@ -124,9 +124,10 @@ exports.getEmployees =
       }
 
       const employees =
-        await User.find(
-          filter
-        )
+        await User.find({
+          ...filter,
+          isActive: true
+        })
           .populate(
             "company",
             "name code"

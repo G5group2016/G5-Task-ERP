@@ -19,6 +19,14 @@ export const createEmployee =
     return response.data;
   };
 
+  export const disableEmployee = async (id) => {
+  const response = await api.put(
+    `/employees/disable/${id}`
+  );
+
+  return response.data;
+};
+
   // export const getMyTeam =
   // async () => {
 
