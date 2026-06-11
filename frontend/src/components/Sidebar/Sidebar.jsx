@@ -94,6 +94,10 @@ const Sidebar = () => {
         flexDirection: "column",
         fontFamily: "'Inter', system-ui, sans-serif",
         flexShrink: 0,
+        position: "sticky",
+        top: 0,
+        height: "100vh",
+        overflowY: "auto",
       }}
     >
       {/* Logo */}

@@ -104,7 +104,7 @@ const TaskForm = ({ onSuccess }) => {
 
       <form onSubmit={handleSubmit} style={{ padding: "20px 24px" }}>
         <div style={{
-          display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(220px, 1fr))",
+          display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
           gap: "12px", marginBottom: "12px",
         }}>
           <Field label="Task Title">

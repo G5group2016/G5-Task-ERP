@@ -31,18 +31,120 @@ const Pill = ({ value, config }) => {
   );
 };
 
+const Pagination = ({ currentPage, totalPages, onPageChange }) => {
+  const getPageNumbers = () => {
+    const pages = [];
+    const maxVisible = 5;
+    let start = Math.max(1, currentPage - Math.floor(maxVisible / 2));
+    let end = Math.min(totalPages, start + maxVisible - 1);
+    
+    if (end - start + 1 < maxVisible) {
+      start = Math.max(1, end - maxVisible + 1);
+    }
+    
+    for (let i = start; i <= end; i++) {
+      pages.push(i);
+    }
+    return pages;
+  };
+
+  if (totalPages <= 1) return null;
+
+  return (
+    <div style={{
+      display: "flex",
+      justifyContent: "center",
+      alignItems: "center",
+      gap: "6px",
+      padding: "20px",
+      borderTop: "1px solid #1E293B",
+      flexWrap: "wrap",
+    }}>
+      <button
+        onClick={() => onPageChange(currentPage - 1)}
+        disabled={currentPage === 1}
+        style={{
+          padding: "6px 12px",
+          borderRadius: "6px",
+          background: currentPage === 1 ? "rgba(100,100,100,0.1)" : "rgba(99,102,241,0.1)",
+          border: "1px solid rgba(99,102,241,0.2)",
+          color: currentPage === 1 ? "#475569" : "#6366F1",
+          fontSize: "13px",
+          fontWeight: "600",
+          cursor: currentPage === 1 ? "not-allowed" : "pointer",
+          transition: "all 0.15s",
+        }}
+      >
+        ← Prev
+      </button>
+      
+      {getPageNumbers().map(page => (
+        <button
+          key={page}
+          onClick={() => onPageChange(page)}
+          style={{
+            padding: "6px 12px",
+            borderRadius: "6px",
+            background: currentPage === page ? "linear-gradient(135deg, #6366F1 0%, #4F46E5 100%)" : "rgba(99,102,241,0.1)",
+            border: "1px solid rgba(99,102,241,0.2)",
+            color: currentPage === page ? "#fff" : "#6366F1",
+            fontSize: "13px",
+            fontWeight: "600",
+            cursor: "pointer",
+            transition: "all 0.15s",
+          }}
+        >
+          {page}
+        </button>
+      ))}
+      
+      <button
+        onClick={() => onPageChange(currentPage + 1)}
+        disabled={currentPage === totalPages}
+        style={{
+          padding: "6px 12px",
+          borderRadius: "6px",
+          background: currentPage === totalPages ? "rgba(100,100,100,0.1)" : "rgba(99,102,241,0.1)",
+          border: "1px solid rgba(99,102,241,0.2)",
+          color: currentPage === totalPages ? "#475569" : "#6366F1",
+          fontSize: "13px",
+          fontWeight: "600",
+          cursor: currentPage === totalPages ? "not-allowed" : "pointer",
+          transition: "all 0.15s",
+        }}
+      >
+        Next →
+      </button>
+    </div>
+  );
+};
+
 const TaskList = () => {
   const [tasks, setTasks] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage] = useState(10);
 
   useEffect(() => { loadTasks(); }, []);
 
   const loadTasks = async () => {
     const data = await getTasks();
     setTasks(data.tasks);
+    setCurrentPage(1);
+  };
+
+  // Get current tasks for pagination
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentTasks = tasks.slice(indexOfFirstItem, indexOfLastItem);
+  const totalPages = Math.ceil(tasks.length / itemsPerPage);
+
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+    document.querySelector('.table-container')?.scrollIntoView({ behavior: 'smooth' });
   };
 
   return (
-    <div style={{ fontFamily: "'Inter', system-ui, sans-serif", color: "#F1F5F9" }}>
+    <div style={{ fontFamily: "'Inter', system-ui, sans-serif", color: "#F1F5F9", padding: "0 16px" }}>
 
       {/* Header */}
       <div style={{
@@ -53,7 +155,7 @@ const TaskList = () => {
           <p style={{ fontSize: "12px", fontWeight: "600", letterSpacing: "0.1em", color: "#6366F1", textTransform: "uppercase", margin: "0 0 4px" }}>
             Work Management
           </p>
-          <h1 style={{ fontSize: "28px", fontWeight: "700", color: "#F1F5F9", margin: 0, letterSpacing: "-0.03em" }}>
+          <h1 style={{ fontSize: "clamp(24px, 5vw, 28px)", fontWeight: "700", color: "#F1F5F9", margin: 0, letterSpacing: "-0.03em" }}>
             Tasks
           </h1>
         </div>
@@ -70,10 +172,12 @@ const TaskList = () => {
       <TaskForm onSuccess={loadTasks} />
 
       {/* Table */}
-      <div style={{
-        background: "#111827", borderRadius: "12px",
-        border: "1px solid #1E293B", overflow: "hidden",
-      }}>
+      <div
+        className="table-container"
+        style={{
+          background: "#111827", borderRadius: "12px",
+          border: "1px solid #1E293B", overflow: "hidden",
+        }}>
         <div style={{ overflowX: "auto" }}>
           <table style={{ width: "100%", borderCollapse: "collapse", minWidth: "600px" }}>
             <thead>
@@ -90,14 +194,14 @@ const TaskList = () => {
               </tr>
             </thead>
             <tbody>
-              {tasks.length === 0 ? (
+              {currentTasks.length === 0 ? (
                 <tr>
                   <td colSpan={5} style={{ padding: "48px", textAlign: "center", color: "#475569", fontSize: "14px" }}>
                     No tasks found
                   </td>
                 </tr>
               ) : (
-                tasks.map((task, i) => (
+                currentTasks.map((task, i) => (
                   <tr
                     key={task._id}
                     style={{
@@ -143,6 +247,12 @@ const TaskList = () => {
             </tbody>
           </table>
         </div>
+        
+        <Pagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={handlePageChange}
+        />
       </div>
     </div>
   );

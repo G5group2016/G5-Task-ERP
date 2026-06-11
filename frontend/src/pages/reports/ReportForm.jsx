@@ -95,7 +95,7 @@ const ReportForm = ({ onSuccess }) => {
           />
         </Field>
 
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px", marginBottom: "12px" }}>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: "12px", marginBottom: "12px" }}>
           <Field label="Hours Worked">
             <input type="number" name="hoursWorked" placeholder="e.g. 8"
               onChange={handleChange} style={inputStyle} onFocus={focusStyle} onBlur={blurStyle} />

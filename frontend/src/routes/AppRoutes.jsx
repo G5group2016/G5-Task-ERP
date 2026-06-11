@@ -3,6 +3,7 @@ import {
   Routes,
   Route,
 } from "react-router-dom";
+import { Navigate } from "react-router-dom";
 
 import Login from "../pages/auth/Login";
 
@@ -42,6 +43,11 @@ const AppRoutes = () => {
   return (
     <BrowserRouter>
       <Routes>
+
+        <Route
+          path="/"
+          element={<Navigate to="/login" replace />}
+        />
 
         {/* LOGIN */}
 

@@ -51,7 +51,7 @@ const StatCard = ({ label, value, accent, icon, delta }) => (
         </p>
         <p
           style={{
-            fontSize: "36px",
+            fontSize: "clamp(24px, 5vw, 36px)",
             fontWeight: "800",
             color: "#F1F5F9",
             margin: 0,
@@ -110,7 +110,7 @@ const Dashboard = () => {
   ];
 
   return (
-    <div style={{ fontFamily: "'Inter', system-ui, sans-serif", color: "#F1F5F9" }}>
+    <div style={{ fontFamily: "'Inter', system-ui, sans-serif", color: "#F1F5F9", padding: "0 16px" }}>
 
       {/* Header */}
       <div style={{ marginBottom: "32px" }}>
@@ -118,7 +118,7 @@ const Dashboard = () => {
           Overview
         </p>
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: "12px" }}>
-          <h1 style={{ fontSize: "28px", fontWeight: "700", color: "#F1F5F9", margin: 0, letterSpacing: "-0.03em" }}>
+          <h1 style={{ fontSize: "clamp(24px, 5vw, 28px)", fontWeight: "700", color: "#F1F5F9", margin: 0, letterSpacing: "-0.03em" }}>
             Dashboard
           </h1>
           <div
@@ -142,7 +142,7 @@ const Dashboard = () => {
       <div
         style={{
           display: "grid",
-          gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))",
+          gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
           gap: "16px",
           marginBottom: "32px",
         }}
@@ -162,6 +162,7 @@ const Dashboard = () => {
           display: "flex",
           alignItems: "center",
           gap: "8px",
+          flexWrap: "wrap",
         }}
       >
         <div
