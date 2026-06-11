@@ -1,0 +1,147 @@
+import { useEffect, useState } from "react";
+import { getReports } from "../../services/reportService";
+import ReportForm from "./ReportForm";
+
+const ReportList = () => {
+  const [reports, setReports] = useState([]);
+
+  useEffect(() => { loadReports(); }, []);
+
+  const loadReports = async () => {
+    const data = await getReports();
+    setReports(data.reports);
+  };
+
+  return (
+    <div style={{ fontFamily: "'Inter', system-ui, sans-serif", color: "#F1F5F9" }}>
+
+      {/* Header */}
+      <div style={{
+        marginBottom: "24px", paddingBottom: "20px", borderBottom: "1px solid #1E293B",
+        display: "flex", alignItems: "flex-end", justifyContent: "space-between", flexWrap: "wrap", gap: "12px",
+      }}>
+        <div>
+          <p style={{ fontSize: "12px", fontWeight: "600", letterSpacing: "0.1em", color: "#6366F1", textTransform: "uppercase", margin: "0 0 4px" }}>
+            Reporting
+          </p>
+          <h1 style={{ fontSize: "28px", fontWeight: "700", color: "#F1F5F9", margin: 0, letterSpacing: "-0.03em" }}>
+            Work Reports
+          </h1>
+        </div>
+        <div style={{
+          display: "inline-flex", alignItems: "center",
+          padding: "5px 14px", borderRadius: "20px",
+          background: "rgba(99,102,241,0.1)", border: "1px solid rgba(99,102,241,0.2)",
+          fontSize: "13px", fontWeight: "600", color: "#818CF8",
+        }}>
+          {reports.length} submitted
+        </div>
+      </div>
+
+      <ReportForm onSuccess={loadReports} />
+
+      {/* Table */}
+      <div style={{
+        background: "#111827", borderRadius: "12px",
+        border: "1px solid #1E293B", overflow: "hidden",
+      }}>
+        <div style={{ overflowX: "auto" }}>
+          <table style={{ width: "100%", borderCollapse: "collapse", minWidth: "520px" }}>
+            <thead>
+              <tr style={{ background: "#0D1421", borderBottom: "1px solid #1E293B" }}>
+                {["Employee", "Task", "Hours", "Progress"].map((h) => (
+                  <th key={h} style={{
+                    padding: "12px 20px", textAlign: "left",
+                    fontSize: "11px", fontWeight: "700", letterSpacing: "0.08em",
+                    textTransform: "uppercase", color: "#475569",
+                  }}>
+                    {h}
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {reports.length === 0 ? (
+                <tr>
+                  <td colSpan={4} style={{ padding: "48px", textAlign: "center", color: "#475569", fontSize: "14px" }}>
+                    No reports submitted yet
+                  </td>
+                </tr>
+              ) : (
+                reports.map((report, i) => (
+                  <tr
+                    key={report._id}
+                    style={{
+                      borderBottom: "1px solid #1A2233",
+                      background: i % 2 === 0 ? "transparent" : "rgba(255,255,255,0.01)",
+                      transition: "background 0.15s",
+                    }}
+                    onMouseEnter={(e) => { e.currentTarget.style.background = "rgba(99,102,241,0.04)"; }}
+                    onMouseLeave={(e) => { e.currentTarget.style.background = i % 2 === 0 ? "transparent" : "rgba(255,255,255,0.01)"; }}
+                  >
+                    <td style={{ padding: "14px 20px" }}>
+                      <div style={{ display: "flex", alignItems: "center", gap: "9px" }}>
+                        <div style={{
+                          width: "28px", height: "28px", borderRadius: "50%",
+                          background: `hsl(${(report?.employee?.fullName?.charCodeAt(0) || 0) * 47 % 360}, 55%, 35%)`,
+                          display: "flex", alignItems: "center", justifyContent: "center",
+                          fontSize: "11px", fontWeight: "700", color: "#fff", flexShrink: 0,
+                        }}>
+                          {report?.employee?.fullName?.[0]?.toUpperCase() || "?"}
+                        </div>
+                        <span style={{ fontSize: "14px", fontWeight: "500", color: "#E2E8F0" }}>
+                          {report?.employee?.fullName}
+                        </span>
+                      </div>
+                    </td>
+                    <td style={{ padding: "14px 20px", fontSize: "13.5px", color: "#94A3B8" }}>
+                      {report?.task?.title}
+                    </td>
+                    <td style={{ padding: "14px 20px" }}>
+                      <span style={{
+                        fontFamily: "'JetBrains Mono', 'Fira Code', monospace",
+                        fontSize: "13px", fontWeight: "700", color: "#60A5FA",
+                      }}>
+                        {report.hoursWorked}h
+                      </span>
+                    </td>
+                    <td style={{ padding: "14px 20px" }}>
+                      <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                        {/* Progress bar */}
+                        <div style={{
+                          flex: 1, height: "6px", borderRadius: "3px",
+                          background: "#1E293B", overflow: "hidden", maxWidth: "100px",
+                        }}>
+                          <div style={{
+                            height: "100%", borderRadius: "3px",
+                            width: `${Math.min(report.progressPercentage || 0, 100)}%`,
+                            background: report.progressPercentage >= 100
+                              ? "#10B981"
+                              : report.progressPercentage >= 50
+                              ? "#6366F1"
+                              : "#F59E0B",
+                            transition: "width 0.3s ease",
+                          }} />
+                        </div>
+                        <span style={{
+                          fontFamily: "'JetBrains Mono', 'Fira Code', monospace",
+                          fontSize: "12px", fontWeight: "700",
+                          color: report.progressPercentage >= 100 ? "#10B981" : "#94A3B8",
+                          minWidth: "36px",
+                        }}>
+                          {report.progressPercentage}%
+                        </span>
+                      </div>
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default ReportList;

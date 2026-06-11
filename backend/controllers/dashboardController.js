@@ -1,0 +1,351 @@
+const Company = require("../models/Company");
+const User = require("../models/User");
+const Task = require("../models/Task");
+const Attendance = require("../models/Attendance");
+const WorkReport = require("../models/WorkReport");
+
+
+exports.getDashboardStats = async (
+  req,
+  res
+) => {
+  try {
+
+    const totalCompanies =
+      await Company.countDocuments({
+        isActive: true
+      });
+
+    const totalEmployees =
+      await User.countDocuments({
+        role: "EMPLOYEE",
+        isActive: true
+      });
+
+    const totalAdmins =
+      await User.countDocuments({
+        role: "COMPANY_ADMIN"
+      });
+
+    const totalTeamLeads =
+      await User.countDocuments({
+        role: "TEAM_LEAD"
+      });
+
+    const activeTasks =
+      await Task.countDocuments({
+        status: {
+          $in: [
+            "PENDING",
+            "IN_PROGRESS"
+          ]
+        }
+      });
+
+    const completedTasks =
+      await Task.countDocuments({
+        status: "COMPLETED"
+      });
+
+    const reportsToday =
+      await WorkReport.countDocuments({
+        createdAt: {
+          $gte: new Date(
+            new Date().setHours(
+              0,
+              0,
+              0,
+              0
+            )
+          )
+        }
+      });
+
+    res.json({
+      success: true,
+
+      totalCompanies,
+
+      totalEmployees,
+
+      totalAdmins,
+
+      totalTeamLeads,
+
+      activeTasks,
+
+      completedTasks,
+
+      reportsToday
+    });
+
+  } catch (error) {
+
+    res.status(500).json({
+      message: error.message
+    });
+
+  }
+};
+
+exports.companySummary =
+async (req, res) => {
+
+  try {
+
+    const companies =
+      await Company.aggregate([
+        {
+          $lookup: {
+            from: "users",
+            localField: "_id",
+            foreignField:
+              "company",
+            as: "employees"
+          }
+        },
+        {
+          $project: {
+            name: 1,
+            employeeCount:
+              {
+                $size:
+                  "$employees"
+              }
+          }
+        }
+      ]);
+
+    res.json(companies);
+
+  } catch (error) {
+
+    res.status(500).json({
+      message: error.message
+    });
+
+  }
+};
+
+
+exports.topEmployees =
+async (req, res) => {
+
+  try {
+
+    const employees =
+      await WorkReport.aggregate([
+        {
+          $group: {
+            _id:
+              "$employee",
+
+            totalHours: {
+              $sum:
+                "$hoursWorked"
+            }
+          }
+        },
+
+        {
+          $sort: {
+            totalHours: -1
+          }
+        },
+
+        {
+          $limit: 10
+        }
+      ]);
+
+    res.json(employees);
+
+  } catch (error) {
+
+    res.status(500).json({
+      message: error.message
+    });
+
+  }
+};
+
+
+exports.attendanceSummary =
+async (req, res) => {
+
+  try {
+
+    const today =
+      new Date();
+
+    today.setHours(
+      0,
+      0,
+      0,
+      0
+    );
+
+    const present =
+      await Attendance.countDocuments({
+        date: today
+      });
+
+    const employees =
+      await User.countDocuments({
+        role: "EMPLOYEE"
+      });
+
+    const percentage =
+      (
+        (present /
+          employees) *
+        100
+      ).toFixed(2);
+
+    res.json({
+      present,
+      employees,
+      percentage
+    });
+
+  } catch (error) {
+
+    res.status(500).json({
+      message: error.message
+    });
+
+  }
+};
+
+exports.employeeDashboard =
+async (req, res) => {
+
+  try {
+
+    const assignedTasks =
+      await Task.countDocuments({
+        assignedTo:
+          req.user.id
+      });
+
+    const completedTasks =
+      await Task.countDocuments({
+        assignedTo:
+          req.user.id,
+        status:
+          "COMPLETED"
+      });
+
+    const reportsSubmitted =
+      await WorkReport.countDocuments({
+        employee:
+          req.user.id
+      });
+
+    const attendanceDays =
+      await Attendance.countDocuments({
+        employee:
+          req.user.id
+      });
+
+    res.json({
+      success: true,
+      assignedTasks,
+      completedTasks,
+      reportsSubmitted,
+      attendanceDays
+    });
+
+  } catch (error) {
+
+    res.status(500).json({
+      message:
+        error.message
+    });
+
+  }
+};
+
+
+exports.companyAdminDashboard =
+async (req, res) => {
+
+  try {
+
+    const user =
+      await User.findById(
+        req.user.id
+      );
+
+    const companyId =
+      user.company;
+
+    const totalEmployees =
+      await User.countDocuments({
+        company:
+          companyId,
+        role:
+          "EMPLOYEE",
+      });
+
+    const activeTasks =
+      await Task.countDocuments({
+        company:
+          companyId,
+        status: {
+          $in: [
+            "PENDING",
+            "IN_PROGRESS",
+          ],
+        },
+      });
+
+    const completedTasks =
+      await Task.countDocuments({
+        company:
+          companyId,
+        status:
+          "COMPLETED",
+      });
+
+    const reportsSubmitted =
+      await WorkReport.countDocuments({
+        company:
+          companyId,
+      });
+
+    const attendanceToday =
+      await Attendance.countDocuments({
+        company:
+          companyId,
+        date: {
+          $gte:
+            new Date(
+              new Date().setHours(
+                0,
+                0,
+                0,
+                0
+              )
+            ),
+        },
+      });
+
+    res.json({
+      success: true,
+      totalEmployees,
+      activeTasks,
+      completedTasks,
+      reportsSubmitted,
+      attendanceToday,
+    });
+
+  } catch (error) {
+
+    res.status(500).json({
+      message:
+        error.message,
+    });
+
+  }
+};

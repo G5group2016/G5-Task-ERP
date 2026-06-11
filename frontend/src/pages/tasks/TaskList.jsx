@@ -1,0 +1,151 @@
+import { useEffect, useState } from "react";
+import { getTasks } from "../../services/taskService";
+import TaskForm from "./TaskForm";
+
+const priorityConfig = {
+  LOW:    { color: "#94A3B8", bg: "rgba(148,163,184,0.1)", border: "rgba(148,163,184,0.2)", label: "Low"    },
+  MEDIUM: { color: "#60A5FA", bg: "rgba(96,165,250,0.1)",  border: "rgba(96,165,250,0.2)",  label: "Medium" },
+  HIGH:   { color: "#F59E0B", bg: "rgba(245,158,11,0.1)",  border: "rgba(245,158,11,0.2)",  label: "High"   },
+  URGENT: { color: "#EF4444", bg: "rgba(239,68,68,0.1)",   border: "rgba(239,68,68,0.2)",   label: "Urgent" },
+};
+
+const statusConfig = {
+  PENDING:     { color: "#94A3B8", bg: "rgba(148,163,184,0.1)", border: "rgba(148,163,184,0.2)", label: "Pending"     },
+  IN_PROGRESS: { color: "#60A5FA", bg: "rgba(96,165,250,0.1)",  border: "rgba(96,165,250,0.2)",  label: "In Progress" },
+  COMPLETED:   { color: "#10B981", bg: "rgba(16,185,129,0.1)",  border: "rgba(16,185,129,0.2)",  label: "Completed"   },
+  CANCELLED:   { color: "#EF4444", bg: "rgba(239,68,68,0.1)",   border: "rgba(239,68,68,0.2)",   label: "Cancelled"   },
+};
+
+const Pill = ({ value, config }) => {
+  const cfg = config[value?.toUpperCase()] || { color: "#94A3B8", bg: "rgba(148,163,184,0.1)", border: "rgba(148,163,184,0.2)", label: value };
+  return (
+    <span style={{
+      display: "inline-flex", alignItems: "center", gap: "5px",
+      padding: "3px 10px", borderRadius: "20px",
+      fontSize: "12px", fontWeight: "600", letterSpacing: "0.03em",
+      color: cfg.color, background: cfg.bg, border: `1px solid ${cfg.border}`,
+    }}>
+      <span style={{ width: "5px", height: "5px", borderRadius: "50%", background: cfg.color, display: "inline-block" }} />
+      {cfg.label}
+    </span>
+  );
+};
+
+const TaskList = () => {
+  const [tasks, setTasks] = useState([]);
+
+  useEffect(() => { loadTasks(); }, []);
+
+  const loadTasks = async () => {
+    const data = await getTasks();
+    setTasks(data.tasks);
+  };
+
+  return (
+    <div style={{ fontFamily: "'Inter', system-ui, sans-serif", color: "#F1F5F9" }}>
+
+      {/* Header */}
+      <div style={{
+        marginBottom: "24px", paddingBottom: "20px", borderBottom: "1px solid #1E293B",
+        display: "flex", alignItems: "flex-end", justifyContent: "space-between", flexWrap: "wrap", gap: "12px",
+      }}>
+        <div>
+          <p style={{ fontSize: "12px", fontWeight: "600", letterSpacing: "0.1em", color: "#6366F1", textTransform: "uppercase", margin: "0 0 4px" }}>
+            Work Management
+          </p>
+          <h1 style={{ fontSize: "28px", fontWeight: "700", color: "#F1F5F9", margin: 0, letterSpacing: "-0.03em" }}>
+            Tasks
+          </h1>
+        </div>
+        <div style={{
+          display: "inline-flex", alignItems: "center",
+          padding: "5px 14px", borderRadius: "20px",
+          background: "rgba(99,102,241,0.1)", border: "1px solid rgba(99,102,241,0.2)",
+          fontSize: "13px", fontWeight: "600", color: "#818CF8",
+        }}>
+          {tasks.length} total
+        </div>
+      </div>
+
+      <TaskForm onSuccess={loadTasks} />
+
+      {/* Table */}
+      <div style={{
+        background: "#111827", borderRadius: "12px",
+        border: "1px solid #1E293B", overflow: "hidden",
+      }}>
+        <div style={{ overflowX: "auto" }}>
+          <table style={{ width: "100%", borderCollapse: "collapse", minWidth: "600px" }}>
+            <thead>
+              <tr style={{ background: "#0D1421", borderBottom: "1px solid #1E293B" }}>
+                {["Task", "Assigned To", "Company", "Priority", "Status"].map((h) => (
+                  <th key={h} style={{
+                    padding: "12px 20px", textAlign: "left",
+                    fontSize: "11px", fontWeight: "700", letterSpacing: "0.08em",
+                    textTransform: "uppercase", color: "#475569",
+                  }}>
+                    {h}
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {tasks.length === 0 ? (
+                <tr>
+                  <td colSpan={5} style={{ padding: "48px", textAlign: "center", color: "#475569", fontSize: "14px" }}>
+                    No tasks found
+                  </td>
+                </tr>
+              ) : (
+                tasks.map((task, i) => (
+                  <tr
+                    key={task._id}
+                    style={{
+                      borderBottom: "1px solid #1A2233",
+                      background: i % 2 === 0 ? "transparent" : "rgba(255,255,255,0.01)",
+                      transition: "background 0.15s",
+                    }}
+                    onMouseEnter={(e) => { e.currentTarget.style.background = "rgba(99,102,241,0.04)"; }}
+                    onMouseLeave={(e) => { e.currentTarget.style.background = i % 2 === 0 ? "transparent" : "rgba(255,255,255,0.01)"; }}
+                  >
+                    <td style={{ padding: "14px 20px" }}>
+                      <span style={{ fontSize: "14px", fontWeight: "600", color: "#E2E8F0" }}>
+                        {task.title}
+                      </span>
+                    </td>
+                    <td style={{ padding: "14px 20px" }}>
+                      <div style={{ display: "flex", alignItems: "center", gap: "9px" }}>
+                        <div style={{
+                          width: "28px", height: "28px", borderRadius: "50%",
+                          background: `hsl(${(task.assignedTo?.fullName?.charCodeAt(0) || 0) * 47 % 360}, 55%, 35%)`,
+                          display: "flex", alignItems: "center", justifyContent: "center",
+                          fontSize: "11px", fontWeight: "700", color: "#fff", flexShrink: 0,
+                        }}>
+                          {task.assignedTo?.fullName?.[0]?.toUpperCase() || "?"}
+                        </div>
+                        <span style={{ fontSize: "13.5px", color: "#CBD5E1" }}>
+                          {task.assignedTo?.fullName}
+                        </span>
+                      </div>
+                    </td>
+                    <td style={{ padding: "14px 20px", fontSize: "13.5px", color: "#64748B" }}>
+                      {task.company?.name || <span style={{ color: "#2D3748" }}>—</span>}
+                    </td>
+                    <td style={{ padding: "14px 20px" }}>
+                      <Pill value={task.priority} config={priorityConfig} />
+                    </td>
+                    <td style={{ padding: "14px 20px" }}>
+                      <Pill value={task.status} config={statusConfig} />
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default TaskList;
