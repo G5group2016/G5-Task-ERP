@@ -8,11 +8,11 @@ const Pagination = ({ currentPage, totalPages, onPageChange }) => {
     const maxVisible = 5;
     let start = Math.max(1, currentPage - Math.floor(maxVisible / 2));
     let end = Math.min(totalPages, start + maxVisible - 1);
-    
+
     if (end - start + 1 < maxVisible) {
       start = Math.max(1, end - maxVisible + 1);
     }
-    
+
     for (let i = start; i <= end; i++) {
       pages.push(i);
     }
@@ -48,7 +48,7 @@ const Pagination = ({ currentPage, totalPages, onPageChange }) => {
       >
         ← Prev
       </button>
-      
+
       {getPageNumbers().map(page => (
         <button
           key={page}
@@ -68,7 +68,7 @@ const Pagination = ({ currentPage, totalPages, onPageChange }) => {
           {page}
         </button>
       ))}
-      
+
       <button
         onClick={() => onPageChange(currentPage + 1)}
         disabled={currentPage === totalPages}
@@ -94,6 +94,11 @@ const ReportList = () => {
   const [reports, setReports] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(10);
+
+  const user = JSON.parse(
+    localStorage.getItem("user")
+  );
+
 
   useEffect(() => { loadReports(); }, []);
 
@@ -140,7 +145,11 @@ const ReportList = () => {
         </div>
       </div>
 
-      <ReportForm onSuccess={loadReports} />
+      {user?.role !== "SUPER_ADMIN" && (
+        <ReportForm
+          onSuccess={loadReports}
+        />
+      )}
 
       {/* Table */}
       <div
@@ -222,8 +231,8 @@ const ReportList = () => {
                             background: report.progressPercentage >= 100
                               ? "#10B981"
                               : report.progressPercentage >= 50
-                              ? "#6366F1"
-                              : "#F59E0B",
+                                ? "#6366F1"
+                                : "#F59E0B",
                             transition: "width 0.3s ease",
                           }} />
                         </div>
@@ -243,7 +252,7 @@ const ReportList = () => {
             </tbody>
           </table>
         </div>
-        
+
         <Pagination
           currentPage={currentPage}
           totalPages={totalPages}

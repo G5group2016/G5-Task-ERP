@@ -4,8 +4,8 @@ import { checkIn, checkOut, getAttendance } from "../../services/attendanceServi
 
 const statusConfig = {
   present: { color: "#10B981", bg: "rgba(16,185,129,0.12)", border: "rgba(16,185,129,0.25)", label: "Present" },
-  absent:  { color: "#EF4444", bg: "rgba(239,68,68,0.12)",  border: "rgba(239,68,68,0.25)",  label: "Absent"  },
-  late:    { color: "#F59E0B", bg: "rgba(245,158,11,0.12)", border: "rgba(245,158,11,0.25)", label: "Late"    },
+  absent: { color: "#EF4444", bg: "rgba(239,68,68,0.12)", border: "rgba(239,68,68,0.25)", label: "Absent" },
+  late: { color: "#F59E0B", bg: "rgba(245,158,11,0.12)", border: "rgba(245,158,11,0.25)", label: "Late" },
 };
 
 const StatusBadge = ({ status }) => {
@@ -39,11 +39,11 @@ const Pagination = ({ currentPage, totalPages, onPageChange }) => {
     const maxVisible = 5;
     let start = Math.max(1, currentPage - Math.floor(maxVisible / 2));
     let end = Math.min(totalPages, start + maxVisible - 1);
-    
+
     if (end - start + 1 < maxVisible) {
       start = Math.max(1, end - maxVisible + 1);
     }
-    
+
     for (let i = start; i <= end; i++) {
       pages.push(i);
     }
@@ -79,7 +79,7 @@ const Pagination = ({ currentPage, totalPages, onPageChange }) => {
       >
         ← Prev
       </button>
-      
+
       {getPageNumbers().map(page => (
         <button
           key={page}
@@ -99,7 +99,7 @@ const Pagination = ({ currentPage, totalPages, onPageChange }) => {
           {page}
         </button>
       ))}
-      
+
       <button
         onClick={() => onPageChange(currentPage + 1)}
         disabled={currentPage === totalPages}
@@ -125,6 +125,10 @@ const Attendance = () => {
   const [records, setRecords] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(10);
+
+  const user = JSON.parse(
+    localStorage.getItem("user")
+  );
 
   useEffect(() => { loadAttendance(); }, []);
 
@@ -183,54 +187,56 @@ const Attendance = () => {
           </h1>
         </div>
 
-        <div style={{ display: "flex", gap: "10px", flexWrap: "wrap" }}>
-          <button
-            onClick={handleCheckIn}
+        {user?.role !== "SUPER_ADMIN" && (
+          <div
             style={{
               display: "flex",
-              alignItems: "center",
-              gap: "8px",
-              padding: "10px 20px",
-              borderRadius: "8px",
-              background: "linear-gradient(135deg, #10B981 0%, #059669 100%)",
-              border: "none",
-              color: "#fff",
-              fontSize: "14px",
-              fontWeight: "600",
-              cursor: "pointer",
-              boxShadow: "0 4px 14px rgba(16,185,129,0.3)",
-              transition: "all 0.18s ease",
-              letterSpacing: "0.01em",
+              gap: "10px",
+              flexWrap: "wrap",
             }}
-            onMouseEnter={(e) => { e.currentTarget.style.boxShadow = "0 6px 18px rgba(16,185,129,0.45)"; e.currentTarget.style.transform = "translateY(-1px)"; }}
-            onMouseLeave={(e) => { e.currentTarget.style.boxShadow = "0 4px 14px rgba(16,185,129,0.3)"; e.currentTarget.style.transform = "none"; }}
           >
-            <span style={{ fontSize: "16px" }}>→</span> Check In
-          </button>
+            <button
+              onClick={handleCheckIn}
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "8px",
+                padding: "10px 20px",
+                borderRadius: "8px",
+                background:
+                  "linear-gradient(135deg, #10B981 0%, #059669 100%)",
+                border: "none",
+                color: "#fff",
+                fontSize: "14px",
+                fontWeight: "600",
+                cursor: "pointer",
+              }}
+            >
+              Check In
+            </button>
 
-          <button
-            onClick={handleCheckOut}
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: "8px",
-              padding: "10px 20px",
-              borderRadius: "8px",
-              background: "rgba(239,68,68,0.1)",
-              border: "1px solid rgba(239,68,68,0.3)",
-              color: "#EF4444",
-              fontSize: "14px",
-              fontWeight: "600",
-              cursor: "pointer",
-              transition: "all 0.18s ease",
-              letterSpacing: "0.01em",
-            }}
-            onMouseEnter={(e) => { e.currentTarget.style.background = "rgba(239,68,68,0.18)"; e.currentTarget.style.transform = "translateY(-1px)"; }}
-            onMouseLeave={(e) => { e.currentTarget.style.background = "rgba(239,68,68,0.1)"; e.currentTarget.style.transform = "none"; }}
-          >
-            <span style={{ fontSize: "16px" }}>←</span> Check Out
-          </button>
-        </div>
+            <button
+              onClick={handleCheckOut}
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "8px",
+                padding: "10px 20px",
+                borderRadius: "8px",
+                background:
+                  "rgba(239,68,68,0.1)",
+                border:
+                  "1px solid rgba(239,68,68,0.3)",
+                color: "#EF4444",
+                fontSize: "14px",
+                fontWeight: "600",
+                cursor: "pointer",
+              }}
+            >
+              Check Out
+            </button>
+          </div>
+        )}
       </div>
 
       {/* Table */}
@@ -332,7 +338,7 @@ const Attendance = () => {
             </tbody>
           </table>
         </div>
-        
+
         <Pagination
           currentPage={currentPage}
           totalPages={totalPages}
