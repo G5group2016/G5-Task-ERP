@@ -47,6 +47,16 @@ exports.getDashboardStats = async (
         status: "COMPLETED"
       });
 
+    const pendingTasks =
+      await Task.countDocuments({
+        status: {
+          $in: [
+            "PENDING",
+            "IN_PROGRESS"
+          ]
+        }
+      });
+
     const reportsToday =
       await WorkReport.countDocuments({
         createdAt: {
@@ -76,6 +86,8 @@ exports.getDashboardStats = async (
 
       completedTasks,
 
+      pendingTasks,
+
       reportsToday
     });
 
@@ -89,263 +101,263 @@ exports.getDashboardStats = async (
 };
 
 exports.companySummary =
-async (req, res) => {
+  async (req, res) => {
 
-  try {
+    try {
 
-    const companies =
-      await Company.aggregate([
-        {
-          $lookup: {
-            from: "users",
-            localField: "_id",
-            foreignField:
-              "company",
-            as: "employees"
-          }
-        },
-        {
-          $project: {
-            name: 1,
-            employeeCount:
+      const companies =
+        await Company.aggregate([
+          {
+            $lookup: {
+              from: "users",
+              localField: "_id",
+              foreignField:
+                "company",
+              as: "employees"
+            }
+          },
+          {
+            $project: {
+              name: 1,
+              employeeCount:
               {
                 $size:
                   "$employees"
               }
+            }
           }
-        }
-      ]);
+        ]);
 
-    res.json(companies);
+      res.json(companies);
 
-  } catch (error) {
+    } catch (error) {
 
-    res.status(500).json({
-      message: error.message
-    });
+      res.status(500).json({
+        message: error.message
+      });
 
-  }
-};
+    }
+  };
 
 
 exports.topEmployees =
-async (req, res) => {
+  async (req, res) => {
 
-  try {
+    try {
 
-    const employees =
-      await WorkReport.aggregate([
-        {
-          $group: {
-            _id:
-              "$employee",
+      const employees =
+        await WorkReport.aggregate([
+          {
+            $group: {
+              _id:
+                "$employee",
 
-            totalHours: {
-              $sum:
-                "$hoursWorked"
+              totalHours: {
+                $sum:
+                  "$hoursWorked"
+              }
             }
+          },
+
+          {
+            $sort: {
+              totalHours: -1
+            }
+          },
+
+          {
+            $limit: 10
           }
-        },
+        ]);
 
-        {
-          $sort: {
-            totalHours: -1
-          }
-        },
+      res.json(employees);
 
-        {
-          $limit: 10
-        }
-      ]);
+    } catch (error) {
 
-    res.json(employees);
+      res.status(500).json({
+        message: error.message
+      });
 
-  } catch (error) {
-
-    res.status(500).json({
-      message: error.message
-    });
-
-  }
-};
+    }
+  };
 
 
 exports.attendanceSummary =
-async (req, res) => {
+  async (req, res) => {
 
-  try {
+    try {
 
-    const today =
-      new Date();
+      const today =
+        new Date();
 
-    today.setHours(
-      0,
-      0,
-      0,
-      0
-    );
+      today.setHours(
+        0,
+        0,
+        0,
+        0
+      );
 
-    const present =
-      await Attendance.countDocuments({
-        date: today
+      const present =
+        await Attendance.countDocuments({
+          date: today
+        });
+
+      const employees =
+        await User.countDocuments({
+          role: "EMPLOYEE"
+        });
+
+      const percentage =
+        (
+          (present /
+            employees) *
+          100
+        ).toFixed(2);
+
+      res.json({
+        present,
+        employees,
+        percentage
       });
 
-    const employees =
-      await User.countDocuments({
-        role: "EMPLOYEE"
+    } catch (error) {
+
+      res.status(500).json({
+        message: error.message
       });
 
-    const percentage =
-      (
-        (present /
-          employees) *
-        100
-      ).toFixed(2);
-
-    res.json({
-      present,
-      employees,
-      percentage
-    });
-
-  } catch (error) {
-
-    res.status(500).json({
-      message: error.message
-    });
-
-  }
-};
+    }
+  };
 
 exports.employeeDashboard =
-async (req, res) => {
+  async (req, res) => {
 
-  try {
+    try {
 
-    const assignedTasks =
-      await Task.countDocuments({
-        assignedTo:
-          req.user.id
+      const assignedTasks =
+        await Task.countDocuments({
+          assignedTo:
+            req.user.id
+        });
+
+      const completedTasks =
+        await Task.countDocuments({
+          assignedTo:
+            req.user.id,
+          status:
+            "COMPLETED"
+        });
+
+      const reportsSubmitted =
+        await WorkReport.countDocuments({
+          employee:
+            req.user.id
+        });
+
+      const attendanceDays =
+        await Attendance.countDocuments({
+          employee:
+            req.user.id
+        });
+
+      res.json({
+        success: true,
+        assignedTasks,
+        completedTasks,
+        reportsSubmitted,
+        attendanceDays
       });
 
-    const completedTasks =
-      await Task.countDocuments({
-        assignedTo:
-          req.user.id,
-        status:
-          "COMPLETED"
+    } catch (error) {
+
+      res.status(500).json({
+        message:
+          error.message
       });
 
-    const reportsSubmitted =
-      await WorkReport.countDocuments({
-        employee:
-          req.user.id
-      });
-
-    const attendanceDays =
-      await Attendance.countDocuments({
-        employee:
-          req.user.id
-      });
-
-    res.json({
-      success: true,
-      assignedTasks,
-      completedTasks,
-      reportsSubmitted,
-      attendanceDays
-    });
-
-  } catch (error) {
-
-    res.status(500).json({
-      message:
-        error.message
-    });
-
-  }
-};
+    }
+  };
 
 
 exports.companyAdminDashboard =
-async (req, res) => {
+  async (req, res) => {
 
-  try {
+    try {
 
-    const user =
-      await User.findById(
-        req.user.id
-      );
+      const user =
+        await User.findById(
+          req.user.id
+        );
 
-    const companyId =
-      user.company;
+      const companyId =
+        user.company;
 
-    const totalEmployees =
-      await User.countDocuments({
-        company:
-          companyId,
-        role:
-          "EMPLOYEE",
+      const totalEmployees =
+        await User.countDocuments({
+          company:
+            companyId,
+          role:
+            "EMPLOYEE",
+        });
+
+      const activeTasks =
+        await Task.countDocuments({
+          company:
+            companyId,
+          status: {
+            $in: [
+              "PENDING",
+              "IN_PROGRESS",
+            ],
+          },
+        });
+
+      const completedTasks =
+        await Task.countDocuments({
+          company:
+            companyId,
+          status:
+            "COMPLETED",
+        });
+
+      const reportsSubmitted =
+        await WorkReport.countDocuments({
+          company:
+            companyId,
+        });
+
+      const attendanceToday =
+        await Attendance.countDocuments({
+          company:
+            companyId,
+          date: {
+            $gte:
+              new Date(
+                new Date().setHours(
+                  0,
+                  0,
+                  0,
+                  0
+                )
+              ),
+          },
+        });
+
+      res.json({
+        success: true,
+        totalEmployees,
+        activeTasks,
+        completedTasks,
+        reportsSubmitted,
+        attendanceToday,
       });
 
-    const activeTasks =
-      await Task.countDocuments({
-        company:
-          companyId,
-        status: {
-          $in: [
-            "PENDING",
-            "IN_PROGRESS",
-          ],
-        },
+    } catch (error) {
+
+      res.status(500).json({
+        message:
+          error.message,
       });
 
-    const completedTasks =
-      await Task.countDocuments({
-        company:
-          companyId,
-        status:
-          "COMPLETED",
-      });
-
-    const reportsSubmitted =
-      await WorkReport.countDocuments({
-        company:
-          companyId,
-      });
-
-    const attendanceToday =
-      await Attendance.countDocuments({
-        company:
-          companyId,
-        date: {
-          $gte:
-            new Date(
-              new Date().setHours(
-                0,
-                0,
-                0,
-                0
-              )
-            ),
-        },
-      });
-
-    res.json({
-      success: true,
-      totalEmployees,
-      activeTasks,
-      completedTasks,
-      reportsSubmitted,
-      attendanceToday,
-    });
-
-  } catch (error) {
-
-    res.status(500).json({
-      message:
-        error.message,
-    });
-
-  }
-};
+    }
+  };

@@ -16,6 +16,8 @@ import EmployeeList from "../pages/employees/EmployeeList";
 import TaskList from "../pages/tasks/TaskList";
 import ReportList from "../pages/reports/ReportList";
 import Attendance from "../pages/attendance/Attendance";
+import PendingTasks from "../pages/tasks/PendingTasks";
+import CompletedTasks from "../pages/tasks/CompletedTasks";
 
 /* Employee Pages */
 import EmployeeDashboard from "../pages/employees/EmployeeDashboard";
@@ -116,6 +118,18 @@ const AppRoutes = () => {
           <Route
             path="/attendance"
             element={<Attendance />}
+          />
+
+          <Route
+            path="/pending-tasks"
+            element={<PendingTasks />}
+          />
+
+          <Route
+            path="/completed-tasks"
+            element={
+              <CompletedTasks />
+            }
           />
         </Route>
 

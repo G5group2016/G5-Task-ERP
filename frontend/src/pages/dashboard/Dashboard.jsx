@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { getDashboardStats } from "../../services/dashboardService";
 
-const StatCard = ({ label, value, accent, icon, delta }) => (
+const StatCard = ({ label, value, accent, icon, delta, onClick }) => (
   <div
+    onClick={onClick}
     style={{
       background: "#111827",
       borderRadius: "12px",
@@ -11,7 +13,7 @@ const StatCard = ({ label, value, accent, icon, delta }) => (
       position: "relative",
       overflow: "hidden",
       transition: "border-color 0.2s, transform 0.18s",
-      cursor: "default",
+      cursor: "pointer",
     }}
     onMouseEnter={(e) => {
       e.currentTarget.style.borderColor = `${accent}50`;
@@ -90,6 +92,7 @@ const StatCard = ({ label, value, accent, icon, delta }) => (
 
 const Dashboard = () => {
   const [stats, setStats] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => { loadDashboard(); }, []);
 
@@ -103,10 +106,41 @@ const Dashboard = () => {
   };
 
   const cards = [
-    { label: "Total Companies", value: stats?.totalCompanies, accent: "#6366F1", icon: "🏢" },
-    { label: "Total Employees", value: stats?.totalEmployees, accent: "#10B981", icon: "👥" },
-    { label: "Active Tasks",    value: stats?.activeTasks,    accent: "#F59E0B", icon: "⚡" },
-    { label: "Completed Tasks", value: stats?.completedTasks, accent: "#3B82F6", icon: "✓" },
+    {
+      label: "Total Companies",
+      value: stats?.totalCompanies,
+      accent: "#6366F1",
+      icon: "🏢",
+      path: "/companies",
+    },
+    {
+      label: "Total Employees",
+      value: stats?.totalEmployees,
+      accent: "#10B981",
+      icon: "👥",
+      path: "/employees",
+    },
+    // {
+    //   label: "Active Tasks",
+    //   value: stats?.activeTasks,
+    //   accent: "#F59E0B",
+    //   icon: "⚡",
+    //   path: "/tasks",
+    // },
+    {
+      label: "Completed Tasks",
+      value: stats?.completedTasks,
+      accent: "#3B82F6",
+      icon: "✓",
+      path: "/completed-tasks",
+    },
+    {
+      label: "Pending Tasks",
+      value: stats?.pendingTasks,
+      accent: "#EF4444",
+      icon: "⏳",
+      path: "/pending-tasks",
+    },
   ];
 
   return (
@@ -148,7 +182,13 @@ const Dashboard = () => {
         }}
       >
         {cards.map((card) => (
-          <StatCard key={card.label} {...card} />
+          <StatCard
+            key={card.label}
+            {...card}
+            onClick={() =>
+              navigate(card.path)
+            }
+          />
         ))}
       </div>
 
