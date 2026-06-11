@@ -1,3 +1,7 @@
+const Notification =
+  require("../models/Notification");
+const Company =
+  require("../models/Company");
 const User = require("../models/User");
 const bcrypt = require("bcryptjs");
 
@@ -80,6 +84,22 @@ exports.createEmployee = async (
         joiningDate:
           new Date()
       });
+
+    const companyData =
+      await Company.findById(
+        employee.company
+      );
+
+    await Notification.create({
+      title: "New Employee Joined",
+
+      message: `
+Name: ${employee.fullName}
+Designation: ${employee.designation}
+Department: ${employee.department}
+Role: ${employee.role}
+`
+    });
 
     res.status(201).json({
       success: true,

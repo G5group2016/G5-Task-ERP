@@ -33,20 +33,25 @@ const employeeRoutes =
     require("./routes/employeeRoutes");
 
 const taskRoutes =
-require("./routes/taskRoutes");    
+    require("./routes/taskRoutes");
 
 const workReportRoutes =
-require(
- "./routes/workReportRoutes"
-);
+    require(
+        "./routes/workReportRoutes"
+    );
 
 const attendanceRoutes =
-require(
- "./routes/attendanceRoutes"
-);
+    require(
+        "./routes/attendanceRoutes"
+    );
 
 const dashboardRoutes =
-require("./routes/dashboardRoutes");
+    require("./routes/dashboardRoutes");
+
+const notificationRoutes =
+    require(
+        "./routes/notificationRoutes"
+    );
 
 
 const app = express();
@@ -77,21 +82,26 @@ app.use(
     employeeRoutes
 );
 app.use(
-  "/api/tasks",
-  taskRoutes
+    "/api/tasks",
+    taskRoutes
 );
 app.use(
- "/api/work-reports",
- workReportRoutes
+    "/api/work-reports",
+    workReportRoutes
 );
 app.use(
- "/api/attendance",
- attendanceRoutes
+    "/api/attendance",
+    attendanceRoutes
 );
 
 app.use(
- "/api/dashboard",
- dashboardRoutes
+    "/api/dashboard",
+    dashboardRoutes
+);
+
+app.use(
+    "/api/notifications",
+    notificationRoutes
 );
 
 app.listen(

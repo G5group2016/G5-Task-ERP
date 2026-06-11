@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import Navbar from "../../components/Navbar/Navbar";
 
 const TeamLeadDashboard = () => {
 
@@ -8,6 +9,7 @@ const TeamLeadDashboard = () => {
 
   return (
     <div>
+      <Navbar />
 
       <h1 className="text-4xl font-bold mb-6">
         Team Lead Dashboard
