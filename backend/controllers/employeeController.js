@@ -41,12 +41,16 @@ exports.createEmployee = async (
     }
 
     const existing =
-      await User.findOne({ email });
+      await User.findOne({
+        email,
+        isActive: {
+          $ne: false
+        }
+      });
 
     if (existing) {
       return res.status(400).json({
-        message:
-          "Email already exists"
+        message: "Email already exists"
       });
     }
 
@@ -213,7 +217,7 @@ exports.disableEmployee =
 
       res.json({
         message:
-          "Employee disabled"
+          "Employee deleted"
       });
     } catch (error) {
       res.status(500).json({

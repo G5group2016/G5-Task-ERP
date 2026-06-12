@@ -5,14 +5,14 @@ const companySchema = new mongoose.Schema(
     name: {
       type: String,
       required: true,
-      unique: true,
+      // unique: true,
       trim: true
     },
 
     code: {
       type: String,
       required: true,
-      unique: true,
+      // unique: true,
       uppercase: true
     },
 
@@ -36,6 +36,26 @@ const companySchema = new mongoose.Schema(
   },
   {
     timestamps: true
+  }
+);
+
+companySchema.index(
+  { name: 1 },
+  {
+    unique: true,
+    partialFilterExpression: {
+      isActive: true
+    }
+  }
+);
+
+companySchema.index(
+  { code: 1 },
+  {
+    unique: true,
+    partialFilterExpression: {
+      isActive: true
+    }
   }
 );
 

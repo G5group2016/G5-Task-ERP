@@ -21,7 +21,7 @@ const CompanyList = () => {
 
     const confirmDelete =
       window.confirm(
-        "Are you sure you want to disable this company?"
+        "Are you sure you want to delete this company?"
       );
 
     if (!confirmDelete) return;
@@ -31,7 +31,7 @@ const CompanyList = () => {
       await deleteCompany(id);
 
       toast.success(
-        "Company Disabled"
+        "Company Deleted"
       );
 
       fetchCompanies();
@@ -40,7 +40,7 @@ const CompanyList = () => {
 
       toast.error(
         error.response?.data?.message ||
-        "Failed to disable company"
+        "Failed to delete company"
       );
 
     }
@@ -193,7 +193,7 @@ const CompanyList = () => {
                           fontWeight: "600",
                         }}
                       >
-                        Disable
+                        Delete
                       </button>
                     </td>
                   </tr>

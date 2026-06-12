@@ -1,25 +1,59 @@
 const Company = require("../models/Company");
 
-exports.createCompany = async (
-  req,
-  res
-) => {
+exports.createCompany = async (req, res) => {
   try {
-    const company =
-      await Company.create({
-        ...req.body,
-        createdBy: req.user.id
+    const existingCompany = await Company.findOne({
+      $or: [
+        { name: req.body.name },
+        { code: req.body.code }
+      ]
+    });
+
+    if (existingCompany) {
+
+      // If company is disabled, reactivate it
+      if (existingCompany.isActive === false) {
+
+        existingCompany.name = req.body.name;
+        existingCompany.code = req.body.code;
+        existingCompany.email = req.body.email;
+        existingCompany.phone = req.body.phone;
+        existingCompany.address = req.body.address;
+        existingCompany.isActive = true;
+
+        await existingCompany.save();
+
+        return res.status(200).json({
+          success: true,
+          company: existingCompany,
+          message: "Company reactivated successfully"
+        });
+      }
+
+      return res.status(400).json({
+        success: false,
+        message:
+          "Company name or code already exists"
       });
+    }
+
+    const company = await Company.create({
+      ...req.body,
+      createdBy: req.user.id
+    });
 
     res.status(201).json({
       success: true,
       company
     });
+
   } catch (error) {
+
     res.status(500).json({
       success: false,
       message: error.message
     });
+
   }
 };
 

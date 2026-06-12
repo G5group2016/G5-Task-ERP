@@ -139,7 +139,7 @@ const EmployeeList = () => {
 
       const confirmDisable =
         window.confirm(
-          "Are you sure you want to disable this employee?"
+          "Are you sure you want to delete this employee?"
         );
 
       if (!confirmDisable) return;
@@ -149,7 +149,7 @@ const EmployeeList = () => {
         await disableEmployee(id);
 
         toast.success(
-          "Employee Disabled"
+          "Employee Deleted"
         );
 
         loadEmployees();
@@ -158,7 +158,7 @@ const EmployeeList = () => {
 
         toast.error(
           error.response?.data?.message ||
-          "Failed to disable employee"
+          "Failed to delete employee"
         );
 
       }
@@ -312,7 +312,7 @@ const EmployeeList = () => {
                           fontWeight: "600",
                         }}
                       >
-                        Disable
+                        Delete
                       </button>
                     </td>
                   </tr>
