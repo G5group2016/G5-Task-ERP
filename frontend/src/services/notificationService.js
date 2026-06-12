@@ -1,16 +1,16 @@
 import api from "../api/axios";
 
 export const getNotifications =
-async () => {
+  async () => {
 
-  const response =
-    await api.get(
-      "/notifications"
-    );
+    const response =
+      await api.get(
+        "/notifications"
+      );
 
-  return response.data;
+    return response.data;
 
-};
+  };
 
 export const markAllAsRead =
   async () => {
@@ -22,4 +22,26 @@ export const markAllAsRead =
 
     return response.data;
 
+  };
+
+export const deleteNotification =
+  async (id) => {
+
+    const response =
+      await api.delete(
+        `/notifications/${id}`
+      );
+
+    return response.data;
+  };
+
+export const deleteAllNotifications =
+  async () => {
+
+    const response =
+      await api.delete(
+        "/notifications"
+      );
+
+    return response.data;
   };

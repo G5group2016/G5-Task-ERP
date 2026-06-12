@@ -58,3 +58,50 @@ exports.markAllAsRead =
 
         }
     };
+
+    exports.deleteNotification =
+  async (req, res) => {
+
+    try {
+
+      await Notification.findByIdAndDelete(
+        req.params.id
+      );
+
+      res.json({
+        success: true,
+        message:
+          "Notification deleted"
+      });
+
+    } catch (error) {
+
+      res.status(500).json({
+        message: error.message
+      });
+
+    }
+  };
+
+
+exports.deleteAllNotifications =
+  async (req, res) => {
+
+    try {
+
+      await Notification.deleteMany({});
+
+      res.json({
+        success: true,
+        message:
+          "All notifications deleted"
+      });
+
+    } catch (error) {
+
+      res.status(500).json({
+        message: error.message
+      });
+
+    }
+  };

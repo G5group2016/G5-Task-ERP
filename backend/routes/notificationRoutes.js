@@ -9,9 +9,15 @@ const auth =
     "../middleware/authMiddleware"
   );
 
+  const role =
+  require(
+    "../middleware/roleMiddleware"
+  );
+
 const {
   getNotifications,
-  markAllAsRead
+  markAllAsRead, deleteNotification,
+  deleteAllNotifications
 } = require(
   "../controllers/notificationController"
 );
@@ -26,6 +32,26 @@ router.put(
   "/read-all",
   auth,
   markAllAsRead
+);
+
+router.delete(
+  "/:id",
+  auth,
+  role(
+    "SUPER_ADMIN",
+    "COMPANY_ADMIN"
+  ),
+  deleteNotification
+);
+
+router.delete(
+  "/",
+  auth,
+  role(
+    "SUPER_ADMIN",
+    "COMPANY_ADMIN"
+  ),
+  deleteAllNotifications
 );
 
 module.exports =

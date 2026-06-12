@@ -1,5 +1,8 @@
 import { useEffect, useState } from "react";
-import { getNotifications, markAllAsRead } from "../../services/notificationService";
+import {
+  getNotifications, markAllAsRead, deleteNotification,
+  deleteAllNotifications
+} from "../../services/notificationService";
 
 const Navbar = () => {
 
@@ -72,6 +75,40 @@ const Navbar = () => {
       }
     };
 
+  const handleDeleteNotification =
+    async (id) => {
+
+      try {
+
+        await deleteNotification(id);
+
+        loadNotifications();
+
+      } catch (error) {
+
+        console.log(error);
+
+      }
+    };
+
+  const handleDeleteAll =
+    async () => {
+
+      try {
+
+        await deleteAllNotifications();
+
+        setNotifications([]);
+
+        setUnreadCount(0);
+
+      } catch (error) {
+
+        console.log(error);
+
+      }
+    };
+
   return (
     <div className="h-16 bg-slate-900 border-b border-slate-700 flex items-center justify-between px-6">
 
@@ -108,10 +145,29 @@ const Navbar = () => {
           {showNotifications && (
 
             <div className="absolute right-0 mt-3 w-96 bg-slate-800 border border-slate-700 rounded-lg shadow-xl max-h-96 overflow-y-auto z-50">
+              <div className="p-3 border-b border-slate-700 flex justify-between items-center">
 
-              <div className="p-3 border-b border-slate-700 font-bold">
-                Notifications
+                <span className="font-bold">
+                  Notifications
+                </span>
+
+                {(user?.role === "SUPER_ADMIN" ||
+                  user?.role === "COMPANY_ADMIN") && (
+
+                    <button
+                      onClick={handleDeleteAll}
+                      className="text-red-400 text-sm cursor-pointer"
+                    >
+                      Delete All
+                    </button>
+
+                  )}
+
               </div>
+
+              {/* <div className="p-3 border-b border-slate-700 font-bold">
+                Notifications
+              </div> */}
 
               {notifications.length ===
                 0 ? (
@@ -152,6 +208,22 @@ const Navbar = () => {
                         ).toLocaleString()}
                       </p>
 
+                      {(user?.role === "SUPER_ADMIN" ||
+                        user?.role === "COMPANY_ADMIN") && (
+
+                          <button
+                            onClick={() =>
+                              handleDeleteNotification(
+                                notification._id
+                              )
+                            }
+                            className="text-red-400 text-xs mt-2 cursor-pointer"
+                          >
+                            Delete
+                          </button>
+
+                        )}
+
                     </div>
                   )
                 )
@@ -161,6 +233,8 @@ const Navbar = () => {
             </div>
 
           )}
+
+
 
         </div>
 
