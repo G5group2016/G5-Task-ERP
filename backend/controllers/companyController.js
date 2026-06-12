@@ -37,10 +37,11 @@ exports.createCompany = async (req, res) => {
       });
     }
 
-    const company = await Company.create({
-      ...req.body,
-      createdBy: req.user.id
-    });
+   const company = await Company.create({
+  ...req.body,
+  logo: req.file?.path || "",
+  createdBy: req.user.id
+});
 
     res.status(201).json({
       success: true,

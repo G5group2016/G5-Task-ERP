@@ -44,6 +44,8 @@ const CompanyForm = ({ onSuccess }) => {
     address: "",
   });
   const [loading, setLoading] = useState(false);
+  const [logo, setLogo] =
+    useState(null);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -53,8 +55,46 @@ const CompanyForm = ({ onSuccess }) => {
     e.preventDefault();
     setLoading(true);
     try {
-      await createCompany(formData);
+      const submitData =
+        new FormData();
+
+      submitData.append(
+        "name",
+        formData.name
+      );
+
+      submitData.append(
+        "code",
+        formData.code
+      );
+
+      submitData.append(
+        "email",
+        formData.email
+      );
+
+      submitData.append(
+        "phone",
+        formData.phone
+      );
+
+      submitData.append(
+        "address",
+        formData.address
+      );
+
+      if (logo) {
+        submitData.append(
+          "logo",
+          logo
+        );
+      }
+
+      await createCompany(
+        submitData
+      );
       setFormData({ name: "", code: "", email: "", phone: "", address: "" });
+      setLogo(null);
       toast.success("Company Created");
       onSuccess();
     } catch (error) {
@@ -139,6 +179,94 @@ const CompanyForm = ({ onSuccess }) => {
             </label>
             <InputField name="phone" placeholder="+1 (555) 000-0000" value={formData.phone} onChange={handleChange} />
           </div>
+        </div>
+
+        <div style={{ marginBottom: "12px" }}>
+          <label
+            style={{
+              display: "block",
+              fontSize: "11px",
+              fontWeight: "600",
+              color: "#475569",
+              letterSpacing: "0.06em",
+              textTransform: "uppercase",
+              marginBottom: "6px",
+            }}
+          >
+            Company Logo
+          </label>
+
+          <label
+            htmlFor="company-logo-upload"
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: "12px",
+              padding: "10px 14px",
+              borderRadius: "8px",
+              background: "#0D1421",
+              border: "1px solid #1E293B",
+              cursor: "pointer",
+              position: "relative",
+              transition: "border-color 0.18s, box-shadow 0.18s",
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.borderColor = "#6366F1";
+              e.currentTarget.style.boxShadow = "0 0 0 3px rgba(99,102,241,0.12)";
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.borderColor = "#1E293B";
+              e.currentTarget.style.boxShadow = "none";
+            }}
+          >
+            <span
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                gap: "6px",
+                padding: "6px 14px",
+                borderRadius: "6px",
+                background: "rgba(99,102,241,0.15)",
+                border: "1px solid rgba(99,102,241,0.25)",
+                color: "#A5B4FC",
+                fontSize: "12.5px",
+                fontWeight: "600",
+                letterSpacing: "0.02em",
+                flexShrink: 0,
+              }}
+            >
+              📁 Choose File
+            </span>
+            <span
+              style={{
+                fontSize: "13.5px",
+                color: logo ? "#E2E8F0" : "#475569",
+                fontStyle: logo ? "normal" : "italic",
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+                whiteSpace: "nowrap",
+              }}
+            >
+              {logo ? logo.name : "No file selected"}
+            </span>
+            <input
+              id="company-logo-upload"
+              type="file"
+              accept="image/*"
+              onChange={(e) =>
+                setLogo(
+                  e.target.files[0]
+                )
+              }
+              style={{
+                position: "absolute",
+                width: "1px",
+                height: "1px",
+                opacity: 0,
+                pointerEvents: "none",
+              }}
+            />
+          </label>
         </div>
 
         <div style={{ marginBottom: "20px" }}>

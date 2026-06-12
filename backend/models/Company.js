@@ -22,7 +22,10 @@ const companySchema = new mongoose.Schema(
 
     address: String,
 
-    logo: String,
+    logo: {
+      type: String,
+      default: ""
+    },
 
     isActive: {
       type: Boolean,

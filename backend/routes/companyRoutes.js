@@ -9,6 +9,9 @@ const auth =
 const role =
   require("../middleware/roleMiddleware");
 
+const upload =
+  require("../middleware/upload");
+
 const {
   createCompany,
   getCompanies,
@@ -23,6 +26,7 @@ router.post(
   "/",
   auth,
   role("SUPER_ADMIN"),
+  upload.single("logo"),
   createCompany
 );
 

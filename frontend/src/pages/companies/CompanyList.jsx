@@ -5,6 +5,7 @@ import toast from "react-hot-toast";
 
 const CompanyList = () => {
   const [companies, setCompanies] = useState([]);
+  const [selectedLogo, setSelectedLogo] = useState(null);
 
   useEffect(() => { fetchCompanies(); }, []);
 
@@ -44,6 +45,14 @@ const CompanyList = () => {
       );
 
     }
+  };
+
+  const handleLogoClick = (logoUrl) => {
+    setSelectedLogo(logoUrl);
+  };
+
+  const closeModal = () => {
+    setSelectedLogo(null);
   };
 
   return (
@@ -112,7 +121,7 @@ const CompanyList = () => {
             <tbody>
               {companies.length === 0 ? (
                 <tr>
-                  <td colSpan={4} style={{ padding: "48px", textAlign: "center", color: "#475569", fontSize: "14px" }}>
+                  <td colSpan={5} style={{ padding: "48px", textAlign: "center", color: "#475569", fontSize: "14px" }}>
                     No companies registered yet
                   </td>
                 </tr>
@@ -130,24 +139,48 @@ const CompanyList = () => {
                   >
                     <td style={{ padding: "14px 20px" }}>
                       <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-                        <div
-                          style={{
-                            width: "36px",
-                            height: "36px",
-                            borderRadius: "8px",
-                            background: `hsl(${(company.name?.charCodeAt(0) || 0) * 37 % 360}, 55%, 30%)`,
-                            display: "flex",
-                            alignItems: "center",
-                            justifyContent: "center",
-                            fontSize: "13px",
-                            fontWeight: "700",
-                            color: "#fff",
-                            flexShrink: 0,
-                            border: `1px solid hsl(${(company.name?.charCodeAt(0) || 0) * 37 % 360}, 55%, 40%)`,
-                          }}
-                        >
-                          {company.name?.[0]?.toUpperCase() || "?"}
-                        </div>
+                        {company.logo ? (
+
+                          <img
+                            src={company.logo}
+                            alt={company.name}
+                            onClick={() => handleLogoClick(company.logo)}
+                            style={{
+                              width: "36px",
+                              height: "36px",
+                              borderRadius: "8px",
+                              objectFit: "cover",
+                              border:
+                                "1px solid #334155",
+                              flexShrink: 0,
+                              cursor: "pointer",
+                              transition: "transform 0.2s",
+                            }}
+                            onMouseEnter={(e) => { e.currentTarget.style.transform = "scale(1.05)"; }}
+                            onMouseLeave={(e) => { e.currentTarget.style.transform = "scale(1)"; }}
+                          />
+
+                        ) : (
+
+                          <div
+                            style={{
+                              width: "36px",
+                              height: "36px",
+                              borderRadius: "8px",
+                              background: `hsl(${(company.name?.charCodeAt(0) || 0) * 37 % 360}, 55%, 30%)`,
+                              display: "flex",
+                              alignItems: "center",
+                              justifyContent: "center",
+                              fontSize: "13px",
+                              fontWeight: "700",
+                              color: "#fff",
+                              flexShrink: 0,
+                            }}
+                          >
+                            {company.name?.[0]?.toUpperCase()}
+                          </div>
+
+                        )}
                         <span style={{ fontSize: "14px", fontWeight: "600", color: "#E2E8F0" }}>
                           {company.name}
                         </span>
@@ -203,6 +236,71 @@ const CompanyList = () => {
           </table>
         </div>
       </div>
+
+      {/* Logo Modal */}
+      {selectedLogo && (
+        <div
+          onClick={closeModal}
+          style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            background: "rgba(0, 0, 0, 0.9)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            zIndex: 1000,
+            cursor: "pointer",
+          }}
+        >
+          <div
+            onClick={(e) => e.stopPropagation()}
+            style={{
+              position: "relative",
+              maxWidth: "90vw",
+              maxHeight: "90vh",
+            }}
+          >
+            <img
+              src={selectedLogo}
+              alt="Company logo"
+              style={{
+                maxWidth: "100%",
+                maxHeight: "90vh",
+                objectFit: "contain",
+                borderRadius: "8px",
+                boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.25)",
+              }}
+            />
+            <button
+              onClick={closeModal}
+              style={{
+                position: "absolute",
+                top: "-40px",
+                right: "-40px",
+                background: "#1E293B",
+                color: "#F1F5F9",
+                border: "none",
+                width: "36px",
+                height: "36px",
+                borderRadius: "50%",
+                cursor: "pointer",
+                fontSize: "20px",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                transition: "background 0.2s",
+              }}
+              onMouseEnter={(e) => { e.currentTarget.style.background = "#DC2626"; }}
+              onMouseLeave={(e) => { e.currentTarget.style.background = "#1E293B"; }}
+            >
+              ×
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
