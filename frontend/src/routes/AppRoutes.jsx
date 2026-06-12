@@ -18,6 +18,8 @@ import ReportList from "../pages/reports/ReportList";
 import Attendance from "../pages/attendance/Attendance";
 import PendingTasks from "../pages/tasks/PendingTasks";
 import CompletedTasks from "../pages/tasks/CompletedTasks";
+import ProfileImageRequests
+  from "../pages/profileRequests/ProfileImageRequests";
 
 /* Employee Pages */
 import EmployeeDashboard from "../pages/employees/EmployeeDashboard";
@@ -129,6 +131,13 @@ const AppRoutes = () => {
             path="/completed-tasks"
             element={
               <CompletedTasks />
+            }
+          />
+
+          <Route
+            path="/profile-image-requests"
+            element={
+              <ProfileImageRequests />
             }
           />
         </Route>

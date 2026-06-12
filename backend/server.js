@@ -53,6 +53,11 @@ const notificationRoutes =
         "./routes/notificationRoutes"
     );
 
+const profileImageRequestRoutes =
+    require(
+        "./routes/profileImageRequestRoutes"
+    );
+
 
 const app = express();
 
@@ -102,6 +107,11 @@ app.use(
 app.use(
     "/api/notifications",
     notificationRoutes
+);
+
+app.use(
+    "/api/profile-image-requests",
+    profileImageRequestRoutes
 );
 
 app.listen(

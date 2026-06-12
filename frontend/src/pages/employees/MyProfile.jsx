@@ -1,7 +1,11 @@
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
-import { getProfile, updateProfile, uploadProfileImage } from "../../services/authService";
+import { getProfile, updateProfile, } from "../../services/authService";
 import ChangePassword from "../../components/profile/ChangePassword";
+import {
+  getMyRequest, uploadProfileImageRequest,
+}
+  from "../../services/profileImageRequestService";
 
 const inputStyle = {
   width: "100%", padding: "11px 14px", borderRadius: 10,
@@ -24,7 +28,7 @@ function FieldLabel({ children }) {
 }
 
 function getAvatarColor(name = "") {
-  const colors = [["#6366F1","#4F46E5"],["#8B5CF6","#7C3AED"],["#EC4899","#DB2777"],["#F59E0B","#D97706"],["#10B981","#059669"],["#3B82F6","#2563EB"]];
+  const colors = [["#6366F1", "#4F46E5"], ["#8B5CF6", "#7C3AED"], ["#EC4899", "#DB2777"], ["#F59E0B", "#D97706"], ["#10B981", "#059669"], ["#3B82F6", "#2563EB"]];
   let hash = 0;
   for (let i = 0; i < name.length; i++) hash = name.charCodeAt(i) + ((hash << 5) - hash);
   return colors[Math.abs(hash) % colors.length];
@@ -34,8 +38,12 @@ const MyProfile = () => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [image, setImage] = useState(null);
+  const [
+    requestStatus,
+    setRequestStatus
+  ] = useState(null);
 
-  useEffect(() => { loadProfile(); }, []);
+  useEffect(() => { loadProfile(); loadRequestStatus(); }, []);
 
   const loadProfile = async () => {
     try {
@@ -47,6 +55,25 @@ const MyProfile = () => {
       setLoading(false);
     }
   };
+
+  const loadRequestStatus =
+    async () => {
+
+      try {
+
+        const data =
+          await getMyRequest();
+
+        setRequestStatus(
+          data.request
+        );
+
+      } catch (error) {
+
+        console.log(error);
+
+      }
+    };
 
   const handleChange = (e) => setUser({ ...user, [e.target.name]: e.target.value });
 
@@ -60,16 +87,41 @@ const MyProfile = () => {
     }
   };
 
-  const handleImageUpload = async () => {
-    if (!image) return toast.error("Select an image");
-    try {
-      await uploadProfileImage(image);
-      toast.success("Image Uploaded");
-      loadProfile();
-    } catch (error) {
-      toast.error("Upload Failed");
-    }
-  };
+  const handleImageUpload =
+    async () => {
+
+      if (!image) {
+
+        return toast.error(
+          "Select an image"
+        );
+
+      }
+
+      try {
+
+        await uploadProfileImageRequest(
+          image
+        );
+
+        toast.success(
+          "Profile image request submitted"
+        );
+
+        loadRequestStatus();
+
+      } catch (error) {
+
+        toast.error(
+          error.response?.data?.message ||
+          "Request failed"
+        );
+
+      }
+
+    };
+
+
 
   if (loading) {
     return (
@@ -107,6 +159,34 @@ const MyProfile = () => {
 
             {/* Avatar column */}
             <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 16, minWidth: 160 }}>
+              {requestStatus && (
+
+                <div
+                  style={{
+                    padding: "8px 12px",
+                    borderRadius: "8px",
+                    background:
+                      requestStatus.status === "APPROVED"
+                        ? "rgba(16,185,129,0.15)"
+                        : requestStatus.status === "REJECTED"
+                          ? "rgba(239,68,68,0.15)"
+                          : "rgba(245,158,11,0.15)",
+                    color:
+                      requestStatus.status === "APPROVED"
+                        ? "#10B981"
+                        : requestStatus.status === "REJECTED"
+                          ? "#EF4444"
+                          : "#F59E0B",
+                    fontSize: "13px",
+                    fontWeight: "600",
+                  }}
+                >
+                  Image Request:
+                  {" "}
+                  {requestStatus.status}
+                </div>
+
+              )}
               {user?.profileImage ? (
                 <img
                   src={user.profileImage}
@@ -128,9 +208,30 @@ const MyProfile = () => {
                 />
                 <button
                   onClick={handleImageUpload}
-                  style={{ padding: "9px 16px", borderRadius: 10, background: "linear-gradient(135deg, #F59E0B, #D97706)", border: "none", color: "#0A0F1E", fontSize: 13, fontWeight: 700, cursor: "pointer", boxShadow: "0 0 16px rgba(245,158,11,0.25)", letterSpacing: "0.01em" }}
+                  disabled={
+                    requestStatus?.status ===
+                    "PENDING"
+                  }
+                  style={{
+                    padding: "9px 16px",
+                    borderRadius: 10,
+                    background:
+                      requestStatus?.status === "PENDING"
+                        ? "#475569"
+                        : "linear-gradient(135deg, #F59E0B, #D97706)",
+                    border: "none",
+                    color: "#0A0F1E",
+                    fontSize: "13px",
+                    fontWeight: "700",
+                    cursor:
+                      requestStatus?.status === "PENDING"
+                        ? "not-allowed"
+                        : "pointer",
+                  }}
                 >
-                  Upload Image
+                  {requestStatus?.status === "PENDING"
+                    ? "Request Pending"
+                    : "Upload Image"}
                 </button>
               </div>
             </div>
