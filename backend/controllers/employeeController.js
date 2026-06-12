@@ -43,9 +43,7 @@ exports.createEmployee = async (
     const existing =
       await User.findOne({
         email,
-        isActive: {
-          $ne: false
-        }
+        isDeleted: false
       });
 
     if (existing) {
@@ -150,7 +148,7 @@ exports.getEmployees =
       const employees =
         await User.find({
           ...filter,
-          isActive: true
+          isDeleted: false
         })
           .populate(
             "company",
@@ -207,45 +205,81 @@ exports.getEmployee =
 
 exports.disableEmployee =
   async (req, res) => {
-    try {
-      await User.findByIdAndUpdate(
-        req.params.id,
-        {
-          isActive: false
-        }
-      );
 
-      res.json({
-        message:
-          "Employee deleted"
-      });
-    } catch (error) {
-      res.status(500).json({
-        message: error.message
-      });
-    }
+    await User.findByIdAndUpdate(
+      req.params.id,
+      {
+        isDeleted: true,
+        isActive: false
+      }
+    );
+
+    res.json({
+      success: true,
+      message: "Employee deleted"
+    });
+
   };
 
 
-// exports.getMyTeam = async (req, res) => {
-//   try {
+exports.toggleEmployeeStatus =
+  async (req, res) => {
 
-//     console.log("Logged In Team Lead:", req.user.id);
+    try {
 
-//     const employees = await User.find({
-//       reportingManager: req.user.id
-//     });
+      const employee =
+        await User.findById(
+          req.params.id
+        );
 
-//     console.log("Employees Found:", employees);
+      if (!employee) {
 
-//     res.json({
-//       success: true,
-//       employees
-//     });
+        return res.status(404).json({
+          message:
+            "Employee not found"
+        });
 
-//   } catch (error) {
-//     res.status(500).json({
-//       message: error.message
-//     });
-//   }
-// };
+      }
+
+      if (
+        employee.role === "SUPER_ADMIN"
+      ) {
+
+        return res.status(400).json({
+          message:
+            "Super Admin cannot be deactivated"
+        });
+
+      }
+
+      if (
+        req.user.id === employee._id.toString()
+      ) {
+
+        return res.status(400).json({
+          message:
+            "You cannot deactivate yourself"
+        });
+
+      }
+
+      employee.isActive =
+        !employee.isActive;
+
+      await employee.save();
+
+      res.json({
+        success: true,
+        employee
+      });
+
+    } catch (error) {
+
+      res.status(500).json({
+        message:
+          error.message
+      });
+
+    }
+
+  };

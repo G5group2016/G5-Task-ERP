@@ -19,7 +19,7 @@ export const createEmployee =
     return response.data;
   };
 
-  export const disableEmployee = async (id) => {
+export const disableEmployee = async (id) => {
   const response = await api.put(
     `/employees/disable/${id}`
   );
@@ -27,13 +27,13 @@ export const createEmployee =
   return response.data;
 };
 
-  // export const getMyTeam =
-  // async () => {
+export const toggleEmployeeStatus =
+  async (id) => {
 
-  //   const response =
-  //     await api.get(
-  //       "/employees/my-team"
-  //     );
+    const response =
+      await api.put(
+        `/employees/status/${id}`
+      );
 
-  //   return response.data;
-  // };
+    return response.data;
+  };

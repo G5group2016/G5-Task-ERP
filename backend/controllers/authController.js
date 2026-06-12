@@ -66,6 +66,22 @@ exports.login = async (req, res) => {
       });
     }
 
+    if (user.isDeleted) {
+
+      return res.status(403).json({
+        message:
+          "Account has been deleted"
+      });
+
+    }
+
+
+    if (!user.isActive) {
+      return res.status(403).json({
+        message: "Your account has been deactivated. Contact Administrator."
+      });
+    }
+
     const isMatch =
       await bcrypt.compare(
         password,

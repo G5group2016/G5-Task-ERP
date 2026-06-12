@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { getEmployees, disableEmployee, } from "../../services/employeeService";
+import { getEmployees, disableEmployee,toggleEmployeeStatus } from "../../services/employeeService";
 import EmployeeForm from "./EmployeeForm";
 import toast from "react-hot-toast";
 
@@ -122,6 +122,10 @@ const Pagination = ({ currentPage, totalPages, onPageChange }) => {
 };
 
 const EmployeeList = () => {
+  const currentUser =
+  JSON.parse(
+    localStorage.getItem("user")
+  );
   const [employees, setEmployees] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(10);
@@ -133,6 +137,54 @@ const EmployeeList = () => {
     const data = await getEmployees();
     setEmployees(data.employees);
     setCurrentPage(1);
+  };
+
+  const StatusBadge = ({
+  isActive
+}) => (
+  <span
+    style={{
+      padding: "4px 10px",
+      borderRadius: "20px",
+      fontSize: "12px",
+      fontWeight: "600",
+      background: isActive
+        ? "rgba(16,185,129,.1)"
+        : "rgba(239,68,68,.1)",
+      color: isActive
+        ? "#10B981"
+        : "#EF4444"
+    }}
+  >
+    {isActive
+      ? "Active"
+      : "Inactive"}
+  </span>
+);
+
+const handleToggleStatus =
+  async (id) => {
+
+    try {
+
+      await toggleEmployeeStatus(
+        id
+      );
+
+      toast.success(
+        "Status Updated"
+      );
+
+      loadEmployees();
+
+    } catch (error) {
+
+      toast.error(
+        error.response?.data?.message
+      );
+
+    }
+
   };
 
   const handleDisableEmployee =
@@ -231,7 +283,7 @@ const EmployeeList = () => {
           <table style={{ width: "100%", borderCollapse: "collapse", minWidth: "560px" }}>
             <thead>
               <tr style={{ background: "#0D1421", borderBottom: "1px solid #1E293B" }}>
-                {["Employee", "Email", "Role", "Company", "Action"].map((h) => (
+                {["Employee", "Email", "Role", "Status", "Company", "Action"].map((h) => (
                   <th
                     key={h}
                     style={{
@@ -252,7 +304,7 @@ const EmployeeList = () => {
             <tbody>
               {currentEmployees.length === 0 ? (
                 <tr>
-                  <td colSpan={5} style={{ padding: "48px", textAlign: "center", color: "#475569", fontSize: "14px" }}>
+                  <td colSpan={6} style={{ padding: "48px", textAlign: "center", color: "#475569", fontSize: "14px" }}>
                     No employees found
                   </td>
                 </tr>
@@ -320,29 +372,79 @@ const EmployeeList = () => {
                     <td style={{ padding: "14px 20px" }}>
                       <RoleBadge role={employee.role} />
                     </td>
+                    <td
+  style={{
+    padding: "14px 20px"
+  }}
+>
+  <StatusBadge
+    isActive={
+      employee.isActive
+    }
+  />
+</td>
                     <td style={{ padding: "14px 20px", fontSize: "13px", color: "#94A3B8" }}>
                       {employee.company?.name || <span style={{ color: "#374151" }}>—</span>}
                     </td>
-                    <td style={{ padding: "14px 20px" }}>
-                      <button
-                        onClick={() =>
-                          handleDisableEmployee(
-                            employee._id
-                          )
-                        }
-                        style={{
-                          background: "#DC2626",
-                          color: "#fff",
-                          border: "none",
-                          padding: "6px 12px",
-                          borderRadius: "6px",
-                          cursor: "pointer",
-                          fontWeight: "600",
-                        }}
-                      >
-                        Delete
-                      </button>
-                    </td>
+                   <td
+  style={{
+    padding: "14px 20px"
+  }}
+>
+
+  {currentUser?.role ===
+    "SUPER_ADMIN" && (
+      <>
+        <button
+          onClick={() =>
+            handleToggleStatus(
+              employee._id
+            )
+          }
+          style={{
+            background:
+              employee.isActive
+                ? "#F59E0B"
+                : "#10B981",
+            color: "#fff",
+            border: "none",
+            padding:
+              "6px 12px",
+            borderRadius: "6px",
+            cursor: "pointer",
+            fontWeight: "600",
+            marginRight: "8px"
+          }}
+        >
+          {employee.isActive
+            ? "Deactivate"
+            : "Activate"}
+        </button>
+
+        <button
+          onClick={() =>
+            handleDisableEmployee(
+              employee._id
+            )
+          }
+          style={{
+            background:
+              "#DC2626",
+            color: "#fff",
+            border: "none",
+            padding:
+              "6px 12px",
+            borderRadius: "6px",
+            cursor: "pointer",
+            fontWeight: "600"
+          }}
+        >
+          Delete
+        </button>
+      </>
+    )}
+
+</td>
                   </tr>
                 ))
               )}

@@ -14,7 +14,8 @@ const {
   createEmployee,
   getEmployees,
   getEmployee,
-  disableEmployee
+  disableEmployee,
+  toggleEmployeeStatus
 } = require(
   "../controllers/employeeController"
 );
@@ -64,6 +65,13 @@ router.put(
     "COMPANY_ADMIN"
   ),
   disableEmployee
+);
+
+router.put(
+  "/status/:id",
+  auth,
+  role("SUPER_ADMIN"),
+  toggleEmployeeStatus
 );
 
 
