@@ -1,5 +1,5 @@
 const User =
-require("../models/User");
+  require("../models/User");
 const XLSX = require("xlsx");
 const WorkReport =
   require("../models/WorkReport");
@@ -51,29 +51,25 @@ exports.submitReport =
 
       }
 
+      const employee =
+        await User.findById(
+          req.user.id
+        );
+
       const report =
         await WorkReport.create({
-
-          employee:
-            req.user.id,
-
-          company:
-            task.company,
-
-          task:
-            req.body.task,
-
+          employee: req.user.id,
+          employeeName:
+            employee.fullName,
+          company: task.company,
+          task: req.body.task,
           workDescription:
             req.body.workDescription,
-
           hoursWorked:
             req.body.hoursWorked,
-
           progressPercentage:
             req.body.progressPercentage,
-
         });
-
       return res
         .status(201)
         .json({
@@ -139,61 +135,61 @@ exports.getMyReports =
    All Reports
 ===================================== */
 exports.getAllReports =
-async (req, res) => {
+  async (req, res) => {
 
-  try {
+    try {
 
-    let filter = {};
+      let filter = {};
 
-    if (
-      req.user.role ===
-      "COMPANY_ADMIN"
-    ) {
+      if (
+        req.user.role ===
+        "COMPANY_ADMIN"
+      ) {
 
-      const currentUser =
-        await User.findById(
-          req.user.id
-        );
+        const currentUser =
+          await User.findById(
+            req.user.id
+          );
 
-      filter.company =
-        currentUser.company;
+        filter.company =
+          currentUser.company;
 
-    }
+      }
 
-    const reports =
-      await WorkReport.find(
-        filter
-      )
-      .populate(
-        "employee",
-        "fullName email"
-      )
-      .populate(
-        "company",
-        "name"
-      )
-      .populate(
-        "task",
-        "title status"
-      )
-      .sort({
-        createdAt: -1
+      const reports =
+        await WorkReport.find(
+          filter
+        )
+          .populate(
+            "employee",
+            "fullName email"
+          )
+          .populate(
+            "company",
+            "name"
+          )
+          .populate(
+            "task",
+            "title status"
+          )
+          .sort({
+            createdAt: -1
+          });
+
+      res.json({
+        success: true,
+        reports
       });
 
-    res.json({
-      success: true,
-      reports
-    });
+    } catch (error) {
 
-  } catch (error) {
+      res.status(500).json({
+        message:
+          error.message
+      });
 
-    res.status(500).json({
-      message:
-        error.message
-    });
-
-  }
-};
+    }
+  };
 
 
 

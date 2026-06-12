@@ -3,17 +3,17 @@ import { getTasks } from "../../services/taskService";
 import TaskForm from "./TaskForm";
 
 const priorityConfig = {
-  LOW:    { color: "#94A3B8", bg: "rgba(148,163,184,0.1)", border: "rgba(148,163,184,0.2)", label: "Low"    },
-  MEDIUM: { color: "#60A5FA", bg: "rgba(96,165,250,0.1)",  border: "rgba(96,165,250,0.2)",  label: "Medium" },
-  HIGH:   { color: "#F59E0B", bg: "rgba(245,158,11,0.1)",  border: "rgba(245,158,11,0.2)",  label: "High"   },
-  URGENT: { color: "#EF4444", bg: "rgba(239,68,68,0.1)",   border: "rgba(239,68,68,0.2)",   label: "Urgent" },
+  LOW: { color: "#94A3B8", bg: "rgba(148,163,184,0.1)", border: "rgba(148,163,184,0.2)", label: "Low" },
+  MEDIUM: { color: "#60A5FA", bg: "rgba(96,165,250,0.1)", border: "rgba(96,165,250,0.2)", label: "Medium" },
+  HIGH: { color: "#F59E0B", bg: "rgba(245,158,11,0.1)", border: "rgba(245,158,11,0.2)", label: "High" },
+  URGENT: { color: "#EF4444", bg: "rgba(239,68,68,0.1)", border: "rgba(239,68,68,0.2)", label: "Urgent" },
 };
 
 const statusConfig = {
-  PENDING:     { color: "#94A3B8", bg: "rgba(148,163,184,0.1)", border: "rgba(148,163,184,0.2)", label: "Pending"     },
-  IN_PROGRESS: { color: "#60A5FA", bg: "rgba(96,165,250,0.1)",  border: "rgba(96,165,250,0.2)",  label: "In Progress" },
-  COMPLETED:   { color: "#10B981", bg: "rgba(16,185,129,0.1)",  border: "rgba(16,185,129,0.2)",  label: "Completed"   },
-  CANCELLED:   { color: "#EF4444", bg: "rgba(239,68,68,0.1)",   border: "rgba(239,68,68,0.2)",   label: "Cancelled"   },
+  PENDING: { color: "#94A3B8", bg: "rgba(148,163,184,0.1)", border: "rgba(148,163,184,0.2)", label: "Pending" },
+  IN_PROGRESS: { color: "#60A5FA", bg: "rgba(96,165,250,0.1)", border: "rgba(96,165,250,0.2)", label: "In Progress" },
+  COMPLETED: { color: "#10B981", bg: "rgba(16,185,129,0.1)", border: "rgba(16,185,129,0.2)", label: "Completed" },
+  CANCELLED: { color: "#EF4444", bg: "rgba(239,68,68,0.1)", border: "rgba(239,68,68,0.2)", label: "Cancelled" },
 };
 
 const Pill = ({ value, config }) => {
@@ -37,11 +37,11 @@ const Pagination = ({ currentPage, totalPages, onPageChange }) => {
     const maxVisible = 5;
     let start = Math.max(1, currentPage - Math.floor(maxVisible / 2));
     let end = Math.min(totalPages, start + maxVisible - 1);
-    
+
     if (end - start + 1 < maxVisible) {
       start = Math.max(1, end - maxVisible + 1);
     }
-    
+
     for (let i = start; i <= end; i++) {
       pages.push(i);
     }
@@ -77,7 +77,7 @@ const Pagination = ({ currentPage, totalPages, onPageChange }) => {
       >
         ← Prev
       </button>
-      
+
       {getPageNumbers().map(page => (
         <button
           key={page}
@@ -97,7 +97,7 @@ const Pagination = ({ currentPage, totalPages, onPageChange }) => {
           {page}
         </button>
       ))}
-      
+
       <button
         onClick={() => onPageChange(currentPage + 1)}
         disabled={currentPage === totalPages}
@@ -219,16 +219,40 @@ const TaskList = () => {
                     </td>
                     <td style={{ padding: "14px 20px" }}>
                       <div style={{ display: "flex", alignItems: "center", gap: "9px" }}>
-                        <div style={{
-                          width: "28px", height: "28px", borderRadius: "50%",
-                          background: `hsl(${(task.assignedTo?.fullName?.charCodeAt(0) || 0) * 47 % 360}, 55%, 35%)`,
-                          display: "flex", alignItems: "center", justifyContent: "center",
-                          fontSize: "11px", fontWeight: "700", color: "#fff", flexShrink: 0,
-                        }}>
-                          {task.assignedTo?.fullName?.[0]?.toUpperCase() || "?"}
+                        <div
+                          style={{
+                            width: "28px",
+                            height: "28px",
+                            borderRadius: "50%",
+                            background: `hsl(${(
+                              task.assignedTo?.fullName ||
+                              task.assignedToName ||
+                              ""
+                            ).charCodeAt(0) * 47 % 360}, 55%, 35%)`,
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            fontSize: "11px",
+                            fontWeight: "700",
+                            color: "#fff",
+                            flexShrink: 0,
+                          }}
+                        >
+                          {(
+                            task.assignedTo?.fullName ||
+                            task.assignedToName ||
+                            "?"
+                          )[0]?.toUpperCase()}
                         </div>
-                        <span style={{ fontSize: "13.5px", color: "#CBD5E1" }}>
-                          {task.assignedTo?.fullName}
+                        <span
+                          style={{
+                            fontSize: "13.5px",
+                            color: "#CBD5E1"
+                          }}
+                        >
+                          {task.assignedTo
+                            ? task.assignedTo.fullName
+                            : `Deleted Employee | ${task.assignedToName}`}
                         </span>
                       </div>
                     </td>
@@ -247,7 +271,7 @@ const TaskList = () => {
             </tbody>
           </table>
         </div>
-        
+
         <Pagination
           currentPage={currentPage}
           totalPages={totalPages}

@@ -1,5 +1,5 @@
 const User =
-require("../models/User");
+  require("../models/User");
 
 const Task =
   require("../models/Task");
@@ -8,11 +8,17 @@ exports.createTask =
   async (req, res) => {
     try {
 
+      const employee =
+        await User.findById(
+          req.body.assignedTo
+        );
+
       const task =
         await Task.create({
           ...req.body,
-          assignedBy:
-            req.user.id
+          assignedBy: req.user.id,
+          assignedToName:
+            employee.fullName
         });
 
       res.status(201).json({

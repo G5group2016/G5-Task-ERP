@@ -270,14 +270,27 @@ const ReportList = () => {
                       <div style={{ display: "flex", alignItems: "center", gap: "9px" }}>
                         <div style={{
                           width: "28px", height: "28px", borderRadius: "50%",
-                          background: `hsl(${(report?.employee?.fullName?.charCodeAt(0) || 0) * 47 % 360}, 55%, 35%)`,
+                          background: `hsl(${(
+                              report?.employee?.fullName ||
+                              report?.employeeName ||
+                              ""
+                            ).charCodeAt(0) * 47 % 360
+                            }, 55%, 35%)`,
                           display: "flex", alignItems: "center", justifyContent: "center",
                           fontSize: "11px", fontWeight: "700", color: "#fff", flexShrink: 0,
                         }}>
-                          {report?.employee?.fullName?.[0]?.toUpperCase() || "?"}
+                          {
+                            (
+                              report?.employee?.fullName ||
+                              report?.employeeName
+                            )?.[0]?.toUpperCase() || "?"
+                          }
                         </div>
                         <span style={{ fontSize: "14px", fontWeight: "500", color: "#E2E8F0" }}>
-                          {report?.employee?.fullName}
+                          {report?.employee
+                            ? report.employee.fullName
+                            : `Deleted Employee | ${report.employeeName}`
+                          }
                         </span>
                       </div>
                     </td>

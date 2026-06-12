@@ -24,6 +24,10 @@ const taskSchema = new mongoose.Schema(
       required: true
     },
 
+    assignedToName: {
+      type: String
+    },
+
     assignedBy: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User"
@@ -62,4 +66,4 @@ const taskSchema = new mongoose.Schema(
 );
 
 module.exports =
-mongoose.model("Task", taskSchema);
+  mongoose.model("Task", taskSchema);

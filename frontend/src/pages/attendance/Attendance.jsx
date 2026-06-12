@@ -307,10 +307,18 @@ const Attendance = () => {
                             flexShrink: 0,
                           }}
                         >
-                          {record?.employee?.fullName?.[0]?.toUpperCase() || "?"}
+                          {
+                            (
+                              record?.employee?.fullName ||
+                              record?.employeeName
+                            )?.[0]?.toUpperCase() || "?"
+                          }
                         </div>
                         <span style={{ fontSize: "14px", fontWeight: "500", color: "#E2E8F0" }}>
-                          {record?.employee?.fullName}
+                          {record?.employee
+                            ? record.employee.fullName
+                            : `Deleted Employee | ${record.employeeName}`
+                          }
                         </span>
                       </div>
                     </td>
