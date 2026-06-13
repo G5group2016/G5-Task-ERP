@@ -240,6 +240,17 @@ exports.employeeDashboard =
             req.user.id
         });
 
+        const pendingTasks =
+  await Task.countDocuments({
+    assignedTo: req.user.id,
+    status: {
+      $in: [
+        "PENDING",
+        "IN_PROGRESS"
+      ]
+    }
+  });
+
       const completedTasks =
         await Task.countDocuments({
           assignedTo:
@@ -263,6 +274,7 @@ exports.employeeDashboard =
       res.json({
         success: true,
         assignedTasks,
+        pendingTasks,
         completedTasks,
         reportsSubmitted,
         attendanceDays

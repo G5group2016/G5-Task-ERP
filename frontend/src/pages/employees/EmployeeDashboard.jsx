@@ -5,17 +5,25 @@ import { getEmployeeDashboard } from "../../services/dashboardService";
 import Navbar from "../../components/Navbar/Navbar";
 
 const statCards = [
-  { key: "assignedTasks",    label: "Assigned Tasks",    icon: "⚡", from: "#6366F1", to: "#4F46E5", glow: "rgba(99,102,241,0.3)" },
-  { key: "completedTasks",   label: "Completed Tasks",   icon: "✓",  from: "#10B981", to: "#059669", glow: "rgba(16,185,129,0.3)" },
+  { key: "assignedTasks", label: "Assigned Tasks", icon: "⚡", from: "#6366F1", to: "#4F46E5", glow: "rgba(99,102,241,0.3)" },
+  {
+    key: "pendingTasks",
+    label: "Pending Tasks",
+    icon: "⏳",
+    from: "#EF4444",
+    to: "#DC2626",
+    glow: "rgba(239,68,68,0.3)"
+  },
+  { key: "completedTasks", label: "Completed Tasks", icon: "✓", from: "#10B981", to: "#059669", glow: "rgba(16,185,129,0.3)" },
   { key: "reportsSubmitted", label: "Reports Submitted", icon: "📋", from: "#F59E0B", to: "#D97706", glow: "rgba(245,158,11,0.3)" },
-  { key: "attendanceDays",   label: "Attendance Days",   icon: "🕐", from: "#3B82F6", to: "#2563EB", glow: "rgba(59,130,246,0.3)" },
+  { key: "attendanceDays", label: "Attendance Days", icon: "🕐", from: "#3B82F6", to: "#2563EB", glow: "rgba(59,130,246,0.3)" },
 ];
 
 const quickActions = [
-  { to: "/my-tasks",      label: "My Tasks",      icon: "⚡", desc: "View assigned tasks",        from: "#6366F1", to2: "#4F46E5" },
-  { to: "/my-reports",    label: "My Reports",    icon: "📋", desc: "Submit work reports",        from: "#F59E0B", to2: "#D97706" },
-  { to: "/my-attendance", label: "My Attendance", icon: "🕐", desc: "Check attendance records",   from: "#10B981", to2: "#059669" },
-  { to: "/my-profile",    label: "My Profile",    icon: "👤", desc: "Manage profile settings",    from: "#8B5CF6", to2: "#7C3AED" },
+  { to: "/my-tasks", label: "My Tasks", icon: "⚡", desc: "View assigned tasks", from: "#6366F1", to2: "#4F46E5" },
+  { to: "/my-reports", label: "My Reports", icon: "📋", desc: "Submit work reports", from: "#F59E0B", to2: "#D97706" },
+  { to: "/my-attendance", label: "My Attendance", icon: "🕐", desc: "Check attendance records", from: "#10B981", to2: "#059669" },
+  { to: "/my-profile", label: "My Profile", icon: "👤", desc: "Manage profile settings", from: "#8B5CF6", to2: "#7C3AED" },
 ];
 
 const EmployeeDashboard = () => {
@@ -35,7 +43,7 @@ const EmployeeDashboard = () => {
 
   return (
     <div style={{ fontFamily: "'Inter', system-ui, -apple-system, sans-serif", color: "#E2E8F0" }}>
-       <Navbar />
+      <Navbar />
       {/* Header */}
       <div style={{ marginBottom: 32 }}>
         <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 6 }}>
