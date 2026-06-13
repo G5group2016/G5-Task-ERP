@@ -219,11 +219,14 @@ const ReportList = () => {
         </div>
       </div>
 
-      {user?.role !== "SUPER_ADMIN" && (
-        <ReportForm
-          onSuccess={loadReports}
-        />
-      )}
+      {(
+        user?.role === "EMPLOYEE" ||
+        user?.role === "TEAM_LEAD"
+      ) && (
+          <ReportForm
+            onSuccess={loadReports}
+          />
+        )}
 
       {/* Table */}
       <div
@@ -271,10 +274,10 @@ const ReportList = () => {
                         <div style={{
                           width: "28px", height: "28px", borderRadius: "50%",
                           background: `hsl(${(
-                              report?.employee?.fullName ||
-                              report?.employeeName ||
-                              ""
-                            ).charCodeAt(0) * 47 % 360
+                            report?.employee?.fullName ||
+                            report?.employeeName ||
+                            ""
+                          ).charCodeAt(0) * 47 % 360
                             }, 55%, 35%)`,
                           display: "flex", alignItems: "center", justifyContent: "center",
                           fontSize: "11px", fontWeight: "700", color: "#fff", flexShrink: 0,
