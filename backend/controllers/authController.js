@@ -5,6 +5,9 @@ const ProfileImageRequest =
     "../models/ProfileImageRequest"
   );
 
+const ProfileAudit =
+  require("../models/ProfileAudit");
+
 const Notification =
   require(
     "../models/Notification"
@@ -142,7 +145,6 @@ exports.updateProfile =
   async (req, res) => {
 
     try {
-
       const user =
         await User.findById(
           req.user.id
@@ -158,6 +160,60 @@ exports.updateProfile =
           });
 
       }
+      const auditLogs = [];
+
+      if (
+        req.body.fullName &&
+        req.body.fullName !== user.fullName
+      ) {
+        auditLogs.push({
+          user: user._id,
+          field: "fullName",
+          oldValue: user.fullName,
+          newValue: req.body.fullName,
+          changedBy: req.user.id
+        });
+      }
+
+      if (
+        req.body.phone &&
+        req.body.phone !== user.phone
+      ) {
+        auditLogs.push({
+          user: user._id,
+          field: "phone",
+          oldValue: user.phone,
+          newValue: req.body.phone,
+          changedBy: req.user.id
+        });
+      }
+
+      if (
+        req.body.designation &&
+        req.body.designation !== user.designation
+      ) {
+        auditLogs.push({
+          user: user._id,
+          field: "designation",
+          oldValue: user.designation,
+          newValue: req.body.designation,
+          changedBy: req.user.id
+        });
+      }
+
+      if (
+        req.body.department &&
+        req.body.department !== user.department
+      ) {
+        auditLogs.push({
+          user: user._id,
+          field: "department",
+          oldValue: user.department,
+          newValue: req.body.department,
+          changedBy: req.user.id
+        });
+      }
+
 
       user.fullName =
         req.body.fullName ||
@@ -174,6 +230,12 @@ exports.updateProfile =
       user.department =
         req.body.department ||
         user.department;
+
+      if (auditLogs.length > 0) {
+        await ProfileAudit.insertMany(
+          auditLogs
+        );
+      }
 
       await user.save();
 
@@ -306,6 +368,14 @@ exports.changePassword =
           12
         );
 
+      await ProfileAudit.create({
+        user: user._id,
+        field: "password",
+        oldValue: "********",
+        newValue: "********",
+        changedBy: req.user.id
+      });
+
       user.password =
         hashedPassword;
 
@@ -325,4 +395,38 @@ exports.changePassword =
       });
 
     }
+  };
+
+
+exports.getProfileAudit =
+  async (req, res) => {
+
+    try {
+
+      const logs =
+        await ProfileAudit.find({
+          user: req.params.id
+        })
+          .populate(
+            "changedBy",
+            "fullName"
+          )
+          .sort({
+            createdAt: -1
+          });
+
+      res.json({
+        success: true,
+        logs
+      });
+
+    } catch (error) {
+
+      res.status(500).json({
+        message:
+          error.message
+      });
+
+    }
+
   };

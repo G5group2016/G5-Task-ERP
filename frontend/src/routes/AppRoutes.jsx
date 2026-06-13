@@ -27,6 +27,8 @@ import MyTasks from "../pages/employees/MyTasks";
 import MyReports from "../pages/employees/MyReports";
 import MyAttendance from "../pages/employees/MyAttendance";
 import MyProfile from "../pages/employees/MyProfile";
+import EmployeeProfile
+  from "../pages/employees/EmployeeProfile";
 
 /* Company Admin */
 import CompanyAdminDashboard from "../pages/companyAdmin/CompanyAdminDashboard";
@@ -138,6 +140,13 @@ const AppRoutes = () => {
             path="/profile-image-requests"
             element={
               <ProfileImageRequests />
+            }
+          />
+
+          <Route
+            path="/employee-profile/:id"
+            element={
+              <EmployeeProfile />
             }
           />
         </Route>

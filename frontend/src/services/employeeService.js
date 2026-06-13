@@ -37,3 +37,55 @@ export const toggleEmployeeStatus =
 
     return response.data;
   };
+
+export const getEmployee = async (id) => {
+  const response = await api.get(
+    `/employees/${id}`
+  );
+
+  return response.data;
+};
+
+export const getEmployeeAuditLogs =
+  async (id) => {
+
+    const response =
+      await api.get(
+        `/auth/audit/${id}`
+      );
+
+    return response.data;
+  };
+
+  export const getEmployeeTasks =
+  async (id) => {
+
+    const response =
+      await api.get(
+        `/employees/${id}/tasks`
+      );
+
+    return response.data;
+  };
+
+  export const getEmployeeAttendance =
+  async (id) => {
+
+    const response =
+      await api.get(
+        `/employees/${id}/attendance`
+      );
+
+    return response.data;
+  };
+
+  export const getEmployeeReports =
+  async (id) => {
+
+    const response =
+      await api.get(
+        `/employees/${id}/reports`
+      );
+
+    return response.data;
+  };

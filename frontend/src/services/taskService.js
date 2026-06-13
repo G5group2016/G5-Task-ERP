@@ -11,15 +11,15 @@ export const createTask = async (data) => {
 };
 
 export const getMyTasks =
-async () => {
+  async () => {
 
-  const response =
-    await api.get(
-      "/tasks/my"
-    );
+    const response =
+      await api.get(
+        "/tasks/my"
+      );
 
-  return response.data;
-};
+    return response.data;
+  };
 
 
 export const updateTaskStatus =
@@ -33,3 +33,4 @@ export const updateTaskStatus =
 
     return response.data;
   };
+

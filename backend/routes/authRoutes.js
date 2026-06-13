@@ -7,10 +7,14 @@ const {
   registerSuperAdmin,
   login,  getProfile,
  updateProfile,
- uploadProfileImage, changePassword
+ uploadProfileImage, changePassword, getProfileAudit
 } = require(
   "../controllers/authController"
 );
+const role =
+  require(
+    "../middleware/roleMiddleware"
+  );
 
 const auth =
 require(
@@ -52,6 +56,16 @@ router.put(
   "/change-password",
   auth,
   changePassword
+);
+
+router.get(
+  "/audit/:id",
+  auth,
+  role(
+    "SUPER_ADMIN",
+    "COMPANY_ADMIN"
+  ),
+  getProfileAudit
 );
 
 module.exports = router;

@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
-import { getEmployees, disableEmployee,toggleEmployeeStatus } from "../../services/employeeService";
+import { getEmployees, disableEmployee, toggleEmployeeStatus } from "../../services/employeeService";
 import EmployeeForm from "./EmployeeForm";
 import toast from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
 
 const roleConfig = {
   SUPER_ADMIN: { color: "#6366F1", bg: "rgba(99,102,241,0.1)", border: "rgba(99,102,241,0.25)", label: "Super Admin" },
@@ -123,13 +124,14 @@ const Pagination = ({ currentPage, totalPages, onPageChange }) => {
 
 const EmployeeList = () => {
   const currentUser =
-  JSON.parse(
-    localStorage.getItem("user")
-  );
+    JSON.parse(
+      localStorage.getItem("user")
+    );
   const [employees, setEmployees] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(10);
   const [selectedImage, setSelectedImage] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => { loadEmployees(); }, []);
 
@@ -140,52 +142,65 @@ const EmployeeList = () => {
   };
 
   const StatusBadge = ({
-  isActive
-}) => (
-  <span
-    style={{
-      padding: "4px 10px",
-      borderRadius: "20px",
-      fontSize: "12px",
-      fontWeight: "600",
-      background: isActive
-        ? "rgba(16,185,129,.1)"
-        : "rgba(239,68,68,.1)",
-      color: isActive
-        ? "#10B981"
-        : "#EF4444"
-    }}
-  >
-    {isActive
-      ? "Active"
-      : "Inactive"}
-  </span>
-);
+    isActive
+  }) => (
+    <span
+      style={{
+        display: "inline-flex",
+        alignItems: "center",
+        gap: "6px",
+        padding: "3px 10px 3px 7px",
+        borderRadius: "20px",
+        fontSize: "12px",
+        fontWeight: "600",
+        letterSpacing: "0.03em",
+        background: isActive
+          ? "rgba(16,185,129,0.12)"
+          : "rgba(239,68,68,0.12)",
+        border: `1px solid ${isActive ? "rgba(16,185,129,0.25)" : "rgba(239,68,68,0.25)"}`,
+        color: isActive
+          ? "#10B981"
+          : "#F87171"
+      }}
+    >
+      <span style={{
+        width: 7,
+        height: 7,
+        borderRadius: "50%",
+        background: isActive ? "#10B981" : "#EF4444",
+        boxShadow: `0 0 6px ${isActive ? "#10B981" : "#EF4444"}`,
+        flexShrink: 0,
+      }} />
+      {isActive
+        ? "Active"
+        : "Inactive"}
+    </span>
+  );
 
-const handleToggleStatus =
-  async (id) => {
+  const handleToggleStatus =
+    async (id) => {
 
-    try {
+      try {
 
-      await toggleEmployeeStatus(
-        id
-      );
+        await toggleEmployeeStatus(
+          id
+        );
 
-      toast.success(
-        "Status Updated"
-      );
+        toast.success(
+          "Status Updated"
+        );
 
-      loadEmployees();
+        loadEmployees();
 
-    } catch (error) {
+      } catch (error) {
 
-      toast.error(
-        error.response?.data?.message
-      );
+        toast.error(
+          error.response?.data?.message
+        );
 
-    }
+      }
 
-  };
+    };
 
   const handleDisableEmployee =
     async (id) => {
@@ -335,6 +350,7 @@ const handleToggleStatus =
                               border: "2px solid #6366F1",
                               cursor: "pointer",
                               transition: "transform 0.2s",
+                              flexShrink: 0,
                             }}
                             onMouseEnter={(e) => { e.currentTarget.style.transform = "scale(1.05)"; }}
                             onMouseLeave={(e) => { e.currentTarget.style.transform = "scale(1)"; }}
@@ -343,8 +359,8 @@ const handleToggleStatus =
 
                           <div
                             style={{
-                              width: "36px",
-                              height: "36px",
+                              width: "40px",
+                              height: "40px",
                               borderRadius: "50%",
                               background:
                                 "linear-gradient(135deg,#6366F1,#4F46E5)",
@@ -352,7 +368,10 @@ const handleToggleStatus =
                               alignItems: "center",
                               justifyContent: "center",
                               color: "#fff",
-                              fontWeight: "700"
+                              fontWeight: "700",
+                              fontSize: "14px",
+                              flexShrink: 0,
+                              boxShadow: "0 0 0 2px rgba(99,102,241,0.18)",
                             }}
                           >
                             {employee.fullName?.[0]}
@@ -373,78 +392,126 @@ const handleToggleStatus =
                       <RoleBadge role={employee.role} />
                     </td>
                     <td
-  style={{
-    padding: "14px 20px"
-  }}
->
-  <StatusBadge
-    isActive={
-      employee.isActive
-    }
-  />
-</td>
+                      style={{
+                        padding: "14px 20px"
+                      }}
+                    >
+                      <StatusBadge
+                        isActive={
+                          employee.isActive
+                        }
+                      />
+                    </td>
                     <td style={{ padding: "14px 20px", fontSize: "13px", color: "#94A3B8" }}>
                       {employee.company?.name || <span style={{ color: "#374151" }}>—</span>}
                     </td>
-                   <td
-  style={{
-    padding: "14px 20px"
-  }}
->
+                    <td
+                      style={{
+                        padding: "14px 20px"
+                      }}
+                    >
+                      <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
+                        {currentUser?.role ===
+                          "SUPER_ADMIN" && (
+                            <>
+                              <button
+                                onClick={() =>
+                                  handleToggleStatus(
+                                    employee._id
+                                  )
+                                }
+                                style={{
+                                  display: "inline-flex",
+                                  alignItems: "center",
+                                  gap: "6px",
+                                  background: employee.isActive
+                                    ? "linear-gradient(135deg, #F59E0B 0%, #D97706 100%)"
+                                    : "linear-gradient(135deg, #10B981 0%, #059669 100%)",
+                                  color: "#fff",
+                                  border: "none",
+                                  padding: "7px 16px",
+                                  borderRadius: "8px",
+                                  cursor: "pointer",
+                                  fontWeight: "600",
+                                  fontSize: "12.5px",
+                                  letterSpacing: "0.01em",
+                                  boxShadow: employee.isActive
+                                    ? "0 0 16px rgba(245,158,11,0.25)"
+                                    : "0 0 16px rgba(16,185,129,0.25)",
+                                  transition: "opacity 0.15s",
+                                }}
+                                onMouseEnter={(e) => { e.currentTarget.style.opacity = "0.85"; }}
+                                onMouseLeave={(e) => { e.currentTarget.style.opacity = "1"; }}
+                              >
+                                {employee.isActive
+                                  ? "⏸ Deactivate"
+                                  : "▶ Activate"}
+                              </button>
 
-  {currentUser?.role ===
-    "SUPER_ADMIN" && (
-      <>
-        <button
-          onClick={() =>
-            handleToggleStatus(
-              employee._id
-            )
-          }
-          style={{
-            background:
-              employee.isActive
-                ? "#F59E0B"
-                : "#10B981",
-            color: "#fff",
-            border: "none",
-            padding:
-              "6px 12px",
-            borderRadius: "6px",
-            cursor: "pointer",
-            fontWeight: "600",
-            marginRight: "8px"
-          }}
-        >
-          {employee.isActive
-            ? "Deactivate"
-            : "Activate"}
-        </button>
+                              <button
+                                onClick={() =>
+                                  handleDisableEmployee(
+                                    employee._id
+                                  )
+                                }
+                                style={{
+                                  display: "inline-flex",
+                                  alignItems: "center",
+                                  gap: "6px",
+                                  background: "linear-gradient(135deg, #EF4444 0%, #DC2626 100%)",
+                                  color: "#fff",
+                                  border: "none",
+                                  padding: "7px 16px",
+                                  borderRadius: "8px",
+                                  cursor: "pointer",
+                                  fontWeight: "600",
+                                  fontSize: "12.5px",
+                                  letterSpacing: "0.01em",
+                                  boxShadow: "0 0 16px rgba(239,68,68,0.25)",
+                                  transition: "opacity 0.15s",
+                                }}
+                                onMouseEnter={(e) => { e.currentTarget.style.opacity = "0.85"; }}
+                                onMouseLeave={(e) => { e.currentTarget.style.opacity = "1"; }}
+                              >
+                                🗑 Delete
+                              </button>
+                            </>
+                          )}
 
-        <button
-          onClick={() =>
-            handleDisableEmployee(
-              employee._id
-            )
-          }
-          style={{
-            background:
-              "#DC2626",
-            color: "#fff",
-            border: "none",
-            padding:
-              "6px 12px",
-            borderRadius: "6px",
-            cursor: "pointer",
-            fontWeight: "600"
-          }}
-        >
-          Delete
-        </button>
-      </>
-    )}
-
-</td>
+                        <button
+                          onClick={() =>
+                            navigate(
+                              `/employee-profile/${employee._id}`
+                            )
+                          }
+                          style={{
+                            display: "inline-flex",
+                            alignItems: "center",
+                            gap: "6px",
+                            background: "rgba(99,102,241,0.1)",
+                            color: "#818CF8",
+                            border: "1px solid rgba(99,102,241,0.25)",
+                            padding: "7px 16px",
+                            borderRadius: "8px",
+                            cursor: "pointer",
+                            fontWeight: "600",
+                            fontSize: "12.5px",
+                            letterSpacing: "0.01em",
+                            transition: "all 0.15s",
+                          }}
+                          onMouseEnter={(e) => {
+                            e.currentTarget.style.background = "rgba(99,102,241,0.18)";
+                            e.currentTarget.style.color = "#A5B4FC";
+                          }}
+                          onMouseLeave={(e) => {
+                            e.currentTarget.style.background = "rgba(99,102,241,0.1)";
+                            e.currentTarget.style.color = "#818CF8";
+                          }}
+                        >
+                          👁 View
+                        </button>
+                      </div>
+                    </td>
                   </tr>
                 ))
               )}

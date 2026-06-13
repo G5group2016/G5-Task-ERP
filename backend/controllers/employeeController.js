@@ -4,6 +4,14 @@ const Company =
   require("../models/Company");
 const User = require("../models/User");
 const bcrypt = require("bcryptjs");
+const Task =
+require("../models/Task");
+
+const Attendance =
+require("../models/Attendance");
+
+const WorkReport =
+require("../models/WorkReport");
 
 exports.createEmployee = async (
   req,
@@ -283,3 +291,99 @@ exports.toggleEmployeeStatus =
     }
 
   };
+
+
+  exports.getEmployeeTasks =
+async (req, res) => {
+
+  try {
+
+    const tasks =
+      await Task.find({
+        assignedTo:
+          req.params.id
+      })
+      .sort({
+        createdAt: -1
+      });
+
+    res.json({
+      success: true,
+      tasks
+    });
+
+  } catch (error) {
+
+    res.status(500).json({
+      message:
+        error.message
+    });
+
+  }
+
+};
+
+exports.getEmployeeAttendance =
+async (req, res) => {
+
+  try {
+
+    const attendance =
+      await Attendance.find({
+        employee:
+          req.params.id
+      })
+      .sort({
+        date: -1
+      });
+
+    res.json({
+      success: true,
+      attendance
+    });
+
+  } catch (error) {
+
+    res.status(500).json({
+      message:
+        error.message
+    });
+
+  }
+
+};
+
+
+exports.getEmployeeReports =
+async (req, res) => {
+
+  try {
+
+    const reports =
+      await WorkReport.find({
+        employee:
+          req.params.id
+      })
+      .populate(
+        "task",
+        "title"
+      )
+      .sort({
+        createdAt: -1
+      });
+
+    res.json({
+      success: true,
+      reports
+    });
+
+  } catch (error) {
+
+    res.status(500).json({
+      message:
+        error.message
+    });
+
+  }
+
+};

@@ -15,7 +15,10 @@ const {
   getEmployees,
   getEmployee,
   disableEmployee,
-  toggleEmployeeStatus
+  toggleEmployeeStatus,
+  getEmployeeTasks,
+  getEmployeeAttendance,
+  getEmployeeReports
 } = require(
   "../controllers/employeeController"
 );
@@ -72,6 +75,36 @@ router.put(
   auth,
   role("SUPER_ADMIN"),
   toggleEmployeeStatus
+);
+
+router.get(
+  "/:id/tasks",
+  auth,
+  role(
+    "SUPER_ADMIN",
+    "COMPANY_ADMIN"
+  ),
+  getEmployeeTasks
+);
+
+router.get(
+  "/:id/attendance",
+  auth,
+  role(
+    "SUPER_ADMIN",
+    "COMPANY_ADMIN"
+  ),
+  getEmployeeAttendance
+);
+
+router.get(
+  "/:id/reports",
+  auth,
+  role(
+    "SUPER_ADMIN",
+    "COMPANY_ADMIN"
+  ),
+  getEmployeeReports
 );
 
 
