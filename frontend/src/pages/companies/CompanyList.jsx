@@ -1,11 +1,53 @@
 import { useEffect, useState } from "react";
-import { getCompanies, deleteCompany } from "../../services/companyService";
+import { getCompanies, deleteCompany, updateCompany } from "../../services/companyService";
 import CompanyForm from "./CompanyForm";
 import toast from "react-hot-toast";
+
+const inputStyle = {
+  padding: "10px 14px",
+  borderRadius: "8px",
+  background: "#0D1421",
+  border: "1px solid #1E293B",
+  color: "#F1F5F9",
+  fontSize: "14px",
+  outline: "none",
+  width: "100%",
+  boxSizing: "border-box",
+  transition: "border-color 0.18s, box-shadow 0.18s",
+  fontFamily: "'Inter', system-ui, sans-serif",
+};
+
+const focusHandlers = {
+  onFocus: (e) => {
+    e.target.style.borderColor = "#6366F1";
+    e.target.style.boxShadow = "0 0 0 3px rgba(99,102,241,0.12)";
+  },
+  onBlur: (e) => {
+    e.target.style.borderColor = "#1E293B";
+    e.target.style.boxShadow = "none";
+  },
+};
+
+const fieldLabelStyle = {
+  display: "block",
+  fontSize: "11px",
+  fontWeight: "600",
+  color: "#475569",
+  letterSpacing: "0.06em",
+  textTransform: "uppercase",
+  marginBottom: "6px",
+};
 
 const CompanyList = () => {
   const [companies, setCompanies] = useState([]);
   const [selectedLogo, setSelectedLogo] = useState(null);
+  const [editingCompany,
+    setEditingCompany] =
+    useState(null);
+
+  const [editLogo,
+    setEditLogo] =
+    useState(null);
 
   useEffect(() => { fetchCompanies(); }, []);
 
@@ -54,6 +96,82 @@ const CompanyList = () => {
   const closeModal = () => {
     setSelectedLogo(null);
   };
+
+  const handleEditCompany =
+    (company) => {
+
+      setEditingCompany(
+        company
+      );
+
+    };
+
+  const handleUpdateCompany =
+    async () => {
+
+      try {
+
+        const formData =
+          new FormData();
+
+        formData.append(
+          "name",
+          editingCompany.name
+        );
+
+        formData.append(
+          "code",
+          editingCompany.code
+        );
+
+        formData.append(
+          "email",
+          editingCompany.email
+        );
+
+        formData.append(
+          "phone",
+          editingCompany.phone
+        );
+
+        formData.append(
+          "address",
+          editingCompany.address
+        );
+
+        if (editLogo) {
+
+          formData.append(
+            "logo",
+            editLogo
+          );
+
+        }
+
+        await updateCompany(
+          editingCompany._id,
+          formData
+        );
+
+        toast.success(
+          "Company Updated"
+        );
+
+        setEditingCompany(
+          null
+        );
+
+        fetchCompanies();
+
+      } catch (error) {
+
+        toast.error(
+          error.response?.data?.message
+        );
+
+      }
+
+    };
 
   return (
     <div style={{ fontFamily: "'Inter', system-ui, sans-serif", color: "#F1F5F9" }}>
@@ -210,24 +328,60 @@ const CompanyList = () => {
                     </td>
 
                     <td style={{ padding: "14px 20px" }}>
-                      <button
-                        onClick={() =>
-                          handleDeleteCompany(
-                            company._id
-                          )
-                        }
-                        style={{
-                          background: "#DC2626",
-                          color: "#fff",
-                          border: "none",
-                          padding: "6px 12px",
-                          borderRadius: "6px",
-                          cursor: "pointer",
-                          fontWeight: "600",
-                        }}
-                      >
-                        Delete
-                      </button>
+                      <div style={{ display: "flex", gap: "8px" }}>
+                        <button
+                          onClick={() =>
+                            handleEditCompany(company)
+                          }
+                          style={{
+                            display: "inline-flex",
+                            alignItems: "center",
+                            gap: "6px",
+                            background: "linear-gradient(135deg, #6366F1 0%, #4F46E5 100%)",
+                            color: "#fff",
+                            border: "none",
+                            padding: "7px 16px",
+                            borderRadius: "8px",
+                            cursor: "pointer",
+                            fontWeight: "600",
+                            fontSize: "12.5px",
+                            letterSpacing: "0.01em",
+                            boxShadow: "0 0 16px rgba(99,102,241,0.25)",
+                            transition: "opacity 0.15s",
+                          }}
+                          onMouseEnter={(e) => { e.currentTarget.style.opacity = "0.85"; }}
+                          onMouseLeave={(e) => { e.currentTarget.style.opacity = "1"; }}
+                        >
+                          ✎ Edit
+                        </button>
+                        <button
+                          onClick={() =>
+                            handleDeleteCompany(
+                              company._id
+                            )
+                          }
+                          style={{
+                            display: "inline-flex",
+                            alignItems: "center",
+                            gap: "6px",
+                            background: "linear-gradient(135deg, #EF4444 0%, #DC2626 100%)",
+                            color: "#fff",
+                            border: "none",
+                            padding: "7px 16px",
+                            borderRadius: "8px",
+                            cursor: "pointer",
+                            fontWeight: "600",
+                            fontSize: "12.5px",
+                            letterSpacing: "0.01em",
+                            boxShadow: "0 0 16px rgba(239,68,68,0.25)",
+                            transition: "opacity 0.15s",
+                          }}
+                          onMouseEnter={(e) => { e.currentTarget.style.opacity = "0.85"; }}
+                          onMouseLeave={(e) => { e.currentTarget.style.opacity = "1"; }}
+                        >
+                          🗑 Delete
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 ))
@@ -301,6 +455,304 @@ const CompanyList = () => {
           </div>
         </div>
       )}
+
+
+      {
+        editingCompany && (
+
+          <div
+            style={{
+              position: "fixed",
+              inset: 0,
+              background:
+                "rgba(8,13,26,0.85)",
+              backdropFilter: "blur(4px)",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              zIndex: 9999,
+              padding: "24px",
+              fontFamily: "'Inter', system-ui, sans-serif",
+            }}
+          >
+
+            <div
+              style={{
+                background:
+                  "#111827",
+                borderRadius: "12px",
+                border: "1px solid #1E293B",
+                width: "500px",
+                maxWidth: "100%",
+                maxHeight: "90vh",
+                overflowY: "auto",
+                boxShadow: "0 25px 50px -12px rgba(0,0,0,0.5)",
+              }}
+            >
+
+              {/* Modal header */}
+              <div
+                style={{
+                  padding: "16px 24px",
+                  borderBottom: "1px solid #1E293B",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "10px",
+                  background: "#0D1421",
+                }}
+              >
+                <div
+                  style={{
+                    width: "28px",
+                    height: "28px",
+                    borderRadius: "7px",
+                    background: "rgba(99,102,241,0.15)",
+                    border: "1px solid rgba(99,102,241,0.25)",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    fontSize: "14px",
+                  }}
+                >
+                  🏢
+                </div>
+                <h3 style={{ margin: 0, fontSize: "15px", fontWeight: "600", color: "#E2E8F0", letterSpacing: "-0.01em" }}>
+                  Edit Company
+                </h3>
+              </div>
+
+              {/* Modal body */}
+              <div style={{ padding: "20px 24px" }}>
+                <div
+                  style={{
+                    display: "grid",
+                    gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))",
+                    gap: "12px",
+                    marginBottom: "12px",
+                  }}
+                >
+                  <div>
+                    <label style={fieldLabelStyle}>Company Name</label>
+                    <input
+                      value={editingCompany.name}
+                      onChange={(e) =>
+                        setEditingCompany({
+                          ...editingCompany,
+                          name: e.target.value
+                        })
+                      }
+                      style={inputStyle}
+                      {...focusHandlers}
+                    />
+                  </div>
+
+                  <div>
+                    <label style={fieldLabelStyle}>Company Code</label>
+                    <input
+                      value={editingCompany.code}
+                      onChange={(e) =>
+                        setEditingCompany({
+                          ...editingCompany,
+                          code: e.target.value
+                        })
+                      }
+                      style={inputStyle}
+                      {...focusHandlers}
+                    />
+                  </div>
+
+                  <div>
+                    <label style={fieldLabelStyle}>Email Address</label>
+                    <input
+                      value={editingCompany.email}
+                      onChange={(e) =>
+                        setEditingCompany({
+                          ...editingCompany,
+                          email: e.target.value
+                        })
+                      }
+                      style={inputStyle}
+                      {...focusHandlers}
+                    />
+                  </div>
+
+                  <div>
+                    <label style={fieldLabelStyle}>Phone Number</label>
+                    <input
+                      value={editingCompany.phone}
+                      onChange={(e) =>
+                        setEditingCompany({
+                          ...editingCompany,
+                          phone: e.target.value
+                        })
+                      }
+                      style={inputStyle}
+                      {...focusHandlers}
+                    />
+                  </div>
+                </div>
+
+                <div style={{ marginBottom: "12px" }}>
+                  <label style={fieldLabelStyle}>Address</label>
+                  <textarea
+                    value={editingCompany.address}
+                    onChange={(e) =>
+                      setEditingCompany({
+                        ...editingCompany,
+                        address: e.target.value
+                      })
+                    }
+                    rows={3}
+                    style={{
+                      ...inputStyle,
+                      resize: "vertical",
+                      minHeight: "80px",
+                    }}
+                    {...focusHandlers}
+                  />
+                </div>
+
+                <div style={{ marginBottom: "20px" }}>
+                  <label style={fieldLabelStyle}>Company Logo</label>
+
+                  <label
+                    htmlFor="edit-company-logo-upload"
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "12px",
+                      padding: "10px 14px",
+                      borderRadius: "8px",
+                      background: "#0D1421",
+                      border: "1px solid #1E293B",
+                      cursor: "pointer",
+                      position: "relative",
+                      transition: "border-color 0.18s, box-shadow 0.18s",
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.borderColor = "#6366F1";
+                      e.currentTarget.style.boxShadow = "0 0 0 3px rgba(99,102,241,0.12)";
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.borderColor = "#1E293B";
+                      e.currentTarget.style.boxShadow = "none";
+                    }}
+                  >
+                    <span
+                      style={{
+                        display: "inline-flex",
+                        alignItems: "center",
+                        gap: "6px",
+                        padding: "6px 14px",
+                        borderRadius: "6px",
+                        background: "rgba(99,102,241,0.15)",
+                        border: "1px solid rgba(99,102,241,0.25)",
+                        color: "#A5B4FC",
+                        fontSize: "12.5px",
+                        fontWeight: "600",
+                        letterSpacing: "0.02em",
+                        flexShrink: 0,
+                      }}
+                    >
+                      📁 Choose File
+                    </span>
+                    <span
+                      style={{
+                        fontSize: "13.5px",
+                        color: editLogo ? "#E2E8F0" : "#475569",
+                        fontStyle: editLogo ? "normal" : "italic",
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
+                        whiteSpace: "nowrap",
+                      }}
+                    >
+                      {editLogo ? editLogo.name : "No file selected"}
+                    </span>
+                    <input
+                      id="edit-company-logo-upload"
+                      type="file"
+                      onChange={(e) =>
+                        setEditLogo(
+                          e.target.files[0]
+                        )
+                      }
+                      style={{
+                        position: "absolute",
+                        width: "1px",
+                        height: "1px",
+                        opacity: 0,
+                        pointerEvents: "none",
+                      }}
+                    />
+                  </label>
+                </div>
+
+                {/* Actions */}
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "flex-end",
+                    gap: "10px",
+                  }}
+                >
+                  <button
+                    onClick={() =>
+                      setEditingCompany(
+                        null
+                      )
+                    }
+                    style={{
+                      padding: "10px 22px",
+                      borderRadius: "8px",
+                      background: "transparent",
+                      border: "1px solid #1E293B",
+                      color: "#94A3B8",
+                      fontSize: "14px",
+                      fontWeight: "600",
+                      cursor: "pointer",
+                      letterSpacing: "0.01em",
+                      transition: "all 0.18s ease",
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.borderColor = "#334155";
+                      e.currentTarget.style.color = "#E2E8F0";
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.borderColor = "#1E293B";
+                      e.currentTarget.style.color = "#94A3B8";
+                    }}
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    onClick={
+                      handleUpdateCompany
+                    }
+                    style={{
+                      padding: "10px 24px",
+                      borderRadius: "8px",
+                      background: "linear-gradient(135deg, #6366F1 0%, #4F46E5 100%)",
+                      border: "none",
+                      color: "#fff",
+                      fontSize: "14px",
+                      fontWeight: "600",
+                      cursor: "pointer",
+                      boxShadow: "0 4px 14px rgba(99,102,241,0.35)",
+                      transition: "all 0.18s ease",
+                      letterSpacing: "0.01em",
+                    }}
+                    onMouseEnter={(e) => { e.currentTarget.style.boxShadow = "0 6px 20px rgba(99,102,241,0.5)"; e.currentTarget.style.transform = "translateY(-1px)"; }}
+                    onMouseLeave={(e) => { e.currentTarget.style.boxShadow = "0 4px 14px rgba(99,102,241,0.35)"; e.currentTarget.style.transform = "none"; }}
+                  >
+                    Save Changes
+                  </button>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+        )}
     </div>
   );
 };

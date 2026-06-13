@@ -47,7 +47,11 @@ router.get(
 router.put(
   "/:id",
   auth,
-  role("SUPER_ADMIN"),
+  role(
+    "SUPER_ADMIN",
+    "COMPANY_ADMIN"
+  ),
+  upload.single("logo"),
   updateCompany
 );
 

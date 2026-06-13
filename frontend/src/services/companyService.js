@@ -21,3 +21,15 @@ export const deleteCompany = async (id) => {
 
   return response.data;
 };
+
+export const updateCompany =
+  async (id, data) => {
+
+    const response =
+      await api.put(
+        `/companies/${id}`,
+        data
+      );
+
+    return response.data;
+  };

@@ -115,27 +115,63 @@ exports.getCompany = async (
 };
 
 
-exports.updateCompany = async (
-  req,
-  res
-) => {
-  try {
-    const company =
-      await Company.findByIdAndUpdate(
-        req.params.id,
-        req.body,
-        {
-          new: true
-        }
-      );
+exports.updateCompany =
+  async (req, res) => {
+    try {
 
-    res.json(company);
-  } catch (error) {
-    res.status(500).json({
-      message: error.message
-    });
-  }
-};
+      const company =
+        await Company.findById(
+          req.params.id
+        );
+
+      if (!company) {
+        return res.status(404).json({
+          message:
+            "Company not found"
+        });
+      }
+
+      company.name =
+        req.body.name ||
+        company.name;
+
+      company.code =
+        req.body.code ||
+        company.code;
+
+      company.email =
+        req.body.email ||
+        company.email;
+
+      company.phone =
+        req.body.phone ||
+        company.phone;
+
+      company.address =
+        req.body.address ||
+        company.address;
+
+      if (req.file) {
+        company.logo =
+          req.file.path;
+      }
+
+      await company.save();
+
+      res.json({
+        success: true,
+        company
+      });
+
+    } catch (error) {
+
+      res.status(500).json({
+        message:
+          error.message
+      });
+
+    }
+  };
 
 
 exports.deleteCompany = async (
