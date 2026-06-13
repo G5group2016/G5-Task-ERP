@@ -5,15 +5,15 @@ import toast from "react-hot-toast";
 
 const statCards = [
   { key: "totalEmployees",   label: "Employees",       icon: "👥", from: "#6366F1", to: "#4F46E5", glow: "rgba(99,102,241,0.3)" },
-  // { key: "activeTasks",      label: "Active Tasks",    icon: "⚡", from: "#F59E0B", to: "#D97706", glow: "rgba(245,158,11,0.3)" },
-    {
-    key: "pendingTasks",
-    label: "Pending Tasks",
-    icon: "⏳",
-    from: "#EF4444",
-    to: "#DC2626",
-    glow: "rgba(239,68,68,0.3)"
-  },
+  { key: "pendingTasks",      label: "Pending Tasks",    icon: "⏳", from: "#EF4444", to: "#DC2626", glow: "rgba(239,68,68,0.3)" },
+  //   {
+  //   key: "pendingTasks",
+  //   label: "Pending Tasks",
+  //   icon: "⏳",
+  //   from: "#EF4444",
+  //   to: "#DC2626",
+  //   glow: "rgba(239,68,68,0.3)"
+  // },
   { key: "completedTasks",   label: "Completed",       icon: "✓",  from: "#10B981", to: "#059669", glow: "rgba(16,185,129,0.3)" },
   { key: "reportsSubmitted", label: "Reports",         icon: "📋", from: "#8B5CF6", to: "#7C3AED", glow: "rgba(139,92,246,0.3)" },
   { key: "attendanceToday",  label: "Attendance Today",icon: "🕐", from: "#3B82F6", to: "#2563EB", glow: "rgba(59,130,246,0.3)" },
