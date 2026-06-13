@@ -6,6 +6,12 @@ const priorityConfig = {
   HIGH: { bg: "rgba(239,68,68,0.12)", border: "rgba(239,68,68,0.25)", text: "#F87171", label: "High" },
   MEDIUM: { bg: "rgba(245,158,11,0.12)", border: "rgba(245,158,11,0.25)", text: "#F59E0B", label: "Medium" },
   LOW: { bg: "rgba(16,185,129,0.12)", border: "rgba(16,185,129,0.25)", text: "#10B981", label: "Low" },
+  URGENT: {
+    bg: "rgba(239,68,68,0.12)",
+    border: "rgba(239,68,68,0.25)",
+    text: "#EF4444",
+    label: "Urgent"
+  }
 };
 
 const statusConfig = {

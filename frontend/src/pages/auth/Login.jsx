@@ -117,7 +117,7 @@ const Login = () => {
         <button
           type="submit"
           disabled={loading}
-          className="w-full bg-yellow-500 hover:bg-yellow-600 text-black font-bold py-3 rounded transition"
+          className="w-full bg-yellow-500 hover:bg-yellow-600 text-black font-bold py-3 rounded transition cursor-pointer"
         >
           {loading ? "Logging In..." : "Login"}
         </button>

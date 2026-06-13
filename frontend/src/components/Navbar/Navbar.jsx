@@ -124,7 +124,7 @@ const Navbar = () => {
 
           <div className="relative">
 
-            <button
+            <button className="cursor-pointer"
               onClick={
                 handleNotificationClick
               }
