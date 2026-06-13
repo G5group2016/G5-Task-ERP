@@ -240,16 +240,16 @@ exports.employeeDashboard =
             req.user.id
         });
 
-        const pendingTasks =
-  await Task.countDocuments({
-    assignedTo: req.user.id,
-    status: {
-      $in: [
-        "PENDING",
-        "IN_PROGRESS"
-      ]
-    }
-  });
+      const pendingTasks =
+        await Task.countDocuments({
+          assignedTo: req.user.id,
+          status: {
+            $in: [
+              "PENDING",
+              "IN_PROGRESS"
+            ]
+          }
+        });
 
       const completedTasks =
         await Task.countDocuments({
@@ -324,6 +324,12 @@ exports.companyAdminDashboard =
           },
         });
 
+      const pendingTasks =
+        await Task.countDocuments({
+          company: companyId,
+          status: "PENDING",
+        });
+
       const completedTasks =
         await Task.countDocuments({
           company:
@@ -359,6 +365,7 @@ exports.companyAdminDashboard =
         success: true,
         totalEmployees,
         activeTasks,
+        pendingTasks,
         completedTasks,
         reportsSubmitted,
         attendanceToday,
