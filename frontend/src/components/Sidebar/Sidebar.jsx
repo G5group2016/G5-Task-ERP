@@ -189,6 +189,12 @@ const Sidebar = () => {
             <NavLink to="/reports">Reports</NavLink>
             <NavLink to="/attendance">Attendance</NavLink>
             <NavLink to="/profile-image-requests">Profile Image Requests</NavLink>
+            <SectionLabel>
+              Personal
+            </SectionLabel>
+            <NavLink to="/my-profile">
+              My Profile
+            </NavLink>
           </>
         )}
 
@@ -236,6 +242,14 @@ const Sidebar = () => {
 
             <NavLink to="/attendance">
               Attendance
+            </NavLink>
+
+            <SectionLabel>
+              Personal
+            </SectionLabel>
+
+            <NavLink to="/my-profile">
+              My Profile
             </NavLink>
 
             {/* <NavLink to="/profile-image-requests">

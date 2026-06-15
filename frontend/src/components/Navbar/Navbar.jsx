@@ -6,9 +6,12 @@ import {
 
 const Navbar = () => {
 
-  const user = JSON.parse(
-    localStorage.getItem("user")
-  );
+  const [user, setUser] =
+    useState(
+      JSON.parse(
+        localStorage.getItem("user")
+      )
+    );
 
   const [
     notifications,
@@ -27,6 +30,32 @@ const Navbar = () => {
 
   useEffect(() => {
     loadNotifications();
+  }, []);
+
+  useEffect(() => {
+
+    const refreshUser = () => {
+
+      const latestUser =
+        JSON.parse(
+          localStorage.getItem("user")
+        );
+
+      setUser(latestUser);
+
+    };
+
+    window.addEventListener(
+      "storage",
+      refreshUser
+    );
+
+    return () =>
+      window.removeEventListener(
+        "storage",
+        refreshUser
+      );
+
   }, []);
 
   const loadNotifications =
@@ -240,7 +269,25 @@ const Navbar = () => {
 
         {/* User */}
 
-        <div>
+        {/* User */}
+
+        <div
+          className="flex items-center gap-3"
+        >
+          {user?.profileImage ? (
+            <img
+              src={user.profileImage}
+              alt={user.fullName}
+              className="w-10 h-10 rounded-full object-cover border-2 border-indigo-500"
+            />
+          ) : (
+            <div
+              className="w-10 h-10 rounded-full bg-indigo-600 flex items-center justify-center text-white font-bold"
+            >
+              {user?.fullName?.charAt(0)}
+            </div>
+          )}
+
           <p>
             {user?.fullName}
           </p>

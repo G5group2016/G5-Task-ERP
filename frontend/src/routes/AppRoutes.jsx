@@ -69,7 +69,7 @@ const AppRoutes = () => {
             <ProtectedRoute>
               <RoleProtectedRoute
                 allowedRoles={[
-                  "SUPER_ADMIN","OFFICE_MANAGER"
+                  "SUPER_ADMIN", "OFFICE_MANAGER"
                 ]}
               >
                 <AdminLayout />
@@ -299,6 +299,8 @@ const AppRoutes = () => {
                   "EMPLOYEE",
                   "TEAM_LEAD",
                   "COMPANY_ADMIN",
+                  "OFFICE_MANAGER",
+                  "SUPER_ADMIN"
                 ]}
               >
                 <MyProfile />

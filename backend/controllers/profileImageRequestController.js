@@ -19,6 +19,25 @@ exports.uploadRequest =
                     req.user.id
                 );
 
+            if (
+                user.role === "SUPER_ADMIN" ||
+                user.role === "OFFICE_MANAGER"
+            ) {
+
+                user.profileImage =
+                    req.file.path;
+
+                await user.save();
+
+                return res.json({
+                    success: true,
+                    message:
+                        "Profile image updated successfully",
+                    profileImage:
+                        user.profileImage
+                });
+            }
+
             const existingRequest =
                 await ProfileImageRequest.findOne({
                     employee: req.user.id,

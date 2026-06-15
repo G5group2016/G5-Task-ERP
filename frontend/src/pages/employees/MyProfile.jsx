@@ -47,12 +47,36 @@ const MyProfile = () => {
 
   const loadProfile = async () => {
     try {
-      const data = await getProfile();
+
+      const data =
+        await getProfile();
+
       setUser(data);
+
+      const currentUser =
+        JSON.parse(
+          localStorage.getItem("user")
+        );
+
+      localStorage.setItem(
+        "user",
+        JSON.stringify({
+          ...currentUser,
+          profileImage:
+            data.profileImage,
+        })
+      );
+
     } catch (error) {
-      toast.error("Failed to load profile");
+
+      toast.error(
+        "Failed to load profile"
+      );
+
     } finally {
+
       setLoading(false);
+
     }
   };
 
@@ -100,15 +124,52 @@ const MyProfile = () => {
 
       try {
 
-        await uploadProfileImageRequest(
-          image
-        );
+        const response =
+          await uploadProfileImageRequest(
+            image
+          );
 
-        toast.success(
-          "Profile image request submitted"
-        );
+        if (
+          user.role ===
+          "SUPER_ADMIN" ||
+          user.role ===
+          "OFFICE_MANAGER"
+        ) {
 
-        loadRequestStatus();
+          setUser(prev => ({
+            ...prev,
+            profileImage:
+              response.profileImage
+          }));
+
+          const updatedUser = {
+            ...JSON.parse(
+              localStorage.getItem("user")
+            ),
+            profileImage:
+              response.profileImage
+          };
+
+          localStorage.setItem(
+            "user",
+            JSON.stringify(updatedUser)
+          );
+
+          toast.success(
+            "Profile image updated"
+          );
+
+          window.location.reload();
+
+        } else {
+
+          toast.success(
+            "Profile image request submitted"
+          );
+
+          loadRequestStatus();
+
+        }
 
       } catch (error) {
 
@@ -159,34 +220,36 @@ const MyProfile = () => {
 
             {/* Avatar column */}
             <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 16, minWidth: 160 }}>
-              {requestStatus && (
+              {user?.role !== "SUPER_ADMIN" &&
+                user?.role !== "OFFICE_MANAGER" &&
+                requestStatus && (
 
-                <div
-                  style={{
-                    padding: "8px 12px",
-                    borderRadius: "8px",
-                    background:
-                      requestStatus.status === "APPROVED"
-                        ? "rgba(16,185,129,0.15)"
-                        : requestStatus.status === "REJECTED"
-                          ? "rgba(239,68,68,0.15)"
-                          : "rgba(245,158,11,0.15)",
-                    color:
-                      requestStatus.status === "APPROVED"
-                        ? "#10B981"
-                        : requestStatus.status === "REJECTED"
-                          ? "#EF4444"
-                          : "#F59E0B",
-                    fontSize: "13px",
-                    fontWeight: "600",
-                  }}
-                >
-                  Image Request:
-                  {" "}
-                  {requestStatus.status}
-                </div>
+                  <div
+                    style={{
+                      padding: "8px 12px",
+                      borderRadius: "8px",
+                      background:
+                        requestStatus.status === "APPROVED"
+                          ? "rgba(16,185,129,0.15)"
+                          : requestStatus.status === "REJECTED"
+                            ? "rgba(239,68,68,0.15)"
+                            : "rgba(245,158,11,0.15)",
+                      color:
+                        requestStatus.status === "APPROVED"
+                          ? "#10B981"
+                          : requestStatus.status === "REJECTED"
+                            ? "#EF4444"
+                            : "#F59E0B",
+                      fontSize: "13px",
+                      fontWeight: "600",
+                    }}
+                  >
+                    Image Request:
+                    {" "}
+                    {requestStatus.status}
+                  </div>
 
-              )}
+                )}
               {user?.profileImage ? (
                 <img
                   src={user.profileImage}
@@ -209,8 +272,11 @@ const MyProfile = () => {
                 <button
                   onClick={handleImageUpload}
                   disabled={
-                    requestStatus?.status ===
-                    "PENDING"
+                    (
+                      user?.role !== "SUPER_ADMIN" &&
+                      user?.role !== "OFFICE_MANAGER"
+                    ) &&
+                    requestStatus?.status === "PENDING"
                   }
                   style={{
                     padding: "9px 16px",
@@ -229,9 +295,17 @@ const MyProfile = () => {
                         : "pointer",
                   }}
                 >
-                  {requestStatus?.status === "PENDING"
-                    ? "Request Pending"
-                    : "Upload Image"}
+                  {
+                    user?.role ===
+                      "SUPER_ADMIN" ||
+                      user?.role ===
+                      "OFFICE_MANAGER"
+                      ? "Update Image"
+                      : requestStatus?.status ===
+                        "PENDING"
+                        ? "Request Pending"
+                        : "Upload Image"
+                  }
                 </button>
               </div>
             </div>
