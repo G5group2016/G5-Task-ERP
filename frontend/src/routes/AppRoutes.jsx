@@ -20,6 +20,7 @@ import PendingTasks from "../pages/tasks/PendingTasks";
 import CompletedTasks from "../pages/tasks/CompletedTasks";
 import ProfileImageRequests
   from "../pages/profileRequests/ProfileImageRequests";
+import ChatPage from "../pages/chat/ChatPage";
 
 /* Employee Pages */
 import EmployeeDashboard from "../pages/employees/EmployeeDashboard";
@@ -40,6 +41,7 @@ import TeamLeadDashboard from "../pages/teamLead/TeamLeadDashboard";
 /* Layouts */
 import AdminLayout from "../layouts/AdminLayout";
 import CompanyAdminLayout from "../layouts/CompanyAdminLayout";
+import EmployeeLayout from "../layouts/EmployeeLayout";
 
 /* Route Protection */
 import ProtectedRoute from "./ProtectedRoute";
@@ -193,121 +195,54 @@ const AppRoutes = () => {
         {/* TEAM LEAD */}
 
         <Route
-          path="/team-dashboard"
-          element={
-            <ProtectedRoute>
-              <RoleProtectedRoute
-                allowedRoles={[
-                  "TEAM_LEAD",
-                ]}
-              >
-                <TeamLeadDashboard />
-              </RoleProtectedRoute>
-            </ProtectedRoute>
-          }
-        />
-
-        {/* <Route
-          path="/team-members"
-          element={
-            <ProtectedRoute>
-              <RoleProtectedRoute
-                allowedRoles={[
-                  "TEAM_LEAD",
-                ]}
-              >
-                <TeamMembers />
-              </RoleProtectedRoute>
-            </ProtectedRoute>
-          }
-        /> */}
-
-        {/* EMPLOYEE */}
-
-        <Route
-          path="/employee-dashboard"
           element={
             <ProtectedRoute>
               <RoleProtectedRoute
                 allowedRoles={[
                   "EMPLOYEE",
+                  "TEAM_LEAD", "COMPANY_ADMIN", "SUPER_ADMIN","OFFICE_MANAGER"
                 ]}
               >
-                <EmployeeDashboard />
+                <EmployeeLayout />
               </RoleProtectedRoute>
             </ProtectedRoute>
           }
-        />
+        >
+          <Route
+            path="/employee-dashboard"
+            element={<EmployeeDashboard />}
+          />
 
-        <Route
-          path="/my-tasks"
-          element={
-            <ProtectedRoute>
-              <RoleProtectedRoute
-                allowedRoles={[
-                  "EMPLOYEE",
-                  "TEAM_LEAD",
-                  "COMPANY_ADMIN",
-                ]}
-              >
-                <MyTasks />
-              </RoleProtectedRoute>
-            </ProtectedRoute>
-          }
-        />
+          <Route
+            path="/team-dashboard"
+            element={<TeamLeadDashboard />}
+          />
 
-        <Route
-          path="/my-reports"
-          element={
-            <ProtectedRoute>
-              <RoleProtectedRoute
-                allowedRoles={[
-                  "EMPLOYEE",
-                  "TEAM_LEAD",
-                  "COMPANY_ADMIN",
-                ]}
-              >
-                <MyReports />
-              </RoleProtectedRoute>
-            </ProtectedRoute>
-          }
-        />
+          <Route
+            path="/my-tasks"
+            element={<MyTasks />}
+          />
 
-        <Route
-          path="/my-attendance"
-          element={
-            <ProtectedRoute>
-              <RoleProtectedRoute
-                allowedRoles={[
-                  "EMPLOYEE",
-                  "TEAM_LEAD",
-                  "COMPANY_ADMIN",
-                ]}
-              >
-                <MyAttendance />
-              </RoleProtectedRoute>
-            </ProtectedRoute>
-          }
-        />
+          <Route
+            path="/my-reports"
+            element={<MyReports />}
+          />
 
-        <Route
-          path="/my-profile"
-          element={
-            <ProtectedRoute>
-              <RoleProtectedRoute
-                allowedRoles={[
-                  "EMPLOYEE",
-                  "TEAM_LEAD",
-                  "COMPANY_ADMIN",
-                  "OFFICE_MANAGER",
-                  "SUPER_ADMIN"
-                ]}
-              >
-                <MyProfile />
-              </RoleProtectedRoute>
-            </ProtectedRoute>
-          }
-        />
+          <Route
+            path="/my-attendance"
+            element={<MyAttendance />}
+          />
+
+          <Route
+            path="/my-profile"
+            element={<MyProfile />}
+          />
+
+          <Route
+            path="/chat"
+            element={<ChatPage />}
+          />
+        </Route>
 
       </Routes>
     </BrowserRouter>

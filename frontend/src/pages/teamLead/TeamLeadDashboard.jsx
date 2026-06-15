@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import Navbar from "../../components/Navbar/Navbar";
+// import Navbar from "../../components/Navbar/Navbar";
 
 const quickActions = [
   // { to: "/team-members", label: "My Team",      icon: "👥", desc: "Manage your team members",  from: "#6366F1", to2: "#4F46E5" },
@@ -65,7 +65,7 @@ const TeamLeadDashboard = () => {
 
   return (
     <div style={{ fontFamily: "'Inter', system-ui, -apple-system, sans-serif", color: "#E2E8F0" }}>
-      <Navbar />
+      {/* <Navbar /> */}
 
       {/* Header */}
       <div style={{ marginBottom: 32 }}>

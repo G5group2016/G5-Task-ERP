@@ -221,6 +221,9 @@ const Sidebar = () => {
             <NavLink to="/my-profile">
               My Profile
             </NavLink>
+            <NavLink to="/chat">
+              Chat
+            </NavLink>
           </>
         )}
 
@@ -242,6 +245,9 @@ const Sidebar = () => {
             <NavLink to="/my-reports">My Reports</NavLink>
             <NavLink to="/my-attendance">My Attendance</NavLink>
             <NavLink to="/my-profile">My Profile</NavLink>
+            <NavLink to="/chat">
+              Chat
+            </NavLink>
           </>
         )}
 
@@ -277,6 +283,9 @@ const Sidebar = () => {
             <NavLink to="/my-profile">
               My Profile
             </NavLink>
+            <NavLink to="/chat">
+              Chat
+            </NavLink>
 
             {/* <NavLink to="/profile-image-requests">
               Profile Image Requests
@@ -295,6 +304,9 @@ const Sidebar = () => {
             <NavLink to="/my-reports">My Reports</NavLink>
             <NavLink to="/my-attendance">My Attendance</NavLink>
             <NavLink to="/my-profile">My Profile</NavLink>
+            <NavLink to="/chat">
+              Chat
+            </NavLink>
           </>
         )}
 
@@ -309,6 +321,9 @@ const Sidebar = () => {
             <NavLink to="/my-reports">My Reports</NavLink>
             <NavLink to="/my-attendance">My Attendance</NavLink>
             <NavLink to="/my-profile">My Profile</NavLink>
+            <NavLink to="/chat">
+              Chat
+            </NavLink>
           </>
         )}
       </div>

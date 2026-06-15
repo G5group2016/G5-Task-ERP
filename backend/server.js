@@ -58,6 +58,11 @@ const profileImageRequestRoutes =
         "./routes/profileImageRequestRoutes"
     );
 
+const chatRoutes =
+    require(
+        "./routes/chatRoutes"
+    );
+
 
 const app = express();
 
@@ -112,6 +117,11 @@ app.use(
 app.use(
     "/api/profile-image-requests",
     profileImageRequestRoutes
+);
+
+app.use(
+    "/api/chat",
+    chatRoutes
 );
 
 app.listen(

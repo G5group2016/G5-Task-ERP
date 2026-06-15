@@ -1,16 +1,19 @@
 import { Outlet } from "react-router-dom";
+import Sidebar from "../components/Sidebar/Sidebar";
 import Navbar from "../components/Navbar/Navbar";
 
 const EmployeeLayout = () => {
   return (
-    <div className="min-h-screen bg-slate-950">
+    <div className="flex">
+      <Sidebar />
 
-      <Navbar />
+      <div className="flex-1">
+        <Navbar />
 
-      <div className="p-6">
-        <Outlet />
+        <div className="p-6">
+          <Outlet />
+        </div>
       </div>
-
     </div>
   );
 };

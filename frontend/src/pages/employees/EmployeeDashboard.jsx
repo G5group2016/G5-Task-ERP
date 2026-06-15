@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import toast from "react-hot-toast";
 import { getEmployeeDashboard } from "../../services/dashboardService";
-import Navbar from "../../components/Navbar/Navbar";
+// import Navbar from "../../components/Navbar/Navbar";
 
 const statCards = [
   { key: "assignedTasks", label: "Assigned Tasks", icon: "⚡", from: "#6366F1", to: "#4F46E5", glow: "rgba(99,102,241,0.3)" },
@@ -43,7 +43,7 @@ const EmployeeDashboard = () => {
 
   return (
     <div style={{ fontFamily: "'Inter', system-ui, -apple-system, sans-serif", color: "#E2E8F0" }}>
-      <Navbar />
+      {/* <Navbar /> */}
       {/* Header */}
       <div style={{ marginBottom: 32 }}>
         <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 6 }}>
