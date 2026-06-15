@@ -200,8 +200,11 @@ const ReportList = () => {
             {reports.length} submitted
           </div>
 
-          {user?.role === "SUPER_ADMIN" ||
-            user?.role === "OFFICE_MANAGER" && (
+          {(
+            user?.role === "SUPER_ADMIN" ||
+            user?.role === "OFFICE_MANAGER" ||
+            user?.role === "COMPANY_ADMIN"
+          ) && (
               <button
                 onClick={handleDownloadExcel}
                 style={{

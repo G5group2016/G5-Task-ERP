@@ -189,7 +189,7 @@ const TaskList = () => {
           <table style={{ width: "100%", borderCollapse: "collapse", minWidth: "600px" }}>
             <thead>
               <tr style={{ background: "#0D1421", borderBottom: "1px solid #1E293B" }}>
-                {["Task", "Assigned To", "Company", "Priority", "Status"].map((h) => (
+                {["Employee name", "Task", "Company", "Priority", "Status"].map((h) => (
                   <th key={h} style={{
                     padding: "12px 20px", textAlign: "left",
                     fontSize: "11px", fontWeight: "700", letterSpacing: "0.08em",
@@ -219,11 +219,6 @@ const TaskList = () => {
                     onMouseEnter={(e) => { e.currentTarget.style.background = "rgba(99,102,241,0.04)"; }}
                     onMouseLeave={(e) => { e.currentTarget.style.background = i % 2 === 0 ? "transparent" : "rgba(255,255,255,0.01)"; }}
                   >
-                    <td style={{ padding: "14px 20px" }}>
-                      <span style={{ fontSize: "14px", fontWeight: "600", color: "#E2E8F0" }}>
-                        {task.title}
-                      </span>
-                    </td>
                     <td style={{ padding: "14px 20px" }}>
                       <div style={{ display: "flex", alignItems: "center", gap: "9px" }}>
                         <div
@@ -262,6 +257,11 @@ const TaskList = () => {
                             : `Deleted Employee | ${task.assignedToName}`}
                         </span>
                       </div>
+                    </td>
+                    <td style={{ padding: "14px 20px" }}>
+                      <span style={{ fontSize: "14px", fontWeight: "600", color: "#E2E8F0" }}>
+                        {task.title}
+                      </span>
                     </td>
                     <td style={{ padding: "14px 20px", fontSize: "13.5px", color: "#64748B" }}>
                       {task.company?.name || <span style={{ color: "#2D3748" }}>—</span>}
