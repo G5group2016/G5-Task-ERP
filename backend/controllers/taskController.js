@@ -185,3 +185,52 @@ exports.updateStatus =
     }
   };
 
+exports.getLatestTasks =
+  async (req, res) => {
+
+    try {
+
+      let filter = {};
+
+      if (
+        req.user.role ===
+        "COMPANY_ADMIN"
+      ) {
+
+        const currentUser =
+          await User.findById(
+            req.user.id
+          );
+
+        filter.company =
+          currentUser.company;
+
+      }
+
+      const tasks =
+        await Task.find(filter)
+          .populate(
+            "assignedTo",
+            "fullName"
+          )
+          .sort({
+            createdAt: -1
+          })
+          .limit(10);
+
+      res.json({
+        success: true,
+        tasks
+      });
+
+    } catch (error) {
+
+      res.status(500).json({
+        message:
+          error.message
+      });
+
+    }
+
+  };
+

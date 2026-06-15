@@ -34,3 +34,14 @@ export const updateTaskStatus =
     return response.data;
   };
 
+export const getLatestTasks =
+  async () => {
+
+    const response =
+      await api.get(
+        "/tasks/latest"
+      );
+
+    return response.data;
+
+  };

@@ -1,20 +1,20 @@
 const express =
-require("express");
+  require("express");
 
 const router =
-express.Router();
+  express.Router();
 
 const auth =
-require("../middleware/authMiddleware");
+  require("../middleware/authMiddleware");
 
 const role =
-require("../middleware/roleMiddleware");
+  require("../middleware/roleMiddleware");
 
 const {
   createTask,
   getTasks,
   getMyTasks,
-  updateStatus
+  updateStatus, getLatestTasks
 } = require(
   "../controllers/taskController"
 );
@@ -41,6 +41,17 @@ router.get(
 );
 
 router.get(
+  "/latest",
+  auth,
+  role(
+    "SUPER_ADMIN",
+    "COMPANY_ADMIN",
+    "OFFICE_MANAGER"
+  ),
+  getLatestTasks
+);
+
+router.get(
   "/my",
   auth,
   getMyTasks
@@ -53,4 +64,4 @@ router.put(
 );
 
 module.exports =
-router;
+  router;
