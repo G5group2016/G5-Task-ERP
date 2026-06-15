@@ -6,6 +6,10 @@ const Sidebar = () => {
 
   const user = JSON.parse(localStorage.getItem("user"));
   const role = user?.role;
+  const displayDesignation =
+    role === "SUPER_ADMIN"
+      ? "HR"
+      : user?.designation || role;
 
   const logout = () => {
     localStorage.removeItem("token");
@@ -110,7 +114,7 @@ const Sidebar = () => {
         }}
       >
         <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "12px" }}>
-          <div
+          {/* <div
             style={{
               width: "32px",
               height: "32px",
@@ -127,10 +131,32 @@ const Sidebar = () => {
             }}
           >
             G5
+          </div> */}
+          <div
+            style={{
+              width: "32px",
+              height: "40px",
+              borderRadius: "8px",
+              background: "linear-gradient(135deg, #6366F1 0%, #4F46E5 100%)",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              // fontSize: "13px",
+              fontWeight: "800",
+              color: "#fff",
+              // letterSpacing: "-0.5px",
+              boxShadow: "0 4px 12px rgba(99,102,241,0.4)",
+            }}
+          >
+            <img
+              src="./images/group-logo.png"
+              alt="G5 Group Logo"
+            // className="w-28 h-28 mx-auto mb-3 object-contain"
+            />
           </div>
           <div>
             <p style={{ fontSize: "15px", fontWeight: "700", color: "#F1F5F9", margin: 0, letterSpacing: "-0.02em" }}>
-              G5 ERP
+              G5 Group
             </p>
             <p style={{ fontSize: "10px", color: "#475569", margin: 0, letterSpacing: "0.05em" }}>
               ENTERPRISE PLATFORM
@@ -166,7 +192,7 @@ const Sidebar = () => {
               letterSpacing: "0.03em",
             }}
           >
-            {roleLabels[role] || role}
+            {displayDesignation}
           </span>
         </div>
       </div>
