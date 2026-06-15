@@ -38,7 +38,8 @@ router.get(
   auth,
   role(
     "SUPER_ADMIN",
-    "COMPANY_ADMIN"
+    "COMPANY_ADMIN",
+    "OFFICE_MANAGER"
   ),
   getEmployees
 );
@@ -55,6 +56,7 @@ router.get(
   auth,
   role(
     "SUPER_ADMIN",
+    "OFFICE_MANAGER",
     "COMPANY_ADMIN"
   ),
   getEmployee
@@ -82,6 +84,7 @@ router.get(
   auth,
   role(
     "SUPER_ADMIN",
+    "OFFICE_MANAGER",
     "COMPANY_ADMIN"
   ),
   getEmployeeTasks
@@ -92,6 +95,7 @@ router.get(
   auth,
   role(
     "SUPER_ADMIN",
+    "OFFICE_MANAGER",
     "COMPANY_ADMIN"
   ),
   getEmployeeAttendance
@@ -102,6 +106,7 @@ router.get(
   auth,
   role(
     "SUPER_ADMIN",
+    "OFFICE_MANAGER",
     "COMPANY_ADMIN"
   ),
   getEmployeeReports

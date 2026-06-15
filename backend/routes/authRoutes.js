@@ -63,6 +63,7 @@ router.get(
   auth,
   role(
     "SUPER_ADMIN",
+    "OFFICE_MANAGER",
     "COMPANY_ADMIN"
   ),
   getProfileAudit

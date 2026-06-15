@@ -6,6 +6,12 @@ import { useNavigate } from "react-router-dom";
 
 const roleConfig = {
   SUPER_ADMIN: { color: "#6366F1", bg: "rgba(99,102,241,0.1)", border: "rgba(99,102,241,0.25)", label: "Super Admin" },
+  OFFICE_MANAGER: {
+    color: "#8B5CF6",
+    bg: "rgba(139,92,246,0.1)",
+    border: "rgba(139,92,246,0.25)",
+    label: "Office Manager"
+  },
   COMPANY_ADMIN: { color: "#10B981", bg: "rgba(16,185,129,0.1)", border: "rgba(16,185,129,0.25)", label: "Company Admin" },
   TEAM_LEAD: { color: "#F59E0B", bg: "rgba(245,158,11,0.1)", border: "rgba(245,158,11,0.25)", label: "Team Lead" },
   EMPLOYEE: { color: "#94A3B8", bg: "rgba(148,163,184,0.1)", border: "rgba(148,163,184,0.2)", label: "Employee" },
@@ -282,7 +288,12 @@ const EmployeeList = () => {
         </div>
       </div>
 
-      <EmployeeForm onSuccess={loadEmployees} />
+      {currentUser?.role !==
+        "OFFICE_MANAGER" && (
+          <EmployeeForm
+            onSuccess={loadEmployees}
+          />
+        )}
 
       {/* Table */}
       <div

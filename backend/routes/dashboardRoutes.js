@@ -22,7 +22,7 @@ const {
 router.get(
  "/stats",
  auth,
- role("SUPER_ADMIN"),
+ role("SUPER_ADMIN","OFFICE_MANAGER"),
  getDashboardStats
 );
 
@@ -61,7 +61,8 @@ router.get(
   "/company-admin",
   auth,
   role(
-    "COMPANY_ADMIN"
+    "COMPANY_ADMIN",
+    "OFFICE_MANAGER"
   ),
   companyAdminDashboard
 );

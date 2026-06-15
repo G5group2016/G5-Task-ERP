@@ -69,7 +69,7 @@ const AppRoutes = () => {
             <ProtectedRoute>
               <RoleProtectedRoute
                 allowedRoles={[
-                  "SUPER_ADMIN",
+                  "SUPER_ADMIN","OFFICE_MANAGER"
                 ]}
               >
                 <AdminLayout />
@@ -97,6 +97,7 @@ const AppRoutes = () => {
                 allowedRoles={[
                   "SUPER_ADMIN",
                   "COMPANY_ADMIN",
+                  "OFFICE_MANAGER",
                 ]}
               >
                 <AdminLayout />
@@ -173,6 +174,21 @@ const AppRoutes = () => {
             }
           />
         </Route>
+
+        {/* <Route
+          path="/office-dashboard"
+          element={
+            <ProtectedRoute>
+              <RoleProtectedRoute
+                allowedRoles={[
+                  "OFFICE_MANAGER"
+                ]}
+              >
+                <Dashboard />
+              </RoleProtectedRoute>
+            </ProtectedRoute>
+          }
+        /> */}
 
         {/* TEAM LEAD */}
 

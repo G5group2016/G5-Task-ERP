@@ -200,22 +200,23 @@ const ReportList = () => {
             {reports.length} submitted
           </div>
 
-          {user?.role === "SUPER_ADMIN" && (
-            <button
-              onClick={handleDownloadExcel}
-              style={{
-                padding: "8px 16px",
-                borderRadius: "8px",
-                background: "#10B981",
-                border: "none",
-                color: "#fff",
-                fontWeight: "600",
-                cursor: "pointer",
-              }}
-            >
-              Download Excel
-            </button>
-          )}
+          {user?.role === "SUPER_ADMIN" ||
+            user?.role === "OFFICE_MANAGER" && (
+              <button
+                onClick={handleDownloadExcel}
+                style={{
+                  padding: "8px 16px",
+                  borderRadius: "8px",
+                  background: "#10B981",
+                  border: "none",
+                  color: "#fff",
+                  fontWeight: "600",
+                  cursor: "pointer",
+                }}
+              >
+                Download Excel
+              </button>
+            )}
         </div>
       </div>
 

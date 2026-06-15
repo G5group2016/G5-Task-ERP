@@ -40,7 +40,7 @@ router.get(
   "/export-excel",
   auth,
   role(
-    "SUPER_ADMIN"
+    "SUPER_ADMIN","OFFICE_MANAGER"
   ),
   exportReportsExcel
 );
@@ -50,7 +50,8 @@ router.get(
   auth,
   role(
     "SUPER_ADMIN",
-    "COMPANY_ADMIN"
+    "COMPANY_ADMIN",
+    "OFFICE_MANAGER"
   ),
   getAllReports
 );

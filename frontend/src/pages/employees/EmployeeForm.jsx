@@ -53,7 +53,16 @@ const EmployeeForm = ({ onSuccess }) => {
   };
 
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+      ...(name === "role" &&
+        value === "OFFICE_MANAGER"
+        ? { company: "" }
+        : {})
+    }));
   };
 
   const handleSubmit = async (e) => {
@@ -68,12 +77,12 @@ const EmployeeForm = ({ onSuccess }) => {
   };
 
   const fields = [
-    { name: "fullName",    label: "Full Name",    placeholder: "John Doe"           },
-    { name: "email",       label: "Email",        placeholder: "john@company.com"   },
-    { name: "password",    label: "Password",     placeholder: "••••••••", type: "password" },
-    { name: "phone",       label: "Phone",        placeholder: "+1 (555) 000-0000"  },
-    { name: "designation", label: "Designation",  placeholder: "Software Engineer"  },
-    { name: "department",  label: "Department",   placeholder: "Engineering"        },
+    { name: "fullName", label: "Full Name", placeholder: "John Doe" },
+    { name: "email", label: "Email", placeholder: "john@company.com" },
+    { name: "password", label: "Password", placeholder: "••••••••", type: "password" },
+    { name: "phone", label: "Phone", placeholder: "+1 (555) 000-0000" },
+    { name: "designation", label: "Designation", placeholder: "Software Engineer" },
+    { name: "department", label: "Department", placeholder: "Engineering" },
   ];
 
   return (
@@ -118,18 +127,36 @@ const EmployeeForm = ({ onSuccess }) => {
               <option value="EMPLOYEE">Employee</option>
               <option value="TEAM_LEAD">Team Lead</option>
               <option value="COMPANY_ADMIN">Company Admin</option>
+              <option value="OFFICE_MANAGER">
+                Office Manager
+              </option>
             </select>
           </Field>
 
-          <Field label="Company">
-            <select name="company" onChange={handleChange}
-              style={inputStyle} onFocus={focusStyle} onBlur={blurStyle}>
-              <option value="">Select Company</option>
-              {companies.map((company) => (
-                <option key={company._id} value={company._id}>{company.name}</option>
-              ))}
-            </select>
-          </Field>
+          {formData.role !== "OFFICE_MANAGER" && (
+            <Field label="Company">
+              <select
+                name="company"
+                onChange={handleChange}
+                style={inputStyle}
+                onFocus={focusStyle}
+                onBlur={blurStyle}
+              >
+                <option value="">
+                  Select Company
+                </option>
+
+                {companies.map((company) => (
+                  <option
+                    key={company._id}
+                    value={company._id}
+                  >
+                    {company.name}
+                  </option>
+                ))}
+              </select>
+            </Field>
+          )}
         </div>
 
         <div style={{ display: "flex", justifyContent: "flex-end", marginTop: "8px" }}>

@@ -22,6 +22,7 @@ const userSchema = new mongoose.Schema(
       type: String,
       enum: [
         "SUPER_ADMIN",
+        "OFFICE_MANAGER",
         "COMPANY_ADMIN",
         "TEAM_LEAD",
         "EMPLOYEE"

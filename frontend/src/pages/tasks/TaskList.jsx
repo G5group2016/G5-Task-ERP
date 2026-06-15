@@ -121,6 +121,10 @@ const Pagination = ({ currentPage, totalPages, onPageChange }) => {
 
 const TaskList = () => {
   const [tasks, setTasks] = useState([]);
+  const user =
+    JSON.parse(
+      localStorage.getItem("user")
+    );
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(10);
 
@@ -169,7 +173,10 @@ const TaskList = () => {
         </div>
       </div>
 
-      <TaskForm onSuccess={loadTasks} />
+      {user?.role !==
+        "OFFICE_MANAGER" && (
+          <TaskForm onSuccess={loadTasks} />
+        )}
 
       {/* Table */}
       <div

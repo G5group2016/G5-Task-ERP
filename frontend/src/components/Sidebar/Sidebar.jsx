@@ -16,6 +16,7 @@ const Sidebar = () => {
   const roleLabels = {
     SUPER_ADMIN: "Super Admin",
     COMPANY_ADMIN: "Company Admin",
+    OFFICE_MANAGER: "Office Manager",
     TEAM_LEAD: "Team Lead",
     EMPLOYEE: "Employee",
   };
@@ -23,6 +24,7 @@ const Sidebar = () => {
   const roleColors = {
     SUPER_ADMIN: "#6366F1",
     COMPANY_ADMIN: "#10B981",
+    OFFICE_MANAGER: "#06B6D4",
     TEAM_LEAD: "#F59E0B",
     EMPLOYEE: "#94A3B8",
   };
@@ -208,6 +210,37 @@ const Sidebar = () => {
             <NavLink to="/my-reports">My Reports</NavLink>
             <NavLink to="/my-attendance">My Attendance</NavLink>
             <NavLink to="/my-profile">My Profile</NavLink>
+          </>
+        )}
+
+        {/* OFFICE MANAGER */}
+        {role === "OFFICE_MANAGER" && (
+          <>
+            <SectionLabel>Overview</SectionLabel>
+            <NavLink to="/dashboard">
+              Dashboard
+            </NavLink>
+
+            <SectionLabel>Management</SectionLabel>
+            <NavLink to="/employees">
+              Employees
+            </NavLink>
+
+            <NavLink to="/tasks">
+              Tasks
+            </NavLink>
+
+            <NavLink to="/reports">
+              Reports
+            </NavLink>
+
+            <NavLink to="/attendance">
+              Attendance
+            </NavLink>
+
+            {/* <NavLink to="/profile-image-requests">
+              Profile Image Requests
+            </NavLink> */}
           </>
         )}
 

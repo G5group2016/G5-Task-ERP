@@ -34,7 +34,8 @@ router.get(
   auth,
   role(
     "SUPER_ADMIN",
-    "COMPANY_ADMIN"
+    "COMPANY_ADMIN",
+    "OFFICE_MANAGER"
   ),
   getTasks
 );

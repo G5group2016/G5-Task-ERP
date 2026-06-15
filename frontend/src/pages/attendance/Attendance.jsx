@@ -187,7 +187,7 @@ const Attendance = () => {
           </h1>
         </div>
 
-        {user?.role !== "SUPER_ADMIN" && (
+        {user?.role !== "SUPER_ADMIN" || user?.role !== "OFFICE_MANAGER" && (
           <div
             style={{
               display: "flex",

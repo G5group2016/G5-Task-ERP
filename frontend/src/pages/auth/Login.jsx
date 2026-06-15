@@ -2,7 +2,8 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import { loginUser } from "../../services/authService";
-import { Eye, EyeOff } from "lucide-react"; 
+import { Eye, EyeOff } from "lucide-react";
+// import logo from "../../assets/logo.png";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -49,6 +50,10 @@ const Login = () => {
           navigate("/dashboard");
           break;
 
+        case "OFFICE_MANAGER":
+          navigate("/dashboard");
+          break;
+
         case "COMPANY_ADMIN":
           navigate("/company-dashboard");
           break;
@@ -67,7 +72,7 @@ const Login = () => {
     } catch (error) {
       toast.error(
         error.response?.data?.message ||
-          "Login Failed"
+        "Login Failed"
       );
     } finally {
       setLoading(false);
@@ -80,9 +85,15 @@ const Login = () => {
         onSubmit={handleSubmit}
         className="w-full max-w-md bg-slate-900 p-8 rounded-xl border border-slate-800 shadow-lg"
       >
-        <h1 className="text-3xl font-bold text-center mb-8">
-          G5 Group ERP
-        </h1>
+        {/* Logo Section */}
+        <div className="text-center mb-8">
+          <img
+            src="./images/group-logo.png"
+            alt="G5 Group Logo"
+            className="w-58 h-48 mx-auto mb-3 object-contain"
+          />
+          {/* <h1 className="text-3xl font-bold text-white">G5 Group</h1> */}
+        </div>
 
         <input
           type="email"
@@ -90,7 +101,7 @@ const Login = () => {
           placeholder="Email Address"
           value={formData.email}
           onChange={handleChange}
-          className="w-full p-3 mb-4 rounded bg-slate-800 outline-none"
+          className="w-full p-3 mb-4 rounded bg-slate-800 outline-none text-white placeholder-slate-400"
           required
         />
 
@@ -101,7 +112,7 @@ const Login = () => {
             placeholder="Password"
             value={formData.password}
             onChange={handleChange}
-            className="w-full p-3 rounded bg-slate-800 outline-none pr-12"
+            className="w-full p-3 rounded bg-slate-800 outline-none text-white placeholder-slate-400 pr-12"
             required
           />
           <button
@@ -117,7 +128,7 @@ const Login = () => {
         <button
           type="submit"
           disabled={loading}
-          className="w-full bg-yellow-500 hover:bg-yellow-600 text-black font-bold py-3 rounded transition cursor-pointer"
+          className="w-full bg-yellow-500 hover:bg-yellow-600 text-black font-bold py-3 rounded transition cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
         >
           {loading ? "Logging In..." : "Login"}
         </button>

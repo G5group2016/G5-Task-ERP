@@ -5,13 +5,13 @@ const Company =
 const User = require("../models/User");
 const bcrypt = require("bcryptjs");
 const Task =
-require("../models/Task");
+  require("../models/Task");
 
 const Attendance =
-require("../models/Attendance");
+  require("../models/Attendance");
 
 const WorkReport =
-require("../models/WorkReport");
+  require("../models/WorkReport");
 
 exports.createEmployee = async (
   req,
@@ -36,7 +36,8 @@ exports.createEmployee = async (
 
       if (
         role === "SUPER_ADMIN" ||
-        role === "COMPANY_ADMIN"
+        role === "COMPANY_ADMIN" ||
+        role === "OFFICE_MANAGER"
       ) {
 
         return res.status(403).json({
@@ -64,6 +65,12 @@ exports.createEmployee = async (
       await bcrypt.hash(password, 12);
 
     let companyId = company;
+
+    if (
+      role === "OFFICE_MANAGER"
+    ) {
+      companyId = null;
+    }
 
     if (
       req.user.role ===
@@ -133,7 +140,8 @@ exports.getEmployees =
           $in: [
             "EMPLOYEE",
             "TEAM_LEAD",
-            "COMPANY_ADMIN"
+            "COMPANY_ADMIN",
+            "OFFICE_MANAGER"
           ]
         }
       };
@@ -214,6 +222,25 @@ exports.getEmployee =
 exports.disableEmployee =
   async (req, res) => {
 
+    const employee =
+      await User.findById(
+        req.params.id
+      );
+
+    if (
+      employee.role ===
+      "SUPER_ADMIN" ||
+      employee.role ===
+      "OFFICE_MANAGER"
+    ) {
+
+      return res.status(400).json({
+        message:
+          "This account cannot be deleted"
+      });
+
+    }
+
     await User.findByIdAndUpdate(
       req.params.id,
       {
@@ -250,12 +277,13 @@ exports.toggleEmployeeStatus =
       }
 
       if (
-        employee.role === "SUPER_ADMIN"
+        employee.role === "SUPER_ADMIN" ||
+        employee.role === "OFFICE_MANAGER"
       ) {
 
         return res.status(400).json({
           message:
-            "Super Admin cannot be deactivated"
+            "Super Admin and Office Manager cannot be deactivated"
         });
 
       }
@@ -293,97 +321,97 @@ exports.toggleEmployeeStatus =
   };
 
 
-  exports.getEmployeeTasks =
-async (req, res) => {
+exports.getEmployeeTasks =
+  async (req, res) => {
 
-  try {
+    try {
 
-    const tasks =
-      await Task.find({
-        assignedTo:
-          req.params.id
-      })
-      .sort({
-        createdAt: -1
+      const tasks =
+        await Task.find({
+          assignedTo:
+            req.params.id
+        })
+          .sort({
+            createdAt: -1
+          });
+
+      res.json({
+        success: true,
+        tasks
       });
 
-    res.json({
-      success: true,
-      tasks
-    });
+    } catch (error) {
 
-  } catch (error) {
+      res.status(500).json({
+        message:
+          error.message
+      });
 
-    res.status(500).json({
-      message:
-        error.message
-    });
+    }
 
-  }
-
-};
+  };
 
 exports.getEmployeeAttendance =
-async (req, res) => {
+  async (req, res) => {
 
-  try {
+    try {
 
-    const attendance =
-      await Attendance.find({
-        employee:
-          req.params.id
-      })
-      .sort({
-        date: -1
+      const attendance =
+        await Attendance.find({
+          employee:
+            req.params.id
+        })
+          .sort({
+            date: -1
+          });
+
+      res.json({
+        success: true,
+        attendance
       });
 
-    res.json({
-      success: true,
-      attendance
-    });
+    } catch (error) {
 
-  } catch (error) {
+      res.status(500).json({
+        message:
+          error.message
+      });
 
-    res.status(500).json({
-      message:
-        error.message
-    });
+    }
 
-  }
-
-};
+  };
 
 
 exports.getEmployeeReports =
-async (req, res) => {
+  async (req, res) => {
 
-  try {
+    try {
 
-    const reports =
-      await WorkReport.find({
-        employee:
-          req.params.id
-      })
-      .populate(
-        "task",
-        "title"
-      )
-      .sort({
-        createdAt: -1
+      const reports =
+        await WorkReport.find({
+          employee:
+            req.params.id
+        })
+          .populate(
+            "task",
+            "title"
+          )
+          .sort({
+            createdAt: -1
+          });
+
+      res.json({
+        success: true,
+        reports
       });
 
-    res.json({
-      success: true,
-      reports
-    });
+    } catch (error) {
 
-  } catch (error) {
+      res.status(500).json({
+        message:
+          error.message
+      });
 
-    res.status(500).json({
-      message:
-        error.message
-    });
+    }
 
-  }
-
-};
+  };

@@ -33,14 +33,14 @@ router.post(
 router.get(
   "/",
   auth,
-  role("SUPER_ADMIN"),
+  role("SUPER_ADMIN","OFFICE_MANAGER"),
   getCompanies
 );
 
 router.get(
   "/:id",
   auth,
-  role("SUPER_ADMIN"),
+  role("SUPER_ADMIN","OFFICE_MANAGER"),
   getCompany
 );
 

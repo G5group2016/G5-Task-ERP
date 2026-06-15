@@ -44,6 +44,10 @@ const CompanyList = () => {
   const [editingCompany,
     setEditingCompany] =
     useState(null);
+  const user =
+    JSON.parse(
+      localStorage.getItem("user")
+    );
 
   const [editLogo,
     setEditLogo] =
@@ -203,7 +207,11 @@ const CompanyList = () => {
         </div>
       </div>
 
-      <CompanyForm onSuccess={fetchCompanies} />
+      {user?.role !== "OFFICE_MANAGER" && (
+        <CompanyForm
+          onSuccess={fetchCompanies}
+        />
+      )}
 
       {/* Table */}
       <div
@@ -328,60 +336,63 @@ const CompanyList = () => {
                     </td>
 
                     <td style={{ padding: "14px 20px" }}>
-                      <div style={{ display: "flex", gap: "8px" }}>
-                        <button
-                          onClick={() =>
-                            handleEditCompany(company)
-                          }
-                          style={{
-                            display: "inline-flex",
-                            alignItems: "center",
-                            gap: "6px",
-                            background: "linear-gradient(135deg, #6366F1 0%, #4F46E5 100%)",
-                            color: "#fff",
-                            border: "none",
-                            padding: "7px 16px",
-                            borderRadius: "8px",
-                            cursor: "pointer",
-                            fontWeight: "600",
-                            fontSize: "12.5px",
-                            letterSpacing: "0.01em",
-                            boxShadow: "0 0 16px rgba(99,102,241,0.25)",
-                            transition: "opacity 0.15s",
-                          }}
-                          onMouseEnter={(e) => { e.currentTarget.style.opacity = "0.85"; }}
-                          onMouseLeave={(e) => { e.currentTarget.style.opacity = "1"; }}
-                        >
-                          ✎ Edit
-                        </button>
-                        <button
-                          onClick={() =>
-                            handleDeleteCompany(
-                              company._id
-                            )
-                          }
-                          style={{
-                            display: "inline-flex",
-                            alignItems: "center",
-                            gap: "6px",
-                            background: "linear-gradient(135deg, #EF4444 0%, #DC2626 100%)",
-                            color: "#fff",
-                            border: "none",
-                            padding: "7px 16px",
-                            borderRadius: "8px",
-                            cursor: "pointer",
-                            fontWeight: "600",
-                            fontSize: "12.5px",
-                            letterSpacing: "0.01em",
-                            boxShadow: "0 0 16px rgba(239,68,68,0.25)",
-                            transition: "opacity 0.15s",
-                          }}
-                          onMouseEnter={(e) => { e.currentTarget.style.opacity = "0.85"; }}
-                          onMouseLeave={(e) => { e.currentTarget.style.opacity = "1"; }}
-                        >
-                          🗑 Delete
-                        </button>
-                      </div>
+                      {user?.role !==
+                        "OFFICE_MANAGER" && (
+                          <div style={{ display: "flex", gap: "8px" }}>
+                            <button
+                              onClick={() =>
+                                handleEditCompany(company)
+                              }
+                              style={{
+                                display: "inline-flex",
+                                alignItems: "center",
+                                gap: "6px",
+                                background: "linear-gradient(135deg, #6366F1 0%, #4F46E5 100%)",
+                                color: "#fff",
+                                border: "none",
+                                padding: "7px 16px",
+                                borderRadius: "8px",
+                                cursor: "pointer",
+                                fontWeight: "600",
+                                fontSize: "12.5px",
+                                letterSpacing: "0.01em",
+                                boxShadow: "0 0 16px rgba(99,102,241,0.25)",
+                                transition: "opacity 0.15s",
+                              }}
+                              onMouseEnter={(e) => { e.currentTarget.style.opacity = "0.85"; }}
+                              onMouseLeave={(e) => { e.currentTarget.style.opacity = "1"; }}
+                            >
+                              ✎ Edit
+                            </button>
+                            <button
+                              onClick={() =>
+                                handleDeleteCompany(
+                                  company._id
+                                )
+                              }
+                              style={{
+                                display: "inline-flex",
+                                alignItems: "center",
+                                gap: "6px",
+                                background: "linear-gradient(135deg, #EF4444 0%, #DC2626 100%)",
+                                color: "#fff",
+                                border: "none",
+                                padding: "7px 16px",
+                                borderRadius: "8px",
+                                cursor: "pointer",
+                                fontWeight: "600",
+                                fontSize: "12.5px",
+                                letterSpacing: "0.01em",
+                                boxShadow: "0 0 16px rgba(239,68,68,0.25)",
+                                transition: "opacity 0.15s",
+                              }}
+                              onMouseEnter={(e) => { e.currentTarget.style.opacity = "0.85"; }}
+                              onMouseLeave={(e) => { e.currentTarget.style.opacity = "1"; }}
+                            >
+                              🗑 Delete
+                            </button>
+                          </div>
+                        )}
                     </td>
                   </tr>
                 ))
