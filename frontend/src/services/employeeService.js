@@ -101,3 +101,16 @@ export const resetEmployeePassword =
     return response.data;
 
   };
+
+export const changeEmployeeRole =
+  async (id, role) => {
+
+    const response =
+      await api.put(
+        `/employees/role/${id}`,
+        { role }
+      );
+
+    return response.data;
+
+  };

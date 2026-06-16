@@ -1,12 +1,13 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import toast from "react-hot-toast";
 
 import {
   getEmployee,
   getEmployeeTasks,
   getEmployeeAttendance,
   getEmployeeReports,
-  getEmployeeAuditLogs
+  getEmployeeAuditLogs, changeEmployeeRole
 } from "../../services/employeeService";
 
 const tabs = [
@@ -70,6 +71,10 @@ const EmployeeProfile = () => {
   const [attendance, setAttendance] = useState([]);
   const [reports, setReports] = useState([]);
   const [auditLogs, setAuditLogs] = useState([]);
+  const currentUser =
+    JSON.parse(
+      localStorage.getItem("user")
+    );
 
   const [activeTab, setActiveTab] =
     useState("profile");
@@ -117,6 +122,39 @@ const EmployeeProfile = () => {
       console.log(error);
     }
   };
+
+  const handleRoleChange =
+    async (newRole) => {
+
+      try {
+        if (
+          employee._id === currentUser._id
+        ) {
+          toast.error(
+            "You cannot change your own role"
+          );
+          return;
+        }
+        await changeEmployeeRole(
+          employee._id,
+          newRole
+        );
+
+        toast.success(
+          "Role Updated"
+        );
+
+        loadData();
+
+      } catch (error) {
+
+        toast.error(
+          error.response?.data?.message
+        );
+
+      }
+
+    };
 
   if (!employee) {
     return (
@@ -388,156 +426,251 @@ const EmployeeProfile = () => {
 
         {activeTab ===
           "profile" && (
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns:
-                "1fr 1fr",
-              gap: "20px"
-            }}
-          >
-            <Info
-              label="Name"
-              value={
-                employee.fullName
-              }
-            />
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns:
+                  "1fr 1fr",
+                gap: "20px"
+              }}
+            >
+              <Info
+                label="Name"
+                value={
+                  employee.fullName
+                }
+              />
 
-            <Info
-              label="Email"
-              value={
-                employee.email
-              }
-            />
+              <Info
+                label="Email"
+                value={
+                  employee.email
+                }
+              />
 
-            <Info
-              label="Phone"
-              value={
-                employee.phone
-              }
-            />
+              <Info
+                label="Phone"
+                value={
+                  employee.phone
+                }
+              />
 
-            <Info
-              label="Department"
-              value={
-                employee.department
-              }
-            />
+              <Info
+                label="Department"
+                value={
+                  employee.department
+                }
+              />
 
-            <Info
-              label="Designation"
-              value={
-                employee.designation
-              }
-            />
+              <Info
+                label="Designation"
+                value={
+                  employee.designation
+                }
+              />
+              {(
+                currentUser?.role === "SUPER_ADMIN" ||
+                currentUser?.role === "COMPANY_ADMIN"
+              ) && (
+                  <div>
+                    <p
+                      style={{
+                        color: "#64748B",
+                        marginBottom: "8px",
+                        fontSize: "11px",
+                        fontWeight: 700,
+                        letterSpacing: "0.08em",
+                        textTransform: "uppercase",
+                      }}
+                    >
+                      Role
+                    </p>
 
-            <Info
-              label="Company"
-              value={
-                employee.company
-                  ?.name
-              }
-            />
-          </div>
-        )}
+                    <div style={{ position: "relative", display: "inline-block" }}>
+                      <select
+                        value={employee.role}
+                        onChange={(e) =>
+                          handleRoleChange(
+                            e.target.value
+                          )
+                        }
+                        style={{
+                          appearance: "none",
+                          WebkitAppearance: "none",
+                          background: "#0D1421",
+                          color: "#E2E8F0",
+                          border: "1px solid rgba(255,255,255,0.08)",
+                          padding: "10px 40px 10px 14px",
+                          borderRadius: "10px",
+                          width: "220px",
+                          fontSize: "14px",
+                          fontWeight: 500,
+                          fontFamily: "'Inter', system-ui, sans-serif",
+                          cursor: "pointer",
+                          outline: "none",
+                          transition: "border-color 0.15s, box-shadow 0.15s",
+                        }}
+                        onFocus={e => {
+                          e.target.style.borderColor = "rgba(99,102,241,0.5)";
+                          e.target.style.boxShadow = "0 0 0 3px rgba(99,102,241,0.12)";
+                        }}
+                        onBlur={e => {
+                          e.target.style.borderColor = "rgba(255,255,255,0.08)";
+                          e.target.style.boxShadow = "none";
+                        }}
+                      >
+                        <option value="EMPLOYEE" style={{ background: "#0D1421" }}>
+                          Employee
+                        </option>
 
-        {activeTab ===
+                        <option value="TEAM_LEAD" style={{ background: "#0D1421" }}>
+                          Team Lead
+                        </option>
+
+                        <option value="COMPANY_ADMIN" style={{ background: "#0D1421" }}>
+                          Head Of Department
+                        </option>
+
+                        {currentUser?.role ===
+                          "SUPER_ADMIN" && (
+                            <option value="OFFICE_MANAGER" style={{ background: "#0D1421" }}>
+                              Office Manager
+                            </option>
+                          )}
+                      </select>
+
+                      {/* Custom chevron */}
+                      <span style={{
+                        position: "absolute",
+                        right: 12,
+                        top: "50%",
+                        transform: "translateY(-50%)",
+                        pointerEvents: "none",
+                        color: "#475569",
+                        fontSize: 12,
+                      }}>
+                        ▾
+                      </span>
+                    </div>
+                  </div>
+                )}
+
+              <Info
+                label="Company"
+                value={
+                  employee.company
+                    ?.name
+                }
+              />
+            </div>
+          )
+        }
+
+        {
+          activeTab ===
           "tasks" && (
-          <Table
-            headers={["Title", "Status", "Priority"]}
-            empty={tasks.length === 0}
-            emptyText="No tasks found"
-            emptyIcon="⚡"
-          >
-            {tasks.map(
-              (task, idx) => (
-                <Row key={task._id} idx={idx}>
-                  <Cell first>{task.title}</Cell>
-                  <Cell><StatusBadge status={task.status} config={taskStatusConfig} /></Cell>
-                  <Cell><PriorityBadge priority={task.priority} /></Cell>
-                </Row>
-              )
-            )}
-          </Table>
-        )}
+            <Table
+              headers={["Title", "Status", "Priority"]}
+              empty={tasks.length === 0}
+              emptyText="No tasks found"
+              emptyIcon="⚡"
+            >
+              {tasks.map(
+                (task, idx) => (
+                  <Row key={task._id} idx={idx}>
+                    <Cell first>{task.title}</Cell>
+                    <Cell><StatusBadge status={task.status} config={taskStatusConfig} /></Cell>
+                    <Cell><PriorityBadge priority={task.priority} /></Cell>
+                  </Row>
+                )
+              )}
+            </Table>
+          )
+        }
 
-        {activeTab ===
+        {
+          activeTab ===
           "attendance" && (
-          <Table
-            headers={["Date", "Status", "Hours"]}
-            empty={attendance.length === 0}
-            emptyText="No attendance records found"
-            emptyIcon="🕐"
-          >
-            {attendance.map(
-              (item, idx) => (
-                <Row key={item._id} idx={idx}>
-                  <Cell first>
-                    {new Date(
-                      item.date
-                    ).toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" })}
-                  </Cell>
-                  <Cell><StatusBadge status={item.status} config={attendanceStatusConfig} /></Cell>
-                  <Cell mono>{item.totalHours ?? "—"}</Cell>
-                </Row>
-              )
-            )}
-          </Table>
-        )}
+            <Table
+              headers={["Date", "Status", "Hours"]}
+              empty={attendance.length === 0}
+              emptyText="No attendance records found"
+              emptyIcon="🕐"
+            >
+              {attendance.map(
+                (item, idx) => (
+                  <Row key={item._id} idx={idx}>
+                    <Cell first>
+                      {new Date(
+                        item.date
+                      ).toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" })}
+                    </Cell>
+                    <Cell><StatusBadge status={item.status} config={attendanceStatusConfig} /></Cell>
+                    <Cell mono>{item.totalHours ?? "—"}</Cell>
+                  </Row>
+                )
+              )}
+            </Table>
+          )
+        }
 
-        {activeTab ===
+        {
+          activeTab ===
           "reports" && (
-          <Table
-            headers={["Task", "Hours", "Progress"]}
-            empty={reports.length === 0}
-            emptyText="No reports found"
-            emptyIcon="📋"
-          >
-            {reports.map(
-              (report, idx) => (
-                <Row key={report._id} idx={idx}>
-                  <Cell first>{report.task?.title || "—"}</Cell>
-                  <Cell mono>{report.hoursWorked}h</Cell>
-                  <Cell>
-                    <span style={{ display: "inline-flex", alignItems: "center", gap: 6, padding: "4px 12px", borderRadius: 20, background: "rgba(16,185,129,0.1)", border: "1px solid rgba(16,185,129,0.2)", fontSize: 12, fontWeight: 600, color: "#10B981", fontFamily: "'JetBrains Mono','Fira Code',monospace" }}>
-                      {report.progressPercentage}%
-                    </span>
-                  </Cell>
-                </Row>
-              )
-            )}
-          </Table>
-        )}
+            <Table
+              headers={["Task", "Hours", "Progress"]}
+              empty={reports.length === 0}
+              emptyText="No reports found"
+              emptyIcon="📋"
+            >
+              {reports.map(
+                (report, idx) => (
+                  <Row key={report._id} idx={idx}>
+                    <Cell first>{report.task?.title || "—"}</Cell>
+                    <Cell mono>{report.hoursWorked}h</Cell>
+                    <Cell>
+                      <span style={{ display: "inline-flex", alignItems: "center", gap: 6, padding: "4px 12px", borderRadius: 20, background: "rgba(16,185,129,0.1)", border: "1px solid rgba(16,185,129,0.2)", fontSize: 12, fontWeight: 600, color: "#10B981", fontFamily: "'JetBrains Mono','Fira Code',monospace" }}>
+                        {report.progressPercentage}%
+                      </span>
+                    </Cell>
+                  </Row>
+                )
+              )}
+            </Table>
+          )
+        }
 
-        {activeTab ===
+        {
+          activeTab ===
           "audit" && (
-          <Table
-            headers={["Field", "Old Value", "New Value", "Changed By", "Date"]}
-            empty={auditLogs.length === 0}
-            emptyText="No audit logs found"
-            emptyIcon="🛡️"
-          >
-            {auditLogs.map(
-              (log, idx) => (
-                <Row key={log._id} idx={idx}>
-                  <Cell first mono>{log.field}</Cell>
-                  <Cell muted>{log.oldValue ?? "—"}</Cell>
-                  <Cell>{log.newValue ?? "—"}</Cell>
-                  <Cell>{log.changedBy?.fullName || "—"}</Cell>
-                  <Cell muted>
-                    {new Date(
-                      log.createdAt
-                    ).toLocaleString()}
-                  </Cell>
-                </Row>
-              )
-            )}
-          </Table>
-        )}
+            <Table
+              headers={["Field", "Old Value", "New Value", "Changed By", "Date"]}
+              empty={auditLogs.length === 0}
+              emptyText="No audit logs found"
+              emptyIcon="🛡️"
+            >
+              {auditLogs.map(
+                (log, idx) => (
+                  <Row key={log._id} idx={idx}>
+                    <Cell first mono>{log.field}</Cell>
+                    <Cell muted>{log.oldValue ?? "—"}</Cell>
+                    <Cell>{log.newValue ?? "—"}</Cell>
+                    <Cell>{log.changedBy?.fullName || "—"}</Cell>
+                    <Cell muted>
+                      {new Date(
+                        log.createdAt
+                      ).toLocaleString()}
+                    </Cell>
+                  </Row>
+                )
+              )}
+            </Table>
+          )
+        }
 
-      </div>
+      </div >
 
-    </div>
+    </div >
   );
 };
 

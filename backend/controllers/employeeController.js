@@ -417,7 +417,7 @@ exports.getEmployeeReports =
   };
 
 
-  exports.resetEmployeePassword =
+exports.resetEmployeePassword =
   async (req, res) => {
 
     try {
@@ -460,6 +460,109 @@ exports.getEmployeeReports =
 
       res.status(500).json({
         message: error.message
+      });
+
+    }
+
+  };
+
+exports.changeEmployeeRole =
+  async (req, res) => {
+
+    try {
+
+      const { role } =
+        req.body;
+
+      const employee =
+        await User.findById(
+          req.params.id
+        );
+
+      if (!employee) {
+
+        return res.status(404).json({
+          message:
+            "Employee not found"
+        });
+
+      }
+
+      if (
+        req.user.role === "COMPANY_ADMIN" &&
+        role === "OFFICE_MANAGER"
+      ) {
+        return res.status(403).json({
+          message:
+            "Cannot assign Office Manager role"
+        });
+      }
+
+      if (
+        req.user.id === employee._id.toString()
+      ) {
+        return res.status(400).json({
+          message:
+            "You cannot change your own role"
+        });
+      }
+
+
+      if (
+        req.user.role ===
+        "COMPANY_ADMIN"
+      ) {
+
+        if (
+          role === "SUPER_ADMIN" ||
+          role === "OFFICE_MANAGER"
+        ) {
+
+          return res.status(403).json({
+            message:
+              "You cannot assign this role"
+          });
+
+        }
+
+      }
+
+      if (
+        employee.role ===
+        "SUPER_ADMIN"
+      ) {
+
+        return res.status(400).json({
+          message:
+            "Super Admin role cannot be changed"
+        });
+
+      }
+
+      if (
+        req.user.role === "COMPANY_ADMIN" &&
+        employee.role === "COMPANY_ADMIN"
+      ) {
+        return res.status(403).json({
+          message:
+            "You cannot modify another Company Admin"
+        });
+      }
+
+      employee.role = role;
+
+      await employee.save();
+
+      res.json({
+        success: true,
+        employee
+      });
+
+    } catch (error) {
+
+      res.status(500).json({
+        message:
+          error.message
       });
 
     }

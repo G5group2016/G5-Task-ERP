@@ -19,7 +19,8 @@ const {
   getEmployeeTasks,
   getEmployeeAttendance,
   getEmployeeReports,
-  resetEmployeePassword
+  resetEmployeePassword,
+  changeEmployeeRole
 } = require(
   "../controllers/employeeController"
 );
@@ -51,6 +52,15 @@ router.get(
 //   role("TEAM_LEAD"),
 //   getMyTeam
 // );
+router.put(
+  "/role/:id",
+  auth,
+  role(
+    "SUPER_ADMIN",
+    "COMPANY_ADMIN"
+  ),
+  changeEmployeeRole
+);
 
 router.get(
   "/:id",
