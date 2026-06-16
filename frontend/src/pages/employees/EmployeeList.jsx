@@ -524,26 +524,32 @@ const EmployeeList = () => {
                               </button>
                             </>
                           )}
-                        <button
-                          onClick={() =>
-                            handleResetPassword(
-                              employee
-                            )
-                          }
-                          style={{
-                            background:
-                              "linear-gradient(135deg,#6366F1,#4F46E5)",
-                            color: "#fff",
-                            border: "none",
-                            padding: "7px 16px",
-                            borderRadius: "8px",
-                            cursor: "pointer",
-                            fontWeight: "600",
-                            fontSize: "12px"
-                          }}
-                        >
-                          🔑 Reset Password
-                        </button>
+
+                        {currentUser?.role ===
+                          "SUPER_ADMIN" && (
+                            <>
+                              <button
+                                onClick={() =>
+                                  handleResetPassword(
+                                    employee
+                                  )
+                                }
+                                style={{
+                                  background:
+                                    "linear-gradient(135deg,#6366F1,#4F46E5)",
+                                  color: "#fff",
+                                  border: "none",
+                                  padding: "7px 16px",
+                                  borderRadius: "8px",
+                                  cursor: "pointer",
+                                  fontWeight: "600",
+                                  fontSize: "12px"
+                                }}
+                              >
+                                🔑 Reset Password
+                              </button>
+                            </>
+                          )}
 
                         <button
                           onClick={() =>
