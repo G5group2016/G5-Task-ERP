@@ -1,65 +1,82 @@
 const Notification =
-    require(
-        "../models/Notification"
-    );
+  require(
+    "../models/Notification"
+  );
 
 exports.getNotifications =
-async (req, res) => {
+  async (req, res) => {
 
     try {
 
-        const notifications =
-            await Notification.find()
-            .sort({
-                createdAt: -1
-            });
+      const notifications =
+        await Notification.find({
+          $or: [
+            { user: null },
+            { user: req.user.id }
+          ]
+        })
+          .sort({
+            createdAt: -1
+          });
 
-        const unreadCount =
-            await Notification.countDocuments({
-                isRead: false
-            });
-
-        res.json({
-            success: true,
-            notifications,
-            unreadCount
+      const unreadCount =
+        await Notification.countDocuments({
+          isRead: false,
+          $or: [
+            { user: null },
+            { user: req.user.id }
+          ]
         });
+
+      res.json({
+        success: true,
+        notifications,
+        unreadCount
+      });
 
     } catch (error) {
 
-        res.status(500).json({
-            message:
-                error.message
-        });
+      res.status(500).json({
+        message:
+          error.message
+      });
 
     }
 
-};
+  };
 
 exports.markAllAsRead =
-    async (req, res) => {
+  async (req, res) => {
 
-        try {
+    try {
 
-            await Notification.updateMany(
-                { isRead: false },
-                { isRead: true }
-            );
-
-            res.json({
-                success: true
-            });
-
-        } catch (error) {
-
-            res.status(500).json({
-                message: error.message
-            });
-
+      await Notification.updateMany(
+        {
+          isRead: false,
+          $or: [
+            { user: null },
+            { user: req.user.id }
+          ]
+        },
+        {
+          isRead: true
         }
-    };
+      );
 
-    exports.deleteNotification =
+      res.json({
+        success: true
+      });
+
+    } catch (error) {
+
+      res.status(500).json({
+        message: error.message
+      });
+
+    }
+  };
+
+exports.deleteNotification =
   async (req, res) => {
 
     try {

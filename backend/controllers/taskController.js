@@ -4,9 +4,13 @@ const User =
 const Task =
   require("../models/Task");
 
+const Notification =
+  require("../models/Notification");
+
 exports.createTask =
   async (req, res) => {
     try {
+
 
       const employee =
         await User.findById(
@@ -21,6 +25,30 @@ exports.createTask =
             employee.fullName
         });
 
+      const assignedBy =
+        await User.findById(
+          req.user.id
+        );
+
+      await Notification.create({
+
+        user: employee._id,
+
+        title:
+          "New Task Assigned",
+
+        message: `
+Task: ${task.title}
+Priority: ${task.priority}
+Assigned By: ${assignedBy.fullName}
+  `,
+
+        type:
+          "TASK_ASSIGNED"
+      });
+
+
+
       res.status(201).json({
         success: true,
         task
@@ -32,6 +60,8 @@ exports.createTask =
       });
     }
   };
+
+
 
 
 exports.getTasks =
