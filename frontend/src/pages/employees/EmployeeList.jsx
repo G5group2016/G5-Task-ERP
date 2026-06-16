@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { getEmployees, disableEmployee, toggleEmployeeStatus } from "../../services/employeeService";
+import { getEmployees, disableEmployee, toggleEmployeeStatus, resetEmployeePassword } from "../../services/employeeService";
 import EmployeeForm from "./EmployeeForm";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
@@ -236,6 +236,42 @@ const EmployeeList = () => {
         );
 
       }
+    };
+
+  const handleResetPassword =
+    async (employee) => {
+
+      const confirmReset =
+        window.confirm(
+          `Reset password for ${employee.fullName}?`
+        );
+
+      if (!confirmReset)
+        return;
+
+      try {
+
+        const data =
+          await resetEmployeePassword(
+            employee._id
+          );
+
+        alert(
+          `Temporary Password:\n\n${data.temporaryPassword}`
+        );
+
+        toast.success(
+          "Password Reset Successful"
+        );
+
+      } catch (error) {
+
+        toast.error(
+          error.response?.data?.message
+        );
+
+      }
+
     };
 
   const handleImageClick = (imageUrl) => {
@@ -488,6 +524,26 @@ const EmployeeList = () => {
                               </button>
                             </>
                           )}
+                        <button
+                          onClick={() =>
+                            handleResetPassword(
+                              employee
+                            )
+                          }
+                          style={{
+                            background:
+                              "linear-gradient(135deg,#6366F1,#4F46E5)",
+                            color: "#fff",
+                            border: "none",
+                            padding: "7px 16px",
+                            borderRadius: "8px",
+                            cursor: "pointer",
+                            fontWeight: "600",
+                            fontSize: "12px"
+                          }}
+                        >
+                          🔑 Reset Password
+                        </button>
 
                         <button
                           onClick={() =>

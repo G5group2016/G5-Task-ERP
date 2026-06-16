@@ -57,7 +57,7 @@ export const getEmployeeAuditLogs =
     return response.data;
   };
 
-  export const getEmployeeTasks =
+export const getEmployeeTasks =
   async (id) => {
 
     const response =
@@ -68,7 +68,7 @@ export const getEmployeeAuditLogs =
     return response.data;
   };
 
-  export const getEmployeeAttendance =
+export const getEmployeeAttendance =
   async (id) => {
 
     const response =
@@ -79,7 +79,7 @@ export const getEmployeeAuditLogs =
     return response.data;
   };
 
-  export const getEmployeeReports =
+export const getEmployeeReports =
   async (id) => {
 
     const response =
@@ -88,4 +88,16 @@ export const getEmployeeAuditLogs =
       );
 
     return response.data;
+  };
+
+export const resetEmployeePassword =
+  async (id) => {
+
+    const response =
+      await api.put(
+        `/employees/reset-password/${id}`
+      );
+
+    return response.data;
+
   };

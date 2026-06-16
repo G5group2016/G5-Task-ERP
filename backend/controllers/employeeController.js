@@ -415,3 +415,53 @@ exports.getEmployeeReports =
     }
 
   };
+
+
+  exports.resetEmployeePassword =
+  async (req, res) => {
+
+    try {
+
+      const employee =
+        await User.findById(
+          req.params.id
+        );
+
+      if (!employee) {
+
+        return res.status(404).json({
+          message: "Employee not found"
+        });
+
+      }
+
+      const temporaryPassword =
+        Math.random()
+          .toString(36)
+          .slice(-8);
+
+      const hashedPassword =
+        await bcrypt.hash(
+          temporaryPassword,
+          12
+        );
+
+      employee.password =
+        hashedPassword;
+
+      await employee.save();
+
+      res.json({
+        success: true,
+        temporaryPassword
+      });
+
+    } catch (error) {
+
+      res.status(500).json({
+        message: error.message
+      });
+
+    }
+
+  };

@@ -18,7 +18,8 @@ const {
   toggleEmployeeStatus,
   getEmployeeTasks,
   getEmployeeAttendance,
-  getEmployeeReports
+  getEmployeeReports,
+  resetEmployeePassword
 } = require(
   "../controllers/employeeController"
 );
@@ -110,6 +111,16 @@ router.get(
     "COMPANY_ADMIN"
   ),
   getEmployeeReports
+);
+
+router.put(
+  "/reset-password/:id",
+  auth,
+  role(
+    "SUPER_ADMIN",
+    "OFFICE_MANAGER"
+  ),
+  resetEmployeePassword
 );
 
 

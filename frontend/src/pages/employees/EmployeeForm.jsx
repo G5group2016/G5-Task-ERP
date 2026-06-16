@@ -126,7 +126,7 @@ const EmployeeForm = ({ onSuccess }) => {
               style={inputStyle} onFocus={focusStyle} onBlur={blurStyle}>
               <option value="EMPLOYEE">Employee</option>
               <option value="TEAM_LEAD">Team Lead</option>
-              <option value="COMPANY_ADMIN">Company Admin</option>
+              <option value="COMPANY_ADMIN">Head Of Department</option>
               <option value="OFFICE_MANAGER">
                 Office Manager
               </option>
