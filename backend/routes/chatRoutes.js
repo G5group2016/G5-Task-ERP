@@ -12,7 +12,7 @@ const {
   createChat,
   getMyChats,
   getMessages,
-  sendMessage
+  sendMessage, getUnreadCounts
 } = require(
   "../controllers/chatController"
 );
@@ -45,6 +45,12 @@ router.post(
   "/messages/:chatId",
   auth,
   sendMessage
+);
+
+router.get(
+  "/unread-counts",
+  auth,
+  getUnreadCounts
 );
 
 module.exports =

@@ -4,7 +4,8 @@ import {
     createChat,
     getMyChats,
     getMessages,
-    sendMessage
+    sendMessage,
+    getUnreadCounts
 } from "../../services/chatService";
 
 function getAvatarColor(name = "") {
@@ -55,9 +56,48 @@ const ChatPage = () => {
     const [message, setMessage] =
         useState("");
 
+    const [
+        unreadCounts,
+        setUnreadCounts
+    ] = useState({});
+
     useEffect(() => {
 
         loadChats();
+        loadUnreadCounts();
+
+    }, []);
+
+    const loadUnreadCounts =
+        async () => {
+
+            try {
+
+                const data =
+                    await getUnreadCounts();
+
+                setUnreadCounts(
+                    data.counts
+                );
+
+            } catch (error) {
+
+                console.log(error);
+
+            }
+        };
+
+    useEffect(() => {
+
+        const interval =
+            setInterval(() => {
+
+                loadUnreadCounts();
+
+            }, 5000);
+
+        return () =>
+            clearInterval(interval);
 
     }, []);
 
@@ -303,13 +343,40 @@ const ChatPage = () => {
                                         onMouseLeave={e => { if (!isActive) e.currentTarget.style.background = "transparent"; }}
                                     >
                                         <Avatar name={otherUser?.fullName || ""} size={36} />
-                                        <div style={{ minWidth: 0 }}>
+                                        <div
+                                            style={{
+                                                minWidth: 0,
+                                                flex: 1
+                                            }}
+                                        >
                                             <div style={{ color: isActive ? "#F1F5F9" : "#CBD5E1", fontWeight: 600, fontSize: 13.5, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
                                                 {otherUser?.fullName}
                                             </div>
                                             <div style={{ color: "#475569", fontSize: 11.5, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
                                                 {otherUser?.company?.name}
                                             </div>
+                                            {
+                                                unreadCounts[chat._id] > 0 && (
+                                                    <span
+                                                        style={{
+                                                            background: "#EF4444",
+                                                            color: "#fff",
+                                                            fontSize: "11px",
+                                                            fontWeight: "700",
+                                                            borderRadius: "999px",
+                                                            minWidth: "20px",
+                                                            height: "20px",
+                                                            display: "inline-flex",
+                                                            alignItems: "center",
+                                                            justifyContent: "center",
+                                                            padding: "0 6px",
+                                                            marginTop: "4px"
+                                                        }}
+                                                    >
+                                                        {unreadCounts[chat._id]}
+                                                    </span>
+                                                )
+                                            }
                                         </div>
                                     </div>
                                 );

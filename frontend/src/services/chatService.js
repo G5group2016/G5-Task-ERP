@@ -44,3 +44,14 @@ export const sendMessage = async (
 
   return response.data;
 };
+
+export const getUnreadCounts =
+  async () => {
+
+    const response =
+      await api.get(
+        "/chat/unread-counts"
+      );
+
+    return response.data;
+  };

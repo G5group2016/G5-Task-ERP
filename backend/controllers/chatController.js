@@ -183,6 +183,20 @@ exports.getMessages =
   async (req, res) => {
 
     try {
+      await Message.updateMany(
+        {
+          chat: req.params.chatId,
+
+          sender: {
+            $ne: req.user.id
+          },
+
+          isRead: false
+        },
+        {
+          isRead: true
+        }
+      );
 
       const messages =
         await Message.find({
@@ -258,4 +272,49 @@ exports.sendMessage =
       });
 
     }
+  };
+
+exports.getUnreadCounts =
+  async (req, res) => {
+
+    try {
+
+      const chats =
+        await Chat.find({
+          users: req.user.id
+        });
+
+      const counts = {};
+
+      for (const chat of chats) {
+
+        const count =
+          await Message.countDocuments({
+
+            chat: chat._id,
+
+            sender: {
+              $ne: req.user.id
+            },
+
+            isRead: false
+          });
+
+        counts[chat._id] =
+          count;
+      }
+
+      res.json({
+        success: true,
+        counts
+      });
+
+    } catch (error) {
+
+      res.status(500).json({
+        message: error.message
+      });
+
+    }
+
   };
