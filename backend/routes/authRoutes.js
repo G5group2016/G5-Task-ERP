@@ -26,8 +26,15 @@ require(
  "../middleware/upload"
 );
 
+// router.post(
+//   "/register-super-admin",
+//   registerSuperAdmin
+// );
+
 router.post(
   "/register-super-admin",
+  auth,
+  role("SUPER_ADMIN"),
   registerSuperAdmin
 );
 

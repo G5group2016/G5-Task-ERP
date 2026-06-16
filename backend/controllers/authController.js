@@ -20,17 +20,17 @@ const {
 
 exports.registerSuperAdmin = async (req, res) => {
   try {
-    const existingAdmin =
-      await User.findOne({
-        role: "SUPER_ADMIN"
-      });
+    // const existingAdmin =
+    //   await User.findOne({
+    //     role: "SUPER_ADMIN"
+    //   });
 
-    if (existingAdmin) {
-      return res.status(400).json({
-        message:
-          "Super Admin already exists"
-      });
-    }
+    // if (existingAdmin) {
+    //   return res.status(400).json({
+    //     message:
+    //       "Super Admin already exists"
+    //   });
+    // }
 
     const {
       fullName,
