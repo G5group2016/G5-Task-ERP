@@ -3,6 +3,7 @@ import {
   getNotifications, markAllAsRead, deleteNotification,
   deleteAllNotifications
 } from "../../services/notificationService";
+import { MdOutlineMail } from "react-icons/md";
 
 const Navbar = () => {
 
@@ -146,13 +147,24 @@ const Navbar = () => {
       </h1>
 
       <div className="flex items-center gap-6">
+        <button
+          onClick={() =>
+            window.open(
+              "https://outlook.office.com/mail/",
+              "_blank"
+            )
+          }
+          title={`Open Mail (${user?.email})`}
+          className="w-10 h-10 rounded-full bg-slate-800 hover:bg-slate-700 flex items-center justify-center text-lg cursor-pointer"
+        >
+          <MdOutlineMail />
+        </button>
 
         {/* Notification Bell */}
 
         <div className="relative">
 
           <div className="relative">
-
             <button className="cursor-pointer"
               onClick={
                 handleNotificationClick
