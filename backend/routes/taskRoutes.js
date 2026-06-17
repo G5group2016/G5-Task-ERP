@@ -14,7 +14,7 @@ const {
   createTask,
   getTasks,
   getMyTasks,
-  updateStatus, getLatestTasks, createSelfTask
+  updateStatus, getLatestTasks, createSelfTask, exportTasksExcel
 } = require(
   "../controllers/taskController"
 );
@@ -71,6 +71,13 @@ router.post(
     "TEAM_LEAD"
   ),
   createSelfTask
+);
+
+router.get(
+  "/export/excel",
+  auth,
+  role("OFFICE_MANAGER"),
+  exportTasksExcel
 );
 
 module.exports =

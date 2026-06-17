@@ -58,3 +58,12 @@ export const createSelfTask = async (
 
   return response.data;
 };
+
+export const downloadTasksExcel =
+  () =>
+    api.get(
+      "/tasks/export/excel",
+      {
+        responseType: "blob"
+      }
+    );

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { getTasks } from "../../services/taskService";
+import { getTasks, downloadTasksExcel } from "../../services/taskService";
 import TaskForm from "./TaskForm";
 
 const priorityConfig = {
@@ -147,6 +147,44 @@ const TaskList = () => {
     document.querySelector('.table-container')?.scrollIntoView({ behavior: 'smooth' });
   };
 
+  const handleDownloadExcel =
+    async () => {
+
+      try {
+
+        const response =
+          await downloadTasksExcel();
+
+        const url =
+          window.URL.createObjectURL(
+            new Blob([
+              response.data
+            ])
+          );
+
+        const link =
+          document.createElement("a");
+
+        link.href = url;
+
+        link.setAttribute(
+          "download",
+          "Tasks.xlsx"
+        );
+
+        document.body.appendChild(link);
+
+        link.click();
+
+        link.remove();
+
+      } catch (error) {
+
+        console.log(error);
+
+      }
+    };
+
   return (
     <div style={{ fontFamily: "'Inter', system-ui, sans-serif", color: "#F1F5F9", padding: "0 16px" }}>
 
@@ -163,13 +201,45 @@ const TaskList = () => {
             Tasks
           </h1>
         </div>
-        <div style={{
-          display: "inline-flex", alignItems: "center",
-          padding: "5px 14px", borderRadius: "20px",
-          background: "rgba(99,102,241,0.1)", border: "1px solid rgba(99,102,241,0.2)",
-          fontSize: "13px", fontWeight: "600", color: "#818CF8",
-        }}>
-          {tasks.length} total
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: "10px",
+          }}
+        >
+          <div
+            style={{
+              display: "inline-flex",
+              alignItems: "center",
+              padding: "5px 14px",
+              borderRadius: "20px",
+              background: "rgba(99,102,241,0.1)",
+              border: "1px solid rgba(99,102,241,0.2)",
+              fontSize: "13px",
+              fontWeight: "600",
+              color: "#818CF8",
+            }}
+          >
+            {tasks.length} total
+          </div>
+
+          {user?.role === "OFFICE_MANAGER" && (
+            <button
+              onClick={handleDownloadExcel}
+              style={{
+                padding: "8px 16px",
+                borderRadius: "8px",
+                background: "#10B981",
+                border: "none",
+                color: "#fff",
+                fontWeight: "600",
+                cursor: "pointer",
+              }}
+            >
+              Download Excel
+            </button>
+          )}
         </div>
       </div>
 
@@ -261,32 +331,32 @@ const TaskList = () => {
                     <td style={{ padding: "14px 20px" }}>
                       <span style={{ fontSize: "14px", fontWeight: "600", color: "#E2E8F0" }}>
                         <div
-  style={{
-    display: "flex",
-    alignItems: "center",
-    gap: "8px"
-  }}
->
-  <span>
-    {task.title}
-  </span>
+                          style={{
+                            display: "flex",
+                            alignItems: "center",
+                            gap: "8px"
+                          }}
+                        >
+                          <span>
+                            {task.title}
+                          </span>
 
-  {task.isSelfAssigned && (
-    <span
-      style={{
-        background:
-          "rgba(139,92,246,0.15)",
-        color: "#A78BFA",
-        padding: "2px 8px",
-        borderRadius: "12px",
-        fontSize: "11px",
-        fontWeight: "600"
-      }}
-    >
-      Self Assigned
-    </span>
-  )}
-</div>
+                          {task.isSelfAssigned && (
+                            <span
+                              style={{
+                                background:
+                                  "rgba(139,92,246,0.15)",
+                                color: "#A78BFA",
+                                padding: "2px 8px",
+                                borderRadius: "12px",
+                                fontSize: "11px",
+                                fontWeight: "600"
+                              }}
+                            >
+                              Self Assigned
+                            </span>
+                          )}
+                        </div>
                       </span>
                     </td>
                     <td style={{ padding: "14px 20px", fontSize: "13.5px", color: "#64748B" }}>

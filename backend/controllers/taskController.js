@@ -6,6 +6,7 @@ const Task =
 
 const Notification =
   require("../models/Notification");
+const XLSX = require("xlsx");
 
 exports.createTask =
   async (req, res) => {
@@ -358,3 +359,101 @@ Priority: ${task.priority}
   }
 };
 
+exports.exportTasksExcel = async (req, res) => {
+  try {
+    let filter = {};
+
+    if (req.user.role === "COMPANY_ADMIN") {
+      const currentUser = await User.findById(req.user.id);
+      filter.company = currentUser.company;
+    }
+
+    const tasks = await Task.find(filter)
+      .populate("assignedTo", "fullName email")
+      .populate("company", "name")
+      .sort({ createdAt: -1 });
+
+    const excelData = tasks.map((task) => ({
+      Employee:
+        task.assignedTo?.fullName ||
+        task.assignedToName,
+
+      Email:
+        task.assignedTo?.email || "-",
+
+      Company:
+        task.company?.name || "-",
+
+      Task:
+        task.title,
+
+      Description:
+        task.description,
+
+      Priority:
+        task.priority,
+
+      Status:
+        task.status,
+
+      SelfAssigned:
+        task.isSelfAssigned
+          ? "Yes"
+          : "No",
+
+      // StartDate:
+      //   task.startDate
+      //     ? new Date(task.startDate).toLocaleDateString()
+      //     : "-",
+
+      DueDate:
+        task.dueDate
+          ? new Date(task.dueDate).toLocaleDateString()
+          : "-",
+
+      CompletionDate:
+        task.completionDate
+          ? new Date(task.completionDate).toLocaleDateString()
+          : "-",
+
+      CreatedAt:
+        new Date(task.createdAt).toLocaleDateString(),
+    }));
+
+    const workbook = XLSX.utils.book_new();
+
+    const worksheet =
+      XLSX.utils.json_to_sheet(excelData);
+
+    XLSX.utils.book_append_sheet(
+      workbook,
+      worksheet,
+      "Tasks"
+    );
+
+    const buffer = XLSX.write(
+      workbook,
+      {
+        type: "buffer",
+        bookType: "xlsx",
+      }
+    );
+
+    res.setHeader(
+      "Content-Disposition",
+      "attachment; filename=Tasks.xlsx"
+    );
+
+    res.setHeader(
+      "Content-Type",
+      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    );
+
+    res.send(buffer);
+
+  } catch (error) {
+    res.status(500).json({
+      message: error.message,
+    });
+  }
+};
