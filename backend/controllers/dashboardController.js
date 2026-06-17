@@ -393,3 +393,89 @@ exports.companyAdminDashboard =
 
     }
   };
+
+
+exports.getTasksByFilter =
+  async (req, res) => {
+
+    try {
+
+      const user =
+        await User.findById(
+          req.user.id
+        );
+
+      const filter = {
+        company:
+          user.company
+      };
+
+      if (
+        req.query.type ===
+        "employees"
+      ) {
+
+        const employees =
+          await User.find({
+            company: user.company,
+            role: "EMPLOYEE"
+          });
+
+        return res.json({
+          success: true,
+          employees
+        });
+      }
+
+      if (
+        req.query.type ===
+        "pending"
+      ) {
+        filter.status = {
+          $in: [
+            "PENDING",
+            "IN_PROGRESS"
+          ]
+        };
+      }
+
+      if (
+        req.query.type ===
+        "completed"
+      ) {
+        filter.status =
+          "COMPLETED";
+      }
+
+      if (
+        req.query.type ===
+        "self"
+      ) {
+        filter.isSelfAssigned =
+          true;
+      }
+
+      const tasks =
+        await Task.find(filter)
+          .populate(
+            "assignedTo",
+            "fullName"
+          )
+          .sort({
+            createdAt: -1
+          });
+
+      res.json({
+        success: true,
+        tasks
+      });
+
+    } catch (error) {
+
+      res.status(500).json({
+        message:
+          error.message
+      });
+
+    }
+  };

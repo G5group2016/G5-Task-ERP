@@ -18,6 +18,7 @@ import ReportList from "../pages/reports/ReportList";
 import Attendance from "../pages/attendance/Attendance";
 import PendingTasks from "../pages/tasks/PendingTasks";
 import CompletedTasks from "../pages/tasks/CompletedTasks";
+import SelfAssignedTasks from "../pages/tasks/SelfAssignedTasks";
 import ProfileImageRequests
   from "../pages/profileRequests/ProfileImageRequests";
 import ChatPage from "../pages/chat/ChatPage";
@@ -152,6 +153,11 @@ const AppRoutes = () => {
               <EmployeeProfile />
             }
           />
+
+          <Route
+            path="/company-self-tasks"
+            element={<SelfAssignedTasks />}
+          />
         </Route>
 
         {/* COMPANY ADMIN */}
@@ -200,7 +206,7 @@ const AppRoutes = () => {
               <RoleProtectedRoute
                 allowedRoles={[
                   "EMPLOYEE",
-                  "TEAM_LEAD", "COMPANY_ADMIN", "SUPER_ADMIN","OFFICE_MANAGER"
+                  "TEAM_LEAD", "COMPANY_ADMIN", "SUPER_ADMIN", "OFFICE_MANAGER"
                 ]}
               >
                 <EmployeeLayout />

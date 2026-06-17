@@ -1,50 +1,50 @@
 const express =
-require("express");
+  require("express");
 
 const router =
-express.Router();
+  express.Router();
 
 const auth =
-require("../middleware/authMiddleware");
+  require("../middleware/authMiddleware");
 
 const role =
-require("../middleware/roleMiddleware");
+  require("../middleware/roleMiddleware");
 
 const {
   getDashboardStats,
   companySummary,
   topEmployees,
-  attendanceSummary,employeeDashboard, companyAdminDashboard
+  attendanceSummary, employeeDashboard, companyAdminDashboard, getTasksByFilter
 } = require(
- "../controllers/dashboardController"
+  "../controllers/dashboardController"
 );
 
 router.get(
- "/stats",
- auth,
- role("SUPER_ADMIN","OFFICE_MANAGER"),
- getDashboardStats
+  "/stats",
+  auth,
+  role("SUPER_ADMIN", "OFFICE_MANAGER"),
+  getDashboardStats
 );
 
 router.get(
- "/companies",
- auth,
- role("SUPER_ADMIN"),
- companySummary
+  "/companies",
+  auth,
+  role("SUPER_ADMIN"),
+  companySummary
 );
 
 router.get(
- "/top-employees",
- auth,
- role("SUPER_ADMIN"),
- topEmployees
+  "/top-employees",
+  auth,
+  role("SUPER_ADMIN"),
+  topEmployees
 );
 
 router.get(
- "/attendance",
- auth,
- role("SUPER_ADMIN"),
- attendanceSummary
+  "/attendance",
+  auth,
+  role("SUPER_ADMIN"),
+  attendanceSummary
 );
 
 router.get(
@@ -67,5 +67,14 @@ router.get(
   companyAdminDashboard
 );
 
+router.get(
+  "/filter",
+  auth,
+  role(
+    "COMPANY_ADMIN"
+  ),
+  getTasksByFilter
+);
+
 module.exports =
-router;
+  router;

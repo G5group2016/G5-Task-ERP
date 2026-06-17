@@ -31,3 +31,14 @@ async () => {
 
   return response.data;
 };
+
+export const getFilteredTasks =
+  async (type) => {
+
+    const response =
+      await api.get(
+        `/dashboard/filter?type=${type}`
+      );
+
+    return response.data;
+  };
