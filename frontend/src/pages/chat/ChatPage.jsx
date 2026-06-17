@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState } from "react";
 import {
     searchUsers,
     createChat,
@@ -60,13 +60,13 @@ const ChatPage = () => {
         unreadCounts,
         setUnreadCounts
     ] = useState({});
-    const messagesEndRef = useRef(null);
+    // const messagesEndRef = useRef(null);
 
-    useEffect(() => {
-        messagesEndRef.current?.scrollIntoView({
-            behavior: "smooth"
-        });
-    }, [messages]);
+    // useEffect(() => {
+    //     messagesEndRef.current?.scrollIntoView({
+    //         behavior: "smooth"
+    //     });
+    // }, [messages]);
 
     useEffect(() => {
 
@@ -492,7 +492,7 @@ const ChatPage = () => {
                                     </div>
                                 );
                             })}
-                            <div ref={messagesEndRef} />
+                            {/* <div ref={messagesEndRef} /> */}
                         </div>
 
                         {/* Send Box */}
