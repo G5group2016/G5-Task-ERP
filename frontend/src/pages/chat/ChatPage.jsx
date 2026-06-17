@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import {
     searchUsers,
     createChat,
@@ -60,6 +60,13 @@ const ChatPage = () => {
         unreadCounts,
         setUnreadCounts
     ] = useState({});
+    const messagesEndRef = useRef(null);
+
+    useEffect(() => {
+        messagesEndRef.current?.scrollIntoView({
+            behavior: "smooth"
+        });
+    }, [messages]);
 
     useEffect(() => {
 
@@ -67,6 +74,16 @@ const ChatPage = () => {
         loadUnreadCounts();
 
     }, []);
+
+    useEffect(() => {
+        if (!selectedChat?._id) return;
+
+        const interval = setInterval(() => {
+            loadMessages(selectedChat._id);
+        }, 2000);
+
+        return () => clearInterval(interval);
+    }, [selectedChat?._id]);
 
     const loadUnreadCounts =
         async () => {
@@ -196,31 +213,36 @@ const ChatPage = () => {
             }
         };
 
-    const handleSend =
-        async () => {
+    const handleSend = async () => {
+        if (!message.trim()) return;
 
-            if (!message.trim())
-                return;
+        try {
 
-            try {
+            const data = await sendMessage(
+                selectedChat._id,
+                message
+            );
 
-                await sendMessage(
-                    selectedChat._id,
-                    message
-                );
+            setMessages(prev => [
+                ...prev,
+                {
+                    ...data.message,
+                    sender: {
+                        _id: JSON.parse(
+                            localStorage.getItem("user")
+                        )._id
+                    }
+                }
+            ]);
 
-                setMessage("");
+            setMessage("");
 
-                loadMessages(
-                    selectedChat._id
-                );
+            loadChats(); // add this
 
-            } catch (error) {
-
-                console.log(error);
-
-            }
-        };
+        } catch (error) {
+            console.log(error);
+        }
+    };
 
     return (
         <div style={{
@@ -470,6 +492,7 @@ const ChatPage = () => {
                                     </div>
                                 );
                             })}
+                            <div ref={messagesEndRef} />
                         </div>
 
                         {/* Send Box */}
