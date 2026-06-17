@@ -324,6 +324,18 @@ exports.companyAdminDashboard =
           },
         });
 
+      const selfAssignedTasks =
+        await Task.countDocuments({
+          company: companyId,
+          isSelfAssigned: true,
+          status: {
+            $in: [
+              "PENDING",
+              "IN_PROGRESS"
+            ]
+          }
+        });
+
       const pendingTasks =
         await Task.countDocuments({
           company: companyId,
@@ -369,6 +381,7 @@ exports.companyAdminDashboard =
         completedTasks,
         reportsSubmitted,
         attendanceToday,
+        selfAssignedTasks
       });
 
     } catch (error) {

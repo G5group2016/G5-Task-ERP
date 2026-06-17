@@ -14,7 +14,7 @@ const {
   createTask,
   getTasks,
   getMyTasks,
-  updateStatus, getLatestTasks
+  updateStatus, getLatestTasks, createSelfTask
 } = require(
   "../controllers/taskController"
 );
@@ -61,6 +61,16 @@ router.put(
   "/status/:id",
   auth,
   updateStatus
+);
+
+router.post(
+  "/self",
+  auth,
+  role(
+    "EMPLOYEE",
+    "TEAM_LEAD"
+  ),
+  createSelfTask
 );
 
 module.exports =

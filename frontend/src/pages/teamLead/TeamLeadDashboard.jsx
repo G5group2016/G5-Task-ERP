@@ -1,19 +1,20 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import SelfTaskForm from "../Tasks/SelfTaskForm";
 // import Navbar from "../../components/Navbar/Navbar";
 
 const quickActions = [
   // { to: "/team-members", label: "My Team",      icon: "👥", desc: "Manage your team members",  from: "#6366F1", to2: "#4F46E5" },
-  { to: "/my-tasks",      label: "My Tasks",     icon: "⚡", desc: "View your assigned tasks",   from: "#F59E0B", to2: "#D97706" },
-  { to: "/my-reports",    label: "My Reports",   icon: "📋", desc: "Submit work reports",        from: "#8B5CF6", to2: "#7C3AED" },
-  { to: "/my-attendance", label: "My Attendance",icon: "🕐", desc: "Check attendance records",   from: "#10B981", to2: "#059669" },
-  { to: "/my-profile",    label: "My Profile",   icon: "👤", desc: "Manage profile settings",    from: "#3B82F6", to2: "#2563EB" },
+  { to: "/my-tasks", label: "My Tasks", icon: "⚡", desc: "View your assigned tasks", from: "#F59E0B", to2: "#D97706" },
+  { to: "/my-reports", label: "My Reports", icon: "📋", desc: "Submit work reports", from: "#8B5CF6", to2: "#7C3AED" },
+  { to: "/my-attendance", label: "My Attendance", icon: "🕐", desc: "Check attendance records", from: "#10B981", to2: "#059669" },
+  { to: "/my-profile", label: "My Profile", icon: "👤", desc: "Manage profile settings", from: "#3B82F6", to2: "#2563EB" },
 ];
 
 function getAvatarColor(name = "") {
   const colors = [
-    ["#6366F1","#4F46E5"],["#8B5CF6","#7C3AED"],["#EC4899","#DB2777"],
-    ["#F59E0B","#D97706"],["#10B981","#059669"],["#3B82F6","#2563EB"],
+    ["#6366F1", "#4F46E5"], ["#8B5CF6", "#7C3AED"], ["#EC4899", "#DB2777"],
+    ["#F59E0B", "#D97706"], ["#10B981", "#059669"], ["#3B82F6", "#2563EB"],
   ];
   let hash = 0;
   for (let i = 0; i < name.length; i++) hash = name.charCodeAt(i) + ((hash << 5) - hash);
@@ -130,6 +131,12 @@ const TeamLeadDashboard = () => {
           </div>
         </div>
       </div>
+
+      <SelfTaskForm
+        onSuccess={() =>
+          window.location.reload()
+        }
+      />
 
       {/* Quick actions */}
       <div>

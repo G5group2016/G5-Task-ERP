@@ -264,3 +264,72 @@ exports.getLatestTasks =
 
   };
 
+
+exports.createSelfTask = async (req, res) => {
+  try {
+
+    const currentUser =
+      await User.findById(req.user.id);
+
+    const task =
+      await Task.create({
+        title: req.body.title,
+        description: req.body.description,
+        priority: req.body.priority,
+
+        company: currentUser.company,
+
+        assignedTo: currentUser._id,
+        assignedToName: currentUser.fullName,
+
+        assignedBy: currentUser._id,
+        createdBy: currentUser._id,
+
+        isSelfAssigned: true
+      });
+
+    const managers =
+      await User.find({
+        company: currentUser.company,
+        role: {
+          $in: [
+            "COMPANY_ADMIN",
+            "OFFICE_MANAGER"
+          ]
+        }
+      });
+
+    for (const manager of managers) {
+
+      await Notification.create({
+
+        user: manager._id,
+
+        title:
+          "Employee Started Work",
+
+        message: `
+Employee: ${currentUser.fullName}
+Task: ${task.title}
+Priority: ${task.priority}
+`,
+
+        type: "SELF_TASK"
+      });
+
+    }
+
+    res.status(201).json({
+      success: true,
+      task
+    });
+
+  } catch (error) {
+
+    res.status(500).json({
+      message: error.message
+    });
+
+  }
+};
+

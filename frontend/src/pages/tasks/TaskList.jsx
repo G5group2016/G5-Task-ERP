@@ -260,7 +260,33 @@ const TaskList = () => {
                     </td>
                     <td style={{ padding: "14px 20px" }}>
                       <span style={{ fontSize: "14px", fontWeight: "600", color: "#E2E8F0" }}>
-                        {task.title}
+                        <div
+  style={{
+    display: "flex",
+    alignItems: "center",
+    gap: "8px"
+  }}
+>
+  <span>
+    {task.title}
+  </span>
+
+  {task.isSelfAssigned && (
+    <span
+      style={{
+        background:
+          "rgba(139,92,246,0.15)",
+        color: "#A78BFA",
+        padding: "2px 8px",
+        borderRadius: "12px",
+        fontSize: "11px",
+        fontWeight: "600"
+      }}
+    >
+      Self Assigned
+    </span>
+  )}
+</div>
                       </span>
                     </td>
                     <td style={{ padding: "14px 20px", fontSize: "13.5px", color: "#64748B" }}>

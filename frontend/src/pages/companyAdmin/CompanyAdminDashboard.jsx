@@ -6,15 +6,15 @@ import { getLatestTasks } from "../../services/taskService";
 
 const priorityConfig = {
   URGENT: { dot: "#EF4444", bg: "rgba(239,68,68,0.12)", border: "rgba(239,68,68,0.25)", text: "#F87171", label: "Urgent" },
-  HIGH:   { dot: "#F59E0B", bg: "rgba(245,158,11,0.12)", border: "rgba(245,158,11,0.25)", text: "#F59E0B", label: "High" },
+  HIGH: { dot: "#F59E0B", bg: "rgba(245,158,11,0.12)", border: "rgba(245,158,11,0.25)", text: "#F59E0B", label: "High" },
   MEDIUM: { dot: "#3B82F6", bg: "rgba(59,130,246,0.12)", border: "rgba(59,130,246,0.25)", text: "#60A5FA", label: "Medium" },
-  LOW:    { dot: "#10B981", bg: "rgba(16,185,129,0.12)", border: "rgba(16,185,129,0.25)", text: "#10B981", label: "Low" },
+  LOW: { dot: "#10B981", bg: "rgba(16,185,129,0.12)", border: "rgba(16,185,129,0.25)", text: "#10B981", label: "Low" },
 };
 
 const taskStatusConfig = {
-  COMPLETED:   { dot: "#10B981", bg: "rgba(16,185,129,0.12)", border: "rgba(16,185,129,0.25)", text: "#10B981", label: "Completed" },
-  IN_PROGRESS: { dot: "#6366F1", bg: "rgba(99,102,241,0.12)", border: "rgba(99,102,241,0.3)",  text: "#818CF8", label: "In Progress" },
-  PENDING:     { dot: "#F59E0B", bg: "rgba(245,158,11,0.12)", border: "rgba(245,158,11,0.25)", text: "#F59E0B", label: "Pending" },
+  COMPLETED: { dot: "#10B981", bg: "rgba(16,185,129,0.12)", border: "rgba(16,185,129,0.25)", text: "#10B981", label: "Completed" },
+  IN_PROGRESS: { dot: "#6366F1", bg: "rgba(99,102,241,0.12)", border: "rgba(99,102,241,0.3)", text: "#818CF8", label: "In Progress" },
+  PENDING: { dot: "#F59E0B", bg: "rgba(245,158,11,0.12)", border: "rgba(245,158,11,0.25)", text: "#F59E0B", label: "Pending" },
 };
 
 function DotBadge({ config, value }) {
@@ -28,7 +28,7 @@ function DotBadge({ config, value }) {
 }
 
 function getAvatarColor(name = "") {
-  const colors = [["#6366F1","#4F46E5"],["#8B5CF6","#7C3AED"],["#EC4899","#DB2777"],["#F59E0B","#D97706"],["#10B981","#059669"],["#3B82F6","#2563EB"],["#EF4444","#DC2626"],["#14B8A6","#0D9488"]];
+  const colors = [["#6366F1", "#4F46E5"], ["#8B5CF6", "#7C3AED"], ["#EC4899", "#DB2777"], ["#F59E0B", "#D97706"], ["#10B981", "#059669"], ["#3B82F6", "#2563EB"], ["#EF4444", "#DC2626"], ["#14B8A6", "#0D9488"]];
   let hash = 0;
   for (let i = 0; i < name.length; i++) hash = name.charCodeAt(i) + ((hash << 5) - hash);
   return colors[Math.abs(hash) % colors.length];
@@ -45,23 +45,31 @@ function Avatar({ name = "" }) {
 }
 
 const statCards = [
-  { key: "totalEmployees",   label: "Employees",       icon: "👥", from: "#6366F1", to: "#4F46E5", glow: "rgba(99,102,241,0.3)" },
-  { key: "pendingTasks",     label: "Pending Tasks",   icon: "⏳", from: "#EF4444", to: "#DC2626", glow: "rgba(239,68,68,0.3)" },
+  { key: "totalEmployees", label: "Employees", icon: "👥", from: "#6366F1", to: "#4F46E5", glow: "rgba(99,102,241,0.3)" },
+  {
+    key: "selfAssignedTasks",
+    label: "Self Tasks",
+    icon: "🚀",
+    from: "#8B5CF6",
+    to: "#7C3AED",
+    glow: "rgba(139,92,246,0.3)"
+  },
+  { key: "pendingTasks", label: "Pending Tasks", icon: "⏳", from: "#EF4444", to: "#DC2626", glow: "rgba(239,68,68,0.3)" },
   //   { key: "pendingTasks", label: "Pending Tasks", icon: "⏳", from: "#EF4444", to: "#DC2626", glow: "rgba(239,68,68,0.3)" },
-  { key: "completedTasks",   label: "Completed",       icon: "✓",  from: "#10B981", to: "#059669", glow: "rgba(16,185,129,0.3)" },
-  { key: "reportsSubmitted", label: "Reports",         icon: "📋", from: "#8B5CF6", to: "#7C3AED", glow: "rgba(139,92,246,0.3)" },
-  { key: "attendanceToday",  label: "Attendance Today",icon: "🕐", from: "#3B82F6", to: "#2563EB", glow: "rgba(59,130,246,0.3)" },
+  { key: "completedTasks", label: "Completed", icon: "✓", from: "#10B981", to: "#059669", glow: "rgba(16,185,129,0.3)" },
+  { key: "reportsSubmitted", label: "Reports", icon: "📋", from: "#8B5CF6", to: "#7C3AED", glow: "rgba(139,92,246,0.3)" },
+  { key: "attendanceToday", label: "Attendance Today", icon: "🕐", from: "#3B82F6", to: "#2563EB", glow: "rgba(59,130,246,0.3)" },
 ];
 
 const quickActions = [
-  { to: "/employees",     label: "Manage Employees", icon: "👥", desc: "View and manage staff",       from: "#6366F1", to2: "#4F46E5" },
-  { to: "/tasks",         label: "Manage Tasks",     icon: "⚡", desc: "Assign and track tasks",      from: "#F59E0B", to2: "#D97706" },
-  { to: "/reports",       label: "Reports",          icon: "📋", desc: "Review submitted reports",    from: "#8B5CF6", to2: "#7C3AED" },
-  { to: "/attendance",    label: "Attendance",       icon: "🕐", desc: "Monitor team attendance",     from: "#10B981", to2: "#059669" },
-  { to: "/my-tasks",      label: "My Tasks",         icon: "✦",  desc: "Your assigned tasks",         from: "#3B82F6", to2: "#2563EB" },
-  { to: "/my-reports",    label: "My Reports",       icon: "📄", desc: "Your submitted reports",      from: "#EC4899", to2: "#DB2777" },
-  { to: "/my-attendance", label: "My Attendance",    icon: "📅", desc: "Your check-in history",       from: "#14B8A6", to2: "#0D9488" },
-  { to: "/my-profile",    label: "My Profile",       icon: "👤", desc: "Account & personal info",     from: "#F97316", to2: "#EA580C" },
+  { to: "/employees", label: "Manage Employees", icon: "👥", desc: "View and manage staff", from: "#6366F1", to2: "#4F46E5" },
+  { to: "/tasks", label: "Manage Tasks", icon: "⚡", desc: "Assign and track tasks", from: "#F59E0B", to2: "#D97706" },
+  { to: "/reports", label: "Reports", icon: "📋", desc: "Review submitted reports", from: "#8B5CF6", to2: "#7C3AED" },
+  { to: "/attendance", label: "Attendance", icon: "🕐", desc: "Monitor team attendance", from: "#10B981", to2: "#059669" },
+  { to: "/my-tasks", label: "My Tasks", icon: "✦", desc: "Your assigned tasks", from: "#3B82F6", to2: "#2563EB" },
+  { to: "/my-reports", label: "My Reports", icon: "📄", desc: "Your submitted reports", from: "#EC4899", to2: "#DB2777" },
+  { to: "/my-attendance", label: "My Attendance", icon: "📅", desc: "Your check-in history", from: "#14B8A6", to2: "#0D9488" },
+  { to: "/my-profile", label: "My Profile", icon: "👤", desc: "Account & personal info", from: "#F97316", to2: "#EA580C" },
 ];
 
 const CompanyAdminDashboard = () => {

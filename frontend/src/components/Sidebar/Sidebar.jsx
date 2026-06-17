@@ -159,7 +159,7 @@ const Sidebar = () => {
               G5 Group
             </p>
             <p style={{ fontSize: "10px", color: "#475569", margin: 0, letterSpacing: "0.05em" }}>
-              ENTERPRISE PLATFORM
+              ONE GROUP ENDLESS HORIZONS
             </p>
           </div>
         </div>

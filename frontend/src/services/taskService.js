@@ -45,3 +45,16 @@ export const getLatestTasks =
     return response.data;
 
   };
+
+export const createSelfTask = async (
+  taskData
+) => {
+
+  const response =
+    await api.post(
+      "/tasks/self",
+      taskData
+    );
+
+  return response.data;
+};

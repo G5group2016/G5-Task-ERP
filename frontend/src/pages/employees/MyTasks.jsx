@@ -120,6 +120,28 @@ const MyTasks = () => {
                       <p style={{ color: "#94A3B8", fontSize: 13.5, margin: 0, lineHeight: 1.6 }}>{task.description}</p>
                     </div>
                   </div>
+                  {task.isSelfAssigned && (
+
+                    <span
+                      style={{
+                        background:
+                          "rgba(139,92,246,.15)",
+                        color:
+                          "#A78BFA",
+                        padding:
+                          "4px 10px",
+                        borderRadius:
+                          "20px",
+                        fontSize:
+                          "12px",
+                        fontWeight:
+                          "600"
+                      }}
+                    >
+                      Self Assigned
+                    </span>
+
+                  )}
 
                   {/* Badges */}
                   <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginTop: 14 }}>

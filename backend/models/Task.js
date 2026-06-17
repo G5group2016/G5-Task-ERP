@@ -33,6 +33,16 @@ const taskSchema = new mongoose.Schema(
       ref: "User"
     },
 
+    isSelfAssigned: {
+      type: Boolean,
+      default: false
+    },
+
+    createdBy: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User"
+    },
+
     priority: {
       type: String,
       enum: [
