@@ -23,6 +23,11 @@ const notificationSchema =
                 default: "NEW_EMPLOYEE"
             },
 
+            company: {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: "Company"
+            },
+
             createdAt: {
                 type: Date,
                 default: Date.now

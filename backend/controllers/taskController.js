@@ -188,13 +188,36 @@ exports.updateStatus =
       task.status =
         req.body.status;
 
-      if (
-        req.body.status ===
-        "COMPLETED"
-      ) {
+      if (req.body.status === "COMPLETED") {
 
-        task.completionDate =
-          new Date();
+        task.completionDate = new Date();
+
+        const employee =
+          await User.findById(req.user.id);
+
+        const managers =
+          await User.find({
+            $or: [
+              {
+                company: employee.company,
+                role: "COMPANY_ADMIN"
+              },
+              {
+                role: "SUPER_ADMIN"
+              }
+            ]
+          });
+
+        for (const manager of managers) {
+
+          await Notification.create({
+            user: manager._id,
+            title: "✅ Task Completed",
+            message: `${employee.fullName} completed "${task.title}"`,
+            type: "TASK_COMPLETED"
+          });
+
+        }
 
       }
 
@@ -290,13 +313,15 @@ exports.createSelfTask = async (req, res) => {
 
     const managers =
       await User.find({
-        company: currentUser.company,
-        role: {
-          $in: [
-            "COMPANY_ADMIN",
-            "OFFICE_MANAGER"
-          ]
-        }
+        $or: [
+          {
+            company: currentUser.company,
+            role: "COMPANY_ADMIN"
+          },
+          {
+            role: "SUPER_ADMIN"
+          }
+        ]
       });
 
     for (const manager of managers) {
@@ -306,7 +331,7 @@ exports.createSelfTask = async (req, res) => {
         user: manager._id,
 
         title:
-          "Employee Started Work",
+          "✅ Employee Started Work",
 
         message: `
 Employee: ${currentUser.fullName}
