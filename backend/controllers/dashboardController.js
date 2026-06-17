@@ -24,12 +24,14 @@ exports.getDashboardStats = async (
 
     const totalAdmins =
       await User.countDocuments({
-        role: "COMPANY_ADMIN"
+        role: "COMPANY_ADMIN",
+        isActive: true
       });
 
     const totalTeamLeads =
       await User.countDocuments({
-        role: "TEAM_LEAD"
+        role: "TEAM_LEAD",
+        isActive: true
       });
 
     const activeTasks =
@@ -310,6 +312,7 @@ exports.companyAdminDashboard =
             companyId,
           role:
             "EMPLOYEE",
+            isActive: true
         });
 
       const activeTasks =
@@ -331,7 +334,7 @@ exports.companyAdminDashboard =
           status: {
             $in: [
               "PENDING",
-              "IN_PROGRESS"
+              "IN_PROGRESS","COMPLETED"
             ]
           }
         });
@@ -339,7 +342,12 @@ exports.companyAdminDashboard =
       const pendingTasks =
         await Task.countDocuments({
           company: companyId,
-          status: "PENDING",
+          status: {
+            $in: [
+              "PENDING",
+              "IN_PROGRESS",
+            ],
+          },
         });
 
       const completedTasks =
