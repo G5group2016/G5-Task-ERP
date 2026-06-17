@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import toast from "react-hot-toast";
 import { getEmployeeDashboard } from "../../services/dashboardService";
-import SelfTaskForm from "../Tasks/SelfTaskForm";
+import SelfTaskForm from "../tasks/SelfTaskForm";
 // import Navbar from "../../components/Navbar/Navbar";
 
 const statCards = [

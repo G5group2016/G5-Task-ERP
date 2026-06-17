@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import SelfTaskForm from "../Tasks/SelfTaskForm";
+import SelfTaskForm from "../tasks/SelfTaskForm";
 // import Navbar from "../../components/Navbar/Navbar";
 
 const quickActions = [
