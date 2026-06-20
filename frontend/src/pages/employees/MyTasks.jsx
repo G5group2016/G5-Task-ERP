@@ -163,6 +163,20 @@ const MyTasks = () => {
                   {/* Meta */}
                   <div style={{ marginTop: 16, display: "flex", flexWrap: "wrap", gap: "6px 24px", fontSize: 13, color: "#64748B" }}>
                     <span>📅 Due: <span style={{ color: "#94A3B8", fontWeight: 500 }}>{task.dueDate ? new Date(task.dueDate).toLocaleDateString() : "N/A"}</span></span>
+                    {task.completionDate && (
+                      <span>
+                        ✅ Completed:
+                        <span
+                          style={{
+                            color: "#10B981",
+                            fontWeight: 600,
+                            marginLeft: "4px"
+                          }}
+                        >
+                          {new Date(task.completionDate).toLocaleDateString()}
+                        </span>
+                      </span>
+                    )}
                     {task.company && <span>🏢 <span style={{ color: "#94A3B8", fontWeight: 500 }}>{task.company?.name}</span></span>}
                     {task.assignedBy && <span>👤 Assigned by: <span style={{ color: "#94A3B8", fontWeight: 500 }}>{task.assignedBy?.fullName}</span></span>}
                   </div>
