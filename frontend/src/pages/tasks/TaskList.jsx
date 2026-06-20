@@ -259,7 +259,7 @@ const TaskList = () => {
           <table style={{ width: "100%", borderCollapse: "collapse", minWidth: "600px" }}>
             <thead>
               <tr style={{ background: "#0D1421", borderBottom: "1px solid #1E293B" }}>
-                {["Employee name", "Task", "Company", "Priority", "Status"].map((h) => (
+                {["Employee name", "Task", "Description", "Company", "Priority", "Status"].map((h) => (
                   <th key={h} style={{
                     padding: "12px 20px", textAlign: "left",
                     fontSize: "11px", fontWeight: "700", letterSpacing: "0.08em",
@@ -273,7 +273,7 @@ const TaskList = () => {
             <tbody>
               {currentTasks.length === 0 ? (
                 <tr>
-                  <td colSpan={5} style={{ padding: "48px", textAlign: "center", color: "#475569", fontSize: "14px" }}>
+                  <td colSpan={6} style={{ padding: "48px", textAlign: "center", color: "#475569", fontSize: "14px" }}>
                     No tasks found
                   </td>
                 </tr>
@@ -358,6 +358,20 @@ const TaskList = () => {
                           )}
                         </div>
                       </span>
+                    </td>
+                    <td
+                      style={{
+                        padding: "14px 20px",
+                        fontSize: "13px",
+                        color: "#94A3B8",
+                        minWidth: "300px",
+                        maxWidth: "500px",
+                        whiteSpace: "normal",
+                        wordBreak: "break-word",
+                        lineHeight: "1.5",
+                      }}
+                    >
+                      {task.description || "-"}
                     </td>
                     <td style={{ padding: "14px 20px", fontSize: "13.5px", color: "#64748B" }}>
                       {task.company?.name || <span style={{ color: "#2D3748" }}>—</span>}
