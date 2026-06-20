@@ -23,7 +23,7 @@ const MyReports = () => {
   const [tasks, setTasks] = useState([]);
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
-  const [formData, setFormData] = useState({ task: "", workDescription: "", hoursWorked: "", progressPercentage: "" });
+  const [formData, setFormData] = useState({ task: "", workDescription: "" });
 
   useEffect(() => { loadData(); }, []);
 
@@ -31,9 +31,22 @@ const MyReports = () => {
     try {
       const reportData = await getMyReports();
       const taskData = await getMyTasks();
-      const completedTasks = taskData.filter((task) => task.status === "COMPLETED");
+
+      // Get task IDs already reported
+      const reportedTaskIds = reportData.map(
+        (report) => report.task?._id
+      );
+
+      // Only completed tasks that don't have a report yet
+      const availableTasks = taskData.filter(
+        (task) =>
+          task.status === "COMPLETED" &&
+          !reportedTaskIds.includes(task._id)
+      );
+
       setReports(reportData);
-      setTasks(completedTasks);
+      setTasks(availableTasks);
+
     } catch (error) {
       toast.error("Failed to load reports");
     } finally {
@@ -50,7 +63,7 @@ const MyReports = () => {
     try {
       await submitReport(formData);
       toast.success("Report Submitted");
-      setFormData({ task: "", workDescription: "", hoursWorked: "", progressPercentage: "" });
+      setFormData({ task: "", workDescription: "" });
       loadData();
     } catch (error) {
       toast.error(error.response?.data?.message || "Failed to submit report");
