@@ -27,7 +27,7 @@ const workReportSchema = new mongoose.Schema(
 
     hoursWorked: {
       type: Number,
-      required: true
+      // required: true
     },
 
     progressPercentage: {
