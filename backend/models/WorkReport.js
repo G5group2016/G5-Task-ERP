@@ -25,17 +25,17 @@ const workReportSchema = new mongoose.Schema(
       required: true
     },
 
-    hoursWorked: {
-      type: Number,
-      // required: true
-    },
+    // hoursWorked: {
+    //   type: Number,
+    //   required: true
+    // },
 
-    progressPercentage: {
-      type: Number,
-      default: 0,
-      min: 0,
-      max: 100
-    },
+    // progressPercentage: {
+    //   type: Number,
+    //   default: 0,
+    //   min: 0,
+    //   max: 100
+    // },
 
     attachments: [
       {

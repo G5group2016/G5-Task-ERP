@@ -65,10 +65,10 @@ exports.submitReport =
           task: req.body.task,
           workDescription:
             req.body.workDescription,
-          hoursWorked:
-            req.body.hoursWorked,
-          progressPercentage:
-            req.body.progressPercentage,
+          // hoursWorked:
+          //   req.body.hoursWorked,
+          // progressPercentage:
+          //   req.body.progressPercentage,
         });
       return res
         .status(201)
@@ -258,11 +258,11 @@ exports.exportReportsExcel =
               report.task
                 ?.status,
 
-            HoursWorked:
-              report.hoursWorked,
+            // HoursWorked:
+            //   report.hoursWorked,
 
-            Progress:
-              `${report.progressPercentage}%`,
+            // Progress:
+            //   `${report.progressPercentage}%`,
 
             WorkDescription:
               report.workDescription,

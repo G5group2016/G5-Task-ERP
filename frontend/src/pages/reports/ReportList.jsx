@@ -240,10 +240,10 @@ const ReportList = () => {
           border: "1px solid #1E293B", overflow: "hidden",
         }}>
         <div style={{ overflowX: "auto" }}>
-          <table style={{ width: "100%", borderCollapse: "collapse", minWidth: "520px" }}>
+          <table style={{ width: "100%", borderCollapse: "collapse", minWidth: "400px" }}>
             <thead>
               <tr style={{ background: "#0D1421", borderBottom: "1px solid #1E293B" }}>
-                {["Employee", "Task", "Hours", "Progress"].map((h) => (
+                {["Employee", "Task"].map((h) => (
                   <th key={h} style={{
                     padding: "12px 20px", textAlign: "left",
                     fontSize: "11px", fontWeight: "700", letterSpacing: "0.08em",
@@ -257,7 +257,7 @@ const ReportList = () => {
             <tbody>
               {currentReports.length === 0 ? (
                 <tr>
-                  <td colSpan={4} style={{ padding: "48px", textAlign: "center", color: "#475569", fontSize: "14px" }}>
+                  <td colSpan={2} style={{ padding: "48px", textAlign: "center", color: "#475569", fontSize: "14px" }}>
                     No reports submitted yet
                   </td>
                 </tr>
@@ -304,7 +304,7 @@ const ReportList = () => {
                     <td style={{ padding: "14px 20px", fontSize: "13.5px", color: "#94A3B8" }}>
                       {report?.task?.title}
                     </td>
-                    <td style={{ padding: "14px 20px" }}>
+                    {/* <td style={{ padding: "14px 20px" }}>
                       <span style={{
                         fontFamily: "'JetBrains Mono', 'Fira Code', monospace",
                         fontSize: "13px", fontWeight: "700", color: "#60A5FA",
@@ -314,7 +314,7 @@ const ReportList = () => {
                     </td>
                     <td style={{ padding: "14px 20px" }}>
                       <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-                        {/* Progress bar */}
+                       
                         <div style={{
                           flex: 1, height: "6px", borderRadius: "3px",
                           background: "#1E293B", overflow: "hidden", maxWidth: "100px",
@@ -339,7 +339,7 @@ const ReportList = () => {
                           {report.progressPercentage}%
                         </span>
                       </div>
-                    </td>
+                    </td> */}
                   </tr>
                 ))
               )}

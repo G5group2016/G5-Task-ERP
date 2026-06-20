@@ -30,7 +30,7 @@ const blurStyle  = (e) => { e.target.style.borderColor = "#1E293B"; e.target.sty
 const ReportForm = ({ onSuccess }) => {
   const [tasks, setTasks] = useState([]);
   const [formData, setFormData] = useState({
-    task: "", workDescription: "", hoursWorked: "", progressPercentage: "",
+    task: "", workDescription: ""
   });
 
   useEffect(() => { loadTasks(); }, []);
@@ -95,7 +95,7 @@ const ReportForm = ({ onSuccess }) => {
           />
         </Field>
 
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: "12px", marginBottom: "12px" }}>
+        {/* <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: "12px", marginBottom: "12px" }}>
           <Field label="Hours Worked">
             <input type="number" name="hoursWorked" placeholder="e.g. 8"
               onChange={handleChange} style={inputStyle} onFocus={focusStyle} onBlur={blurStyle} />
@@ -105,7 +105,7 @@ const ReportForm = ({ onSuccess }) => {
               min="0" max="100"
               onChange={handleChange} style={inputStyle} onFocus={focusStyle} onBlur={blurStyle} />
           </Field>
-        </div>
+        </div> */}
 
         <div style={{ display: "flex", justifyContent: "flex-end" }}>
           <button

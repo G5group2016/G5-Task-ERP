@@ -123,7 +123,7 @@ const MyReports = () => {
               </div>
 
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
-                <div>
+                {/* <div>
                   <FieldLabel>Hours Worked</FieldLabel>
                   <input
                     type="number"
@@ -135,8 +135,8 @@ const MyReports = () => {
                     onFocus={e => { e.target.style.borderColor = "rgba(99,102,241,0.5)"; e.target.style.boxShadow = "0 0 0 3px rgba(99,102,241,0.12)"; }}
                     onBlur={e => { e.target.style.borderColor = "rgba(255,255,255,0.08)"; e.target.style.boxShadow = "none"; }}
                   />
-                </div>
-                <div>
+                </div> */}
+                {/* <div>
                   <FieldLabel>Progress %</FieldLabel>
                   <input
                     type="number"
@@ -148,7 +148,7 @@ const MyReports = () => {
                     onFocus={e => { e.target.style.borderColor = "rgba(99,102,241,0.5)"; e.target.style.boxShadow = "0 0 0 3px rgba(99,102,241,0.12)"; }}
                     onBlur={e => { e.target.style.borderColor = "rgba(255,255,255,0.08)"; e.target.style.boxShadow = "none"; }}
                   />
-                </div>
+                </div> */}
               </div>
 
               <div>
@@ -180,12 +180,12 @@ const MyReports = () => {
                 <h2 style={{ fontSize: 16, fontWeight: 700, color: "#F1F5F9", margin: "0 0 10px 0" }}>{report.task?.title}</h2>
                 <p style={{ color: "#94A3B8", fontSize: 13.5, lineHeight: 1.65, margin: "0 0 16px 0" }}>{report.workDescription}</p>
                 <div style={{ display: "flex", flexWrap: "wrap", gap: 12 }}>
-                  <span style={{ display: "inline-flex", alignItems: "center", gap: 6, padding: "4px 12px", borderRadius: 20, background: "rgba(99,102,241,0.1)", border: "1px solid rgba(99,102,241,0.2)", fontSize: 12, fontWeight: 600, color: "#818CF8", fontFamily: "'JetBrains Mono','Fira Code',monospace" }}>
+                  {/* <span style={{ display: "inline-flex", alignItems: "center", gap: 6, padding: "4px 12px", borderRadius: 20, background: "rgba(99,102,241,0.1)", border: "1px solid rgba(99,102,241,0.2)", fontSize: 12, fontWeight: 600, color: "#818CF8", fontFamily: "'JetBrains Mono','Fira Code',monospace" }}>
                     ⏱ {report.hoursWorked}h
-                  </span>
-                  <span style={{ display: "inline-flex", alignItems: "center", gap: 6, padding: "4px 12px", borderRadius: 20, background: "rgba(16,185,129,0.1)", border: "1px solid rgba(16,185,129,0.2)", fontSize: 12, fontWeight: 600, color: "#10B981", fontFamily: "'JetBrains Mono','Fira Code',monospace" }}>
+                  </span> */}
+                  {/* <span style={{ display: "inline-flex", alignItems: "center", gap: 6, padding: "4px 12px", borderRadius: 20, background: "rgba(16,185,129,0.1)", border: "1px solid rgba(16,185,129,0.2)", fontSize: 12, fontWeight: 600, color: "#10B981", fontFamily: "'JetBrains Mono','Fira Code',monospace" }}>
                     {report.progressPercentage}%
-                  </span>
+                  </span> */}
                 </div>
               </div>
             </div>
