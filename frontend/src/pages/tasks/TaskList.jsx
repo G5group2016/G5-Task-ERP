@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { getTasks, downloadTasksExcel } from "../../services/taskService";
 import TaskForm from "./TaskForm";
+import { getCompanies } from "../../services/companyService";
 
 const priorityConfig = {
   LOW: { color: "#94A3B8", bg: "rgba(148,163,184,0.1)", border: "rgba(148,163,184,0.2)", label: "Low" },
@@ -127,14 +128,50 @@ const TaskList = () => {
     );
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(10);
+  const [companies, setCompanies] = useState([]);
+  const [selectedCompany, setSelectedCompany] = useState("");
 
-  useEffect(() => { loadTasks(); }, []);
+  useEffect(() => {
+    loadTasks();
+
+    if (
+      user?.role ===
+      "OFFICE_MANAGER"
+    ) {
+      loadCompanies();
+    }
+  }, []);
+
+  const loadCompanies = async () => {
+    try {
+      const data =
+        await getCompanies();
+
+      setCompanies(
+        data.companies
+      );
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   const loadTasks = async () => {
-    const data = await getTasks();
+    const data =
+      await getTasks(
+        selectedCompany
+      );
     setTasks(data.tasks);
     setCurrentPage(1);
   };
+
+  useEffect(() => {
+    if (
+      user?.role ===
+      "OFFICE_MANAGER"
+    ) {
+      loadTasks();
+    }
+  }, [selectedCompany]);
 
   // Get current tasks for pagination
   const indexOfLastItem = currentPage * itemsPerPage;
@@ -153,7 +190,9 @@ const TaskList = () => {
       try {
 
         const response =
-          await downloadTasksExcel();
+          await downloadTasksExcel(
+            selectedCompany
+          );
 
         const url =
           window.URL.createObjectURL(
@@ -201,6 +240,7 @@ const TaskList = () => {
             Tasks
           </h1>
         </div>
+
         <div
           style={{
             display: "flex",
@@ -223,6 +263,37 @@ const TaskList = () => {
           >
             {tasks.length} total
           </div>
+
+          {
+            user?.role === "OFFICE_MANAGER" && (
+              <select
+                value={selectedCompany}
+                onChange={(e) =>
+                  setSelectedCompany(e.target.value)
+                }
+                style={{
+                  padding: "8px 12px",
+                  borderRadius: "8px",
+                  background: "#111827",
+                  color: "#fff",
+                  border: "1px solid #374151",
+                }}
+              >
+                <option value="">
+                  All Companies
+                </option>
+
+                {companies.map((company) => (
+                  <option
+                    key={company._id}
+                    value={company._id}
+                  >
+                    {company.name}
+                  </option>
+                ))}
+              </select>
+            )
+          }
 
           {user?.role === "OFFICE_MANAGER" && (
             <button

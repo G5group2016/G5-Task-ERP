@@ -1,7 +1,10 @@
 import api from "../api/axios";
 
-export const getTasks = async () => {
-  const response = await api.get("/tasks");
+export const getTasks = async (companyId = "") => {
+  const response = await api.get(
+    `/tasks${companyId ? `?company=${companyId}` : ""}`
+  );
+
   return response.data;
 };
 
@@ -59,11 +62,15 @@ export const createSelfTask = async (
   return response.data;
 };
 
-export const downloadTasksExcel =
-  () =>
-    api.get(
-      "/tasks/export/excel",
-      {
-        responseType: "blob"
-      }
-    );
+export const downloadTasksExcel = (
+  companyId = ""
+) =>
+  api.get(
+    `/tasks/export/excel${companyId
+      ? `?company=${companyId}`
+      : ""
+    }`,
+    {
+      responseType: "blob"
+    }
+  );

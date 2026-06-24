@@ -87,6 +87,14 @@ exports.getTasks =
 
       }
 
+      // OFFICE_MANAGER can filter by selected company
+      if (
+        req.user.role === "OFFICE_MANAGER" &&
+        req.query.company
+      ) {
+        filter.company = req.query.company;
+      }
+
       const tasks =
         await Task.find(
           filter
@@ -362,6 +370,10 @@ Priority: ${task.priority}
 exports.exportTasksExcel = async (req, res) => {
   try {
     let filter = {};
+
+    if (req.query.company) {
+      filter.company = req.query.company;
+    }
 
     if (req.user.role === "COMPANY_ADMIN") {
       const currentUser = await User.findById(req.user.id);
