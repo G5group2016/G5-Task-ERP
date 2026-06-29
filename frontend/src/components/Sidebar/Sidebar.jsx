@@ -149,7 +149,7 @@ const Sidebar = () => {
             }}
           >
             <img
-              src="./images/group-logo.png"
+              src="/images/group-logo.png"
               alt="G5 Group Logo"
             // className="w-28 h-28 mx-auto mb-3 object-contain"
             />
