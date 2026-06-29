@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import { getEmployeeDashboard } from "../../services/dashboardService";
 import SelfTaskForm from "../tasks/SelfTaskForm";
@@ -30,6 +30,7 @@ const quickActions = [
 const EmployeeDashboard = () => {
   const [stats, setStats] = useState(null);
   const [hoveredAction, setHoveredAction] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => { loadDashboard(); }, []);
 
@@ -65,7 +66,42 @@ const EmployeeDashboard = () => {
         {statCards.map((card) => (
           <div
             key={card.key}
-            style={{ background: "#111827", borderRadius: 16, border: "1px solid rgba(255,255,255,0.06)", overflow: "hidden", boxShadow: "0 4px 20px rgba(0,0,0,0.3)", position: "relative", transition: "transform 0.2s, box-shadow 0.2s", cursor: "default" }}
+            onClick={() => {
+              switch (card.key) {
+                case "assignedTasks":
+                  navigate("/my-tasks");
+                  break;
+
+                case "pendingTasks":
+                  navigate("/employee/pending-tasks");
+                  break;
+
+                case "completedTasks":
+                  navigate("/employee/completed-tasks");
+                  break;
+
+                case "reportsSubmitted":
+                  navigate("/my-reports");
+                  break;
+
+                case "attendanceDays":
+                  navigate("/my-attendance");
+                  break;
+
+                default:
+                  break;
+              }
+            }}
+            style={{
+              background: "#111827",
+              borderRadius: 16,
+              border: "1px solid rgba(255,255,255,0.06)",
+              overflow: "hidden",
+              boxShadow: "0 4px 20px rgba(0,0,0,0.3)",
+              position: "relative",
+              transition: "transform 0.2s, box-shadow 0.2s",
+              cursor: "pointer"
+            }}
             onMouseEnter={e => { e.currentTarget.style.transform = "translateY(-3px)"; e.currentTarget.style.boxShadow = "0 8px 32px rgba(0,0,0,0.4), 0 0 0 1px rgba(255,255,255,0.08)"; }}
             onMouseLeave={e => { e.currentTarget.style.transform = "translateY(0)"; e.currentTarget.style.boxShadow = "0 4px 20px rgba(0,0,0,0.3)"; }}
           >

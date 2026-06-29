@@ -31,6 +31,8 @@ import MyAttendance from "../pages/employees/MyAttendance";
 import MyProfile from "../pages/employees/MyProfile";
 import EmployeeProfile
   from "../pages/employees/EmployeeProfile";
+import EmployeePendingTasks from "../pages/tasks/EmployeePendingTasks";
+import EmployeeCompletedTasks from "../pages/tasks/EmployeeCompletedTasks";
 
 /* Company Admin */
 import CompanyAdminDashboard from "../pages/companyAdmin/CompanyAdminDashboard";
@@ -248,8 +250,17 @@ const AppRoutes = () => {
             path="/chat"
             element={<ChatPage />}
           />
-        </Route>
 
+          <Route
+            path="/employee/pending-tasks"
+            element={<EmployeePendingTasks />}
+          />
+
+          <Route
+            path="/employee/completed-tasks"
+            element={<EmployeeCompletedTasks />}
+          />
+        </Route>
       </Routes>
     </BrowserRouter>
   );
